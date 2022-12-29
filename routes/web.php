@@ -30,4 +30,8 @@ Route::group(['prefix' => 'sales'], function(){
     Route::get('/client', [App\Http\Controllers\SalesController::class, 'showclientlist'])->middleware(['auth'])->name('sales.client.list');
     Route::get('/client/add', [App\Http\Controllers\SalesController::class, 'addclient'])->middleware(['auth'])->name('sales.client.insert');
     Route::post('/client/add', [App\Http\Controllers\SalesController::class, 'addclient'])->middleware(['auth'])->name('sales.client.insert.suceess');
+
+    Route::get('/new-sales', [App\Http\Controllers\SalesController::class, 'newsaleslist'])->middleware(['auth'])->name('sales.new.list');
+    Route::get('/new-sales/add', [App\Http\Controllers\SalesController::class, 'addnewsaleslist'])->middleware(['auth'])->name('sales.new.insert');
+    Route::post('/new-sales/add', [App\Http\Controllers\SalesController::class, 'addnewsaleslist'])->middleware(['auth'])->name('sales.new.insert.suceess');
 }); 

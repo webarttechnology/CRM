@@ -32,7 +32,20 @@
                                 <div class="col-md-6">
                                     <label class="form-label" for="address">{{ __('Address') }}</label>
                                     <input type="text" class="form-control" id="address" name="address" placeholder="1A, Ho Chi Minh Sarani Rd" />
-                                </div>      
+                                </div>   
+                                <div class="col-md-5">
+                                    <label class="form-label" for="email">{{ __("Email ID") }} <span class="text-danger">*</span></label>
+                                    <input type="email" class="form-control" id="alteremail" name="alteremail[]" placeholder="jhon.doe@gmail.com" />
+                                </div>  
+                                <div class="col-md-5">
+                                    <label class="form-label" for="address">{{ __('Mobile No') }}</label>
+                                    <input type="text" class="form-control" id="mobile_no1" name="mobile_no[]" placeholder="1A, Ho Chi Minh Sarani Rd" />
+                                </div>    
+                                <div class="col-md-2">
+                               
+                                    <span id="addrow" class="btn btn-primary mt-4" ><i class="fa fa-plus" ></i></span>
+                                </div>   
+                                <span id="multipleimage"></span>  
                                 
                                 <div class="col-md-6">
                                     <label class="form-label" for="current_website">{{ __('Current Website') }}</label>
@@ -78,3 +91,29 @@
               </div>
             </div>
 <x-footer-component/>
+
+<script>
+
+$(document).ready(function () {
+       let lineNo = 2;     
+        $("#addrow").click(function () {         
+            markup = '<div class="row" id="deleterow'+ lineNo +'"> <div  class="col-md-5"><label class="form-label" for="email">{{ __("Email ID") }} <span class="text-danger">*</span></label><input type="email" class="form-control" id="alteremail'+ lineNo +'" name="alteremail[]" placeholder="jhon.doe@gmail.com" /></div><div class="col-md-5"><label class="form-label" for="address">{{ __("Mobile No") }}</label><input type="text" class="form-control" id="address'+ lineNo +'" name="mobile_no[]" placeholder="1A, Ho Chi Minh Sarani Rd" /></div> <div class="col-md-2"> <span class="btn btn-danger mt-4"  onclick="deleteRow('+ lineNo +')"><i class="fa fa-trash-o" aria-hidden="true"></i></span></div> </div>' ;
+            tableBody = $("#multipleimage");
+            tableBody.append(markup);
+            lineNo++;
+        }); 
+});     
+               
+              
+            
+     
+
+
+     function deleteRow(lineno){
+        $("#deleterow"+lineno).click(function () {    
+            $('#deleterow'+lineno).remove();
+        });
+     }
+
+
+</script>
