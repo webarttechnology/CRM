@@ -1,17 +1,31 @@
 <?php
+if(!function_exists('currency')){
+    function currency(){
+        $p = [1=> "USD", 2=> "AUD", 3 => "GBP", 4 => "INR"];
+        return $p;
+    }
+}
+
+if(!function_exists('instalment')){
+    function instalment(){
+        $p = [1=> "1st Installment", 2=> "2nd Installment", 3 => "3rd Installment", 4 => "4th Installment", 5=> "5th Installment", 6 => "Final Peyment"];
+        return $p;
+    }
+}
+
 if(!function_exists('project_type')){
     function project_type(){
-        $p_type = array (
-            ["id" => 1, "name" => "Websites"],
-            ["id"=> 2, "name"=> "Digital Marketing"],
-            ["id"=> 3, "name"=> "Mobile Applications"],
-            ["id" => 4, "name" => "Customised Platforms"],
-            ["id"=> 5, "name" => "Videos and Graphics"],
-            ["id"=> 6, "name" => "UI/UX (psd and figma screens)"],
-            ["id" => 7, "name" => "Hosting"],
-            ["id" => 8, "name" => "SSL"],
-            ["id" => 9, "name" => "Website Maintenance"]
+        $p_type = array ("1" => "Websites", "2" => "Digital Marketing", "3" => "Mobile Applications", "4" => "Customised Platforms",
+                         "5" => "Videos and Graphics", "6" => "UI/UX (psd and figma screens)", "7" => "Hosting",
+                         "8" => "SSL", "9" => "Website Maintenance"
           );
+          return $p_type;
+    }
+}
+
+if(!function_exists('upsale_type')){
+    function upsale_type(){
+        $p_type = array ("1" => "Hosting", "2" => "SSL", "3" => "Website Maintenance", "4" => "Others");
           return $p_type;
     }
 }
@@ -56,6 +70,19 @@ if(!function_exists('payment_mode')){
     function payment_mode(){
         $payment = array ( "1" => "Payoneer", "2"=>"Stripe","3"=>"Wise","4"=>"RazorPay","5"=>"Google Pay","6"=>"Other");
           return $payment;
+    }
+}
+
+if(!function_exists('country')){
+    function country(){
+        $cars = array (
+            array("name"=>"AUS", "image"=>"assets/uploads/australia.png", "id"=>"AUS", 'code' => "+61"),
+            array("name"=>"Canada", "image"=>"assets/uploads/India.png", "id"=>"Canada", 'code' => "+1"), 
+            array("name"=>"INDIA", "image"=>"assets/uploads/India.png", "id"=>"INDIA", 'code' => "+91"),
+            array("name"=>"UK", "image"=>"assets/uploads/uk.png", "id"=>"UK", 'code' => "+44"),
+            array("name"=>"USA", "image"=>"assets/uploads/usa.jpg", "id"=>"USA", 'code' => "+1"),
+          );
+          return $cars;
     }
 }
 

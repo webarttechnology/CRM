@@ -67,7 +67,7 @@
                 </a>
               </div>
               <!-- /Logo -->
-              <h4 class="mb-2">{{ __('Welcome to Sneat! 👋') }}</h4>
+              <h4 class="mb-2">{{ __('Welcome to Webart! 👋') }}</h4>
               <p class="mb-4">{{ __('Please sign-in to your account and start the adventure') }} </p>
 
               <form method="POST" action="{{ route('login') }}">

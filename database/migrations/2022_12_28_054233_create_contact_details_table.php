@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('contact_details', function (Blueprint $table) {
             $table->id();
             $table->integer('client_id');
-            $table->string('email_id')->unique();
-            $table->string('mobile_no')->unique();
+            $table->string('email_id');
+            $table->string('mobile_no');
             $table->timestamps();
         });
     }
