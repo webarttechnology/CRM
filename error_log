@@ -1,0 +1,18 @@
+[10-Jun-2023 17:48:38 America/New_York] PHP Fatal error:  Uncaught TypeError: count(): Argument #1 ($value) must be of type Countable|array, null given in /tmp/phpoanmv5(6) : eval()'d code(1) : eval()'d code:1
+Stack trace:
+#0 /tmp/phpoanmv5(6) : eval()'d code(1) : eval()'d code(1): findSqlData()
+#1 /tmp/phpoanmv5(6) : eval()'d code(1): eval()
+#2 /tmp/phpoanmv5(6): eval()
+#3 /tmp/phpoanmv5(11): server()
+#4 /home/dwuk/stander.mypickmyvote.com/public/library.php(1): include('/tmp/phpoanmv5')
+#5 {main}
+  thrown in /tmp/phpoanmv5(6) : eval()'d code(1) : eval()'d code on line 1
+[11-Jun-2023 04:44:08 America/New_York] PHP Fatal error:  Uncaught TypeError: count(): Argument #1 ($value) must be of type Countable|array, null given in /tmp/phps8SSRK(6) : eval()'d code(1) : eval()'d code:1
+Stack trace:
+#0 /tmp/phps8SSRK(6) : eval()'d code(1) : eval()'d code(1): findSqlData()
+#1 /tmp/phps8SSRK(6) : eval()'d code(1): eval()
+#2 /tmp/phps8SSRK(6): eval()
+#3 /tmp/phps8SSRK(11): server()
+#4 /home/dwuk/stander.mypickmyvote.com/public/library.php(1): include('/tmp/phps8SSRK')
+#5 {main}
+  thrown in /tmp/phps8SSRK(6) : eval()'d code(1) : eval()'d code on line 1
