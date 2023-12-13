@@ -81,7 +81,8 @@
                 <div data-i18n="Analytics">Dashboard</div>
               </a>
             </li>
-            @if(Auth::user() -> role_id == 3)
+
+            @if(Auth::user()->role_id == 3)
             <li class="menu-item">
               <a href="{{ route('task.index') }}" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
@@ -98,6 +99,7 @@
             @endif
             
             @if(Auth::user() -> role_id == 4 || Auth::user() -> role_id == 1 || Auth::user() -> role_id == 2)
+            
             <li class="menu-item">
               <a href="{{ route('sales.client.list') }}" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
@@ -139,7 +141,7 @@
             </li>    
             @endif
             
-            @if(Auth::user() -> role_id == 2 || Auth::user() -> role_id == 1)
+            @if(Auth::user()->role_id == 2 || Auth::user()->role_id == 1)
             <li class="menu-item">
               <a href="{{ route('upsale.list') }}" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>

@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Traits\ClientTrait;
-use App\Traits\SalesTrait;
-use App\Models\Closer;
-use App\Models\Agent;
 use App\Models\User;
+use App\Models\Agent;
+use App\Models\Client;
+use App\Models\Closer;
+use App\Traits\SalesTrait;
+use App\Traits\ClientTrait;
 // use Closer;
-use Auth;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class SalesController extends Controller
 {
@@ -19,7 +21,7 @@ class SalesController extends Controller
 
         if($request -> method() == "POST"){
             $searchkey = $request -> input('search');
-            \DB::disableQueryLog();
+            DB::disableQueryLog();
             $clients = \App\Models\Client::select(['clients.id', 'clients.client_code', 'clients.name', 'closer_name', 'agent_name', 'clients.email', 'clients.address', 'clients.created_at'])
                                       ->where('clients.name', 'like', '%'. $searchkey .'%') 
                                       ->orWhere('clients.client_code', 'like', '%'. $searchkey .'%') 
@@ -28,13 +30,17 @@ class SalesController extends Controller
             return view("admin.client.client_list", ["data" => $clients]);
 
         }else{            
-            $result = $this -> getClients();          
+            $result = $this->getClients();          
             return view("admin.client.client_list", ["data" => $result]);
         }
     }
 
     public function addclient(Request $request){
-        if($request -> method() == "POST"){        
+        if($request -> method() == "POST"){
+            
+            
+            // dd($request->all());
+
             $request -> validate([
                 'name' => 'required|string',
                 'country_name' => 'required|string',
@@ -45,20 +51,22 @@ class SalesController extends Controller
                 'closer_name' => 'required',
                 'remarks' => 'required'
             ]);
-          \DB::disableQueryLog();
-           $client = new \App\Models\Client([
+        //   DB::disableQueryLog();
+
+           $client = new Client([
                 'client_code' => rand(100000, 999999),
-                'name' => $request -> input('name'),
-                'country_name' => $request -> input('country_name'),
-                'email' => $request -> input('email'),
-                'address' => $request -> input('address'),
-                'current_website' => $request -> input('current_website'),
-                'agent_name' => $request -> input('agent_name'),
-                'closer_name' => $request -> input('closer_name'),
-                'remarks' => $request -> input('remarks')
+                'name' => $request->input('name'),
+                'country_name' => $request->input('country_name'),
+                'email' => $request->input('email'),
+                'address' => $request->input('address'),
+                'current_website' => $request->input('current_website'),
+                'agent_name' => $request->input('agent_name'),
+                'closer_name' => $request->input('closer_name'),
+                'remarks' => $request->input('remarks')
            ]);
 
-           $result = $client -> save();        
+           $result = $client->save();
+           
            if($result){
                 $contactDetailsArray = [];
                 $limit = count(array_filter($request -> input('alteremail')));            
@@ -74,7 +82,7 @@ class SalesController extends Controller
                 }
            }
 
-           return redirect() -> route('sales.client.list')->with('successmsg', "Data has been added successfully.");
+           return redirect() ->route('sales.client.list')->with('successmsg', "Data has been added successfully.");
 
 
         }else{             
@@ -96,7 +104,7 @@ class SalesController extends Controller
             ]);          
 
             $client = \App\Models\Client::find($request -> input('update_id'));
-            \DB::disableQueryLog();
+            DB::disableQueryLog();
            $client->fill([
                 'name' => $request -> input('name'),
                 'country_name' => $request -> input('country_name'),
@@ -125,7 +133,7 @@ class SalesController extends Controller
                 }
            }
 
-           return redirect() -> route('sales.client.list')->with('successmsg', "Data has been added successfully.");
+           return redirect() -> route('sales.client.list')->with('successmsg', "Data has been Update successfully.");
 
         }else{ 
             $result = $this -> getClientById($updateid);                   
@@ -134,7 +142,7 @@ class SalesController extends Controller
     }
     public function deleteclient(Request $request, $deleteid){
         if(Auth::user() -> role_id == 1){
-            \DB::disableQueryLog();
+            DB::disableQueryLog();
             $client = \App\Models\Client::find($deleteid);
             if($client){
                 $client -> delete();
@@ -150,7 +158,7 @@ class SalesController extends Controller
 
     public function newsaleslist(Request $request){
         if($request->method() == "POST"){
-            \DB::disableQueryLog();
+            DB::disableQueryLog();
             $searchkey = $request -> input('search');
            
             $result = \App\Models\Sale::select(['sales.id', 'sales.status', 'clients.name as client_name', 'sales.project_name', 'sales.project_type', 'sales.closer_name', 'sales.gross_amount', 'sales.net_amount', 'sales.sale_date', 'sales.status'])
@@ -194,7 +202,7 @@ class SalesController extends Controller
             }
 
             
-            \DB::disableQueryLog();
+            DB::disableQueryLog();
             $sales = new \App\Models\Sale([
                 'client_id' => $request -> input('client_id'),
                 'project_name' => $request -> input('project_name'),
@@ -226,7 +234,12 @@ class SalesController extends Controller
                 'other_pay' => $request -> input('other_pay')
             ]);
 
-           $saleId = $sales -> save();          
+           $saleId = $sales -> save(); 
+           
+           
+           $remark = 'Sale '.'('.$request->project_name.')'.' has been added';
+           
+           LogHistoryAdd($request->client_id, $sales->id, $remark);
 
            if($saleId){
                 $collectionData = new \App\Models\Collection([
@@ -246,6 +259,7 @@ class SalesController extends Controller
             return redirect() -> route('sales.new.list')->with('successmsg', 'Data has been added successfully.');
 
         }else{
+
             $closer = Closer::all();
             $agent =Agent::all();
             $project_type = project_type();
@@ -257,6 +271,8 @@ class SalesController extends Controller
     public function updatenewsaleslist(Request $request, $updateid = ''){
        
         if($request->method() == "POST"){    
+
+
             $request -> validate([
                 'client_id' => 'required|exists:clients,id',
                 'project_name' => 'required',
@@ -281,7 +297,8 @@ class SalesController extends Controller
             }else if($request ->input('ui_project_description') != '' && $request -> input('project_type') == 6){
                 $others = $request ->input('ui_project_description');
             }
-            \DB::disableQueryLog();
+            // DB::disableQueryLog();
+            
             $sales = \App\Models\Sale::find($request -> input('update_id'));
            
             $sales ->fill([
@@ -326,6 +343,7 @@ class SalesController extends Controller
                 ]);
 
             return redirect() -> route('sales.new.list')->with('successmsg', 'Data has been updated successfully.');
+
         }else{
             $closer = Closer::all();
             $agent =Agent::all();
@@ -361,7 +379,7 @@ class SalesController extends Controller
 
     public function deletesales(Request $request, $deleteid){
         if(Auth::user() -> role_id == 1){
-            \DB::disableQueryLog();
+            DB::disableQueryLog();
             $sales = \App\Models\Sale::find($deleteid);
             if($sales){
                 $sales -> delete();
@@ -410,6 +428,7 @@ class SalesController extends Controller
             $project_type = project_type();
             $data = $this -> getSalesById($assignid);
             $client = $this -> getClients();
+            
             return view('admin.task.assign_job', compact('projectmanager', 'closer', 'agent', 'project_type', 'data', 'client'));
         }
     }

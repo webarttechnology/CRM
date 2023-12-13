@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Traits\CollectionTrait;
-use Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+
 class CollectionController extends Controller
 {
     use CollectionTrait;
@@ -12,7 +14,7 @@ class CollectionController extends Controller
         if($request -> method() == "POST"){
             $startdate = $request -> input('start_date');
             $enddate = $request -> input('end_date');
-            \DB::disableQueryLog();
+            DB::disableQueryLog();
             $collection = \App\Models\Collection::select(['collections.id', 'clients.name as client_name', 'sales.project_name as project_name', 'collections.currency', 'collections.instalment', 'collections.net_amount', 'collections.sale_date', 'collections.payment_mode', 'collections.other_payment_mode'])
                                                 ->join('clients', 'clients.id', '=', 'collections.client_id')
                                                 ->join('sales', 'sales.id', '=', 'collections.sale_id')
@@ -21,7 +23,7 @@ class CollectionController extends Controller
                                                 ->get();
 
             $paymentMode = payment_mode();           
-            return view("admin.collection_list", ['data' => $collection, 'currency' => currency(), 'instalment' => instalment(), 'paymentmode' => $paymentMode]);
+            return view("admin.collection.collection_list", ['data' => $collection, 'currency' => currency(), 'instalment' => instalment(), 'paymentmode' => $paymentMode]);
         
         }else{
             $data = $this -> getcollection();          
@@ -42,7 +44,7 @@ class CollectionController extends Controller
                 'sale_date' => 'required',
                 'payment_mode' => 'required'
             ]);
-            \DB::disableQueryLog();
+            DB::disableQueryLog();
             $collections = new \App\Models\Collection([
                 'client_id' => $request -> input('client_id'),
                 'sale_id' => $request -> input('project_id'),
@@ -74,7 +76,7 @@ class CollectionController extends Controller
                 'sale_date' => 'required',
                 'payment_mode' => 'required'
             ]);
-            \DB::disableQueryLog();
+            DB::disableQueryLog();
             $collections = \App\Models\Collection::find($request -> input('update_id'));
             $collections -> fill([
                 'client_id' => $request -> input('client_id'),
@@ -100,7 +102,7 @@ class CollectionController extends Controller
 
     public function getproject(Request $request){
         if($request -> ajax()){
-            \DB::disableQueryLog();
+            DB::disableQueryLog();
             $data = \App\Models\Sale::select(['id', 'project_name'])->where(['client_id'=>$request -> get('client_id')])->get();
             $options = '<option value="">Select</option>';
             foreach($data as $val){

@@ -2,28 +2,35 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use \App\Models\User;
-use Hash;
-use Auth;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+
 class UserController extends Controller
 {
     
     public function index(Request $request){
         $user = User::all()->except(1);
         $role = role(); 
+
         if($request -> method() == "POST"){
             $searchkey = $request -> input('search');
-            \DB::disableQueryLog();
+            DB::disableQueryLog();
             $user = User::select(['id', 'name', 'email', 'mobile_no', 'role_id', 'is_active', 'created_at'])
                                       ->where('users.name', 'like', '%'. $searchkey .'%') 
                                       ->orWhere('users.email', 'like', '%'. $searchkey .'%')
                                       ->get();
+
             return view("admin.employee.user_list", compact('user', 'role'));
 
-        }else{              
-        return view('admin.employee.user_list', compact('user', 'role'));
+        }else{   
+
+            return view('admin.employee.user_list', compact('user', 'role'));
+            
         }
+
     }
 
     public function add(Request $request){
@@ -58,6 +65,7 @@ class UserController extends Controller
 
     public function update(Request $request, $updateid=''){
         if($request ->method() == "POST"){
+
             $request -> validate([
                 'name' => 'required|string',
                 'email' => 'required|email|unique:users,id,'.$request->input('update_id'),
@@ -65,16 +73,16 @@ class UserController extends Controller
                 'is_active' => 'required|in:0,1',
             ]);          
 
-            $user = User::find($request->input('update_id'));
-            $user->fill([
-                'name' => $request->input('name'),
-                'email' => $request->input('email'),
-                'role_id' => $request->input('role_id'),
+            $data = [
+                'name'      => $request->input('name'),
+                'email'     => $request->input('email'),
+                'role_id'   => $request->input('role_id'),
                 'mobile_no' => $request->input('mobile_no'),
-                'is_active' => $request->input('is_active')
-            ]);
+                'is_active' => $request->input('is_active') 
+            ];
 
-            $user-> save();
+            User::where('id', $request->update_id)->update($data);
+
             return redirect() -> route('user.index')->with('successmsg', "Data has been updated successfully.");
 
 
@@ -88,7 +96,7 @@ class UserController extends Controller
 
     public function delete(Request $request, $deleteid){
         if(Auth::user() -> role_id == 1){
-            \DB::disableQueryLog();
+            DB::disableQueryLog();
             $users = \App\Models\User::find($deleteid);
             if($users){
                 $users -> delete();

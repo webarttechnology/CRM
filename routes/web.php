@@ -1,6 +1,9 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
+use App\Http\Controllers\TimerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,11 +18,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/demo', function () {
     // return view('welcome');
-    
     // $exitCode = Artisan::call('route:cache');
     $exitCode = Artisan::call('optimize');
     dd('clear');
-        
     dd("digital webber");
 });
 
@@ -37,6 +38,8 @@ Route::group(['prefix' => 'admin', 'middleware'=>'auth'], function(){
     Route::post('/profile', [App\Http\Controllers\AdminController::class, 'profile'])->name('user.profile.success');
 
     Route::get('/logout', [App\Http\Controllers\AdminController::class, 'logout'])->name('admin.logout');
+    Route::post('/show-module-form', [App\Http\Controllers\AdminController::class, 'show_module_form'])->name('show-module-form');
+
 }); 
 
 Route::group(['prefix' => 'sales'], function(){
@@ -145,10 +148,23 @@ Route::controller(App\Http\Controllers\DeveloperController::class)
         Route::post('task/update', 'edit')->name("developer.task.edit");
         Route::get('task/delete', 'delete')->name("developer.task.delete");
         Route::get('task/show/{id}', 'show')->name("developer.task.show");
+        Route::post('get-assign-to', 'get_assign_to')->name("developer.get-assign-to");
+
 })->middleware(['auth']);
 
 Route::controller(App\Http\Controllers\WorkhistoryController::class)
  ->prefix('workhistory')
     ->group(function () {
+
         Route::get('','create' )->name("workhistory.create");
+        Route::post('get-total-workhistory-per-task', 'get_total_workhistory_per_task' );
+
 })->middleware(['auth']);
+
+
+
+
+
+
+
+

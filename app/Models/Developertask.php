@@ -11,5 +11,5 @@ class Developertask extends Model
     use HasFactory;
     use SoftDeletes;
     protected $table = "developer_jobs";
-     protected $fillable = ['sale_id', 'assign_to', 'assign_by', 'title','details','start_date','end_date','remarks', 'total_time', 'status'];
+    protected $fillable = ['sale_id', 'assign_to', 'assign_by', 'title','details','start_date','end_date','remarks', 'total_time', 'status'];
 }

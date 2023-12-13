@@ -7,7 +7,7 @@ use Auth;
 class TaskController extends Controller
 {
     public function index(Request $request){
-        if($request -> method() == "POST"){
+        if($request->method() == "POST"){
 
         }else{
             $projectType = project_type();

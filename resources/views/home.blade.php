@@ -1,84 +1,104 @@
-<x-header-component/>
-<x-nav-component/>
-    <div class="container-xxl flex-grow-1 container-p-y">
-      <div class="row">
-        <div class="col-lg-12 mb-4 order-0">
-          <div class="card">
-            <div class="d-flex align-items-end row">
-              <div class="col-sm-7">
-                <div class="card-body">
-                  <h5 class="card-title text-primary">Congratulations {{ Auth::user() ->name }}! 🎉</h5>
-                  <p class="mb-4">
-                    You have done <span class="fw-bold">72%</span> more sales today. Check your new badge in
-                    your profile.
-                  </p>
-                </div>
-              </div>
-              <div class="col-sm-5 text-center text-sm-left">
-                <div class="card-body pb-0 px-0 px-md-4">
-                  <img
-                    src="../assets/img/illustrations/man-with-laptop-light.png"
-                    height="140"
-                    alt="View Badge User"
-                    data-app-dark-img="illustrations/man-with-laptop-dark.png"
-                    data-app-light-img="illustrations/man-with-laptop-light.png"
-                  />
-                </div>
+@section('title', 'WebArt CRM')
+@extends('admin.master.layout')
+
+@section('content')
+    <!-- Page Wrapper -->
+    <div class="page-wrapper">
+      <div class="content container-fluid">
+
+<!-- Page Header -->
+<div class="crms-title row bg-white mb-4">
+          <div class="col">
+            <h3 class="page-title">
+            <span class="page-title-icon bg-gradient-primary text-white me-2">
+              <i class="la la-table"></i>
+            </span> <span>Dashboard</span></h3>
+          </div>
+          <div class="col text-end">
+            <ul class="breadcrumb bg-white float-end m-0 ps-0 pe-0">
+      <li class="breadcrumb-item"><a href="{{ url('/') }}">Dashboard</a></li>
+      <li class="breadcrumb-item active">Dashboard</li>
+    </ul>
+   </div>
+</div>
+        
+<!-- /Page Header -->
+
+<div class="row graphs">
+  <div class="col-md-6">
+    <div class="card h-100">
+              <div class="card-body">
+                <h3 class="card-title">Total Lead</h3>
+                 <canvas id="pie-chart" width="800" height="450"></canvas>
               </div>
             </div>
-          </div>
-        </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card h-100">
+                <div class="card-body">
+                  <h3 class="card-title">Products Yearly Sales</h3>
+                  <canvas id="bar-chart-horizontal" width="800" height="450"></canvas>
+                </div>
+            </div>
+  </div>
+</div>
+<div class="row graphs">
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-body">
+                  <h3 class="card-title">Sales Overview</h3>
+        <div id="line-charts"></div>
+              </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    
+    <div class="card h-100">
+                <div class="card-body">
+                  <h3 class="card-title">Total Sales</h3>
+                 <div id="chart"></div>
+                </div>
+            </div>
+  </div>
+</div>
+<div class="row graphs">
+  <div class="col-md-6"> 
+    <div class="card h-100">
+                <div class="card-body">
+                  <h3 class="card-title">Yearly Projects</h3>
+                  <canvas id="bar-chart" width="800" height="550"></canvas>
+                </div>
+            </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-body">
+                  <h3 class="card-title">Total Revenue</h3>
+        <div id="bar-charts"></div>
+              </div>
+    </div>
+  </div>
+  
+</div>
 
-        @if(Auth::user() -> role_id == 1)
-          @include('particals.admin_summary')
-        @endif  
-
-        @if(Auth::user() -> role_id == 2)
-          @include('particals.account_summary')
-        @endif 
-
-        @if(Auth::user() -> role_id == 6)
-          @include('particals.task_summary')
-        @endif 
-
-        @if(Auth::user() -> role_id == 7)
-           @include('particals.task_summary')
-        @endif 
-        
-        
-        
+<div class="row graphs">
+  <div class="col-md-6 mb-0">
+    <div class="card h-100">
+      <div class="card-body">
+        <h3 class="card-title">Sales Statistics</h3>
+        <canvas id="bar-chart-grouped" width="800" height="450"></canvas>
       </div>
-
-      <div class="row"> 
-        @if(Auth::user() -> role_id == 1)   
-        @include('particals.admin-sale-report');
-        @endif  
-
-        @if(Auth::user() -> role_id == 2)   
-        @include('particals.accounts_sale_report');
-        @endif
-
-        @if(Auth::user() -> role_id == 3)   
-        @include('particals.admin-sale-report');
-        @endif
-
-        @if(Auth::user() -> role_id == 4)   
-        @include('particals.admin-sale-report');
-        @endif
-
-        @if(Auth::user() -> role_id == 5)   
-        @include('particals.admin-sale-report');
-        @endif
-
-        @if(Auth::user() -> role_id == 6)   
-        @include('particals.develoer_report');
-        @endif
-
-        @if(Auth::user() -> role_id == 7)   
-        @include('particals.develoer_report');
-        @endif
-        
-      </div> 
- 
-
-<x-footer-component/>
+    </div>
+  </div>
+  <div class="col-md-6 mb-0">
+    <div class="card h-100">
+      <div class="card-body">
+        <h3 class="card-title">Completed Tasks</h3>
+        <canvas id="mixed-chart" width="800" height="450"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+</div>			
+</div>
+@endsection

@@ -1,101 +1,6 @@
-<x-header-component/> 
-<x-nav-component/>
-
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
-
-<div class="container">
-    <div class="row clearfix">
-        <div class="col-lg-12">
-            <div class="card chat-app">
-                <div class="chat">
-                    <div class="chat-header clearfix">
-                        <div class="row">
-                            <div class="col-lg-5">                               
-                                <div class="chat-about lstsec w-100">
-                                    <ul class="p-0">
-                                        @php $project_type = project_type(); @endphp
-                                        <li><strong>CLIENT NAME :</strong></li>
-                                         <li>{{ $sales->client->name }}</li>
-                                          <li><strong>Project Type :</strong></li>
-                                         <li>@foreach($project_type as $key => $val){{ $sales ->project_type == $key?$val:' '}}@endforeach</li>
-                                        
-                                         
-                                    </ul>
-                                </div>
-                            </div>
-                             <div class="col-lg-2">                               
-                               
-                            </div>
-                            <div class="col-lg-5">                               
-                                <div class="chat-about lstsec w-100">
-                                    <ul class="p-0">
-                                        <li><strong>Project Name :</strong></li>
-                                         <li>{{ $sales->project_name }}</li>
-                                          <li><strong>Sale Date :</strong></li>
-                                         <li>{{ date('Y-m-d', strtotime($sales -> sale_date) )}}</li>
-                                         
-                                    </ul>
-                                </div>
-                            </div>
-                           
-
-                            
-                        </div>
-                    </div>
-                    <div class="chat-history">
-                        <ul class="m-b-0" id="message">                                                         
-                           
-                        </ul>
-                    </div>
-                    <div class="chat-message clearfix">
-                        <div class="input-group mb-0">
-                            <input type="hidden" value="{{ $taskid }}" id="task_id">
-                            <input type="text" class="form-control textmessage" placeholder="Enter text here...">  
-                            <div class="input-group-prepend">
-                                <span class="input-group-text py-3"><i class="fa fa-send sendmessage"></i></span>
-                            </div>                                 
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    </div>
-
-
-
-<script>
-
-  $(document).ready(function(){
-    getMessage();
-    $(".sendmessage").click(function(){
-        $.ajax({
-               type:'GET',
-               url:'{{route("comment.add.success")}}',
-               data: 'message='+$(".textmessage").val()+'&task_id='+$("#task_id").val(),
-               success:function(data) {
-                getMessage();
-                $(".textmessage").val('');
-               }
-        });
-    })
-  })
-
-
-  const getMessage = () => {
-    $.ajax({
-            type:'GET',
-            url:'{{route("comment.list")}}',
-            data: 'task_id='+$("#task_id").val(),
-            success:function(data) {
-               $("#message").html(data);
-            }
-    });
-  }
-
-
-</script>
-
+@section('title', 'Comment')
+@extends('admin.master.layout')
+@section('content')
 <style>
     body{
     background-color: #f4f7f6;
@@ -353,5 +258,121 @@
         overflow-x: auto
     }
 }
+
+.chat-about ul {
+     list-style: none;
+     display: grid;
+      grid-template-columns: auto auto;
+}
 </style>
-<x-footer-component/>
+    <div class="page-wrapper" style="min-height: 333px;">
+        <!-- Page Content -->
+        <div class="content container-fluid">
+            <div class="crms-title row bg-white">
+                <div class="col  p-0">
+                    <h3 class="page-title m-0">
+                        <span class="page-title-icon bg-gradient-primary text-white me-2">
+                            <i class="feather-check-square"></i>
+                        </span>Comment
+                    </h3>
+                </div>
+                <div class="col p-0 text-end">
+                    <ul class="breadcrumb bg-white float-end m-0 ps-0 pe-0">
+                        <li class="breadcrumb-item"><a href="{{ url('/') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Comment</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Content Starts -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card chat-app">
+                        <div class="chat">
+                            <div class="chat-header clearfix">
+                                <div class="row">
+                                    <div class="col-lg-5">                               
+                                        <div class="chat-about lstsec w-100">
+                                            <ul class="p-0">
+                                                @php $project_type = project_type(); @endphp
+                                                <li><strong>CLIENT NAME:</strong></li>
+                                                 <li>{{ $sales->client->name }}</li>
+                                                <li><strong>Project Type :</strong></li>
+                                                 <li>@foreach($project_type as $key => $val){{ $sales ->project_type == $key?$val:' '}}@endforeach</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                     <div class="col-lg-2">                               
+                                       
+                                    </div>
+                                    <div class="col-lg-5">                               
+                                        <div class="chat-about lstsec w-100">
+                                            <ul class="p-0">
+                                                <li><strong>Project Name :</strong></li>
+                                                 <li>{{ $sales->project_name }}</li>
+                                                  <li><strong>Sale Date :</strong></li>
+                                                 <li>{{ date('Y-m-d', strtotime($sales -> sale_date) )}}</li>
+                                                 
+                                            </ul>
+                                        </div>
+                                    </div>
+                                   
+        
+                                    
+                                </div>
+                            </div>
+                            <div class="chat-history">
+                                <ul class="m-b-0" id="message">                                                         
+                                   
+                                </ul>
+                            </div>
+                            <div class="chat-message clearfix">
+                                <div class="input-group mb-0">
+                                    <input type="hidden" value="{{ $taskid }}" id="task_id">
+                                    <input type="text" class="form-control textmessage" placeholder="Enter text here...">  
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text py-3"><i class="fa fa-send sendmessage"></i></span>
+                                    </div>                                 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Content End -->
+        </div>
+        <!-- /Page Content -->
+  </div>
+@endsection
+@section('script')
+<script>
+$(document).ready(function(){
+    getMessage();
+    $(".sendmessage").click(function(){
+        $.ajax({
+               type:'GET',
+               url:'{{route("comment.add.success")}}',
+               data: 'message='+$(".textmessage").val()+'&task_id='+$("#task_id").val(),
+               success:function(data) {
+                getMessage();
+                $(".textmessage").val('');
+               }
+        });
+    });
+
+
+    const getMessage = () => {
+        $.ajax({
+                type:'GET',
+                url:'{{route("comment.list")}}',
+                data: 'task_id='+$("#task_id").val(),
+                success:function(data) {
+                $("#message").html(data);
+                }
+        });
+    }
+
+
+  });
+
+</script>
+@endsection

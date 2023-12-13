@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RenewalController extends Controller
 {
     public function domainrenewallist(Request $request){
-        \DB::disableQueryLog();
+        DB::disableQueryLog();
         $currentMonth = date('m');      
         $salesRenewal  = \App\Models\Sale::select(['clients.client_code', 'clients.email', 'clients.name', 'sales.project_name', 'sales.end_date', 'sales.project_type','sales.gross_amount', 'sales.net_amount'])
                                         ->join('clients', 'clients.id', '=', 'sales.client_id')

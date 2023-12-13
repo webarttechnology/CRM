@@ -1,316 +1,336 @@
-<x-header-component/> 
-<x-nav-component/>
-<div class="container-xxl flex-grow-1 container-p-y">
-    <h4 class="fw-bold py-3 mb-4">{{ __('Update Sales' )}}</h4>
-        <div class="row">
-          <div class="col-xl">
-                  <div class="card mb-4">                  
-                    <div class="card-body">
-                      <form method="post" action="{{ route('sales.update.suceess') }}" onsubmit="return valid();">
-                      <input type="hidden" name="update_id" value="{{ $data -> id }}"/>
-                        @csrf
-                        <div class="row">
-                            <div class="col-md-6">
-                                    <label class="form-label" for="client_name">{{ __("Client name") }} <span class="text-danger">*</span></label>
-                                    <select name="client_id" id="client_id" class="form-control">
-                                        <option value="">--Select--</option>
-                                        @foreach($client as $val)
-                                        <option value="{{ $val['id'] }}" {{ $data -> client_id == $val['id']?'Selected':'' }}>{{ $val['name'].' ('.$val['client_code'].')' }}</option>
-                                        @endforeach    
-                                    </select>
-                                    @if($errors->has('client_id'))
-                                    <small class="text-danger" id="client_iderrmsg">{{ $errors->first('client_id') }}</small>
-                                    @endif 
-                            </div>   
-                            <div class="col-md-6">
-                                    <label class="form-label" for="project_name">{{ __("Project Name") }} <span class="text-danger">*</span></label>
-                                    <input  type="text" name="project_name" id="project_name" class="form-control" placeholder="Project name" value="{{ $data -> project_name }}"/>
-                                    @if($errors->has('project_name'))
-                                    <small class="text-danger" id="project_nameerrmsg">{{ $errors->first('project_name') }}</small>
-                                    @endif    
-                            </div>  
-                            <div class="col-md-12">
-                                    <label class="form-label" for="project_type">{{ __('Project Type') }}<span class="text-danger">*</span></label>
-                                    <select name="project_type" id="project_type" class="form-control" onchange="projectTypechangeEvent()">
-                                        <option value="">--Select--</option>
-                                        @foreach($project_type as $key => $val)
-                                        <option value="{{ $key }}" {{ $data -> project_type == $key?'Selected':'' }}>{{ $val }}</option>
-                                        @endforeach    
-                                    </select>
-                                    @if($errors->has('project_type'))
-                                    <small class="text-danger" id="project_typeerrmsg">{{ $errors->first('project_type') }}</small>
-                                    @endif
-                            </div>
-                        </div>  
-                        <div class="row" id="div_website">
-                               <div class="col-md-6" >
-                                    <label class="form-label" for="technology">{{ __('Technology/platform') }}<span class="text-danger">*</span></label>
-                                    <select name="technology" id="technology" class="form-control">                                      
-                                        <option value="">--Select--</option>
-                                        @php 
-                                            $technology = website_technology();
-                                        @endphp
-                                        @foreach($technology as $i =>$val)
-                                        <option value="{{ $i }}" {{ $i == $data -> technology ?'Selected':"" }}>{{ $val }}</option>
-                                        @endforeach       
-                                    </select>
-                               </div>  
-                               <div class="col-md-6" >
-                                    <label class="form-label" for="type">{{ __('Type') }}<span class="text-danger">*</span></label>
-                                    <select name="type" id="type" class="form-control" onchange="customerOnchangeEvent()">                                      
-                                        <option value="">--Select--</option>
-                                        @php 
-                                            $technology_type = website_technology_type();
-                                        @endphp
-                                        @foreach($technology_type as $i =>$val)
-                                        <option value="{{ $i  }}" {{ $i == $data -> type ?'Selected':"" }}>{{ $val }}</option>
-                                        @endforeach    
-                                    </select>
-                               </div>  
-                               <div class="col-md-12" id="div_customer_requirment">
-                                    <label class="form-label" for="customer_requerment">{{ __("Custom Requirements") }} <span class="text-danger">*</span></label>
-                                    <input name="customer_requerment" id="customer_requerment" class="form-control" placeholder="Custom Requirements" value="{{ $data -> customer_requerment }}">        
-                               </div>   
-                               
-                           </div> 
-                           
-                          <div class="rowd" id="div_digital_marketing">
-                                <div class="row">
-                                    <div class="mt-3 col-md-1">
-                                      <div class="form-check">
-                                            <input type="radio" name="digital_marketing" id="seo" value="SEO" {{ $data -> marketing_plan == "SEO"?'Checked':'' }} class="form-check-input" onclick="smonclickEvent()" >
-                                            <label class="form-label" for="seo">{{ __("SEO") }}</label>
-                                      </div>
-                                    </div>
-                                    <div class="form-check mt-3 col-md-1">
-                                            <input type="radio" name="digital_marketing" id="smo" value="SMO" {{ $data -> marketing_plan == "SMO"?'Checked':'' }} class="form-check-input" onclick="smonclickEvent()">
-                                            <label class="form-label" for="smo">{{ __("SMO") }} </label>
-                                    </div>
-                                    <div class="form-check mt-3 col-md-2">
-                                            <input type="radio" name="digital_marketing" id="seo_smo" value="SEO_SMO" {{ $data -> marketing_plan == "SEO_SMO"?'Checked':'' }} class="form-check-input" onclick="smonclickEvent()">
-                                            <label class="form-label" for="seo">{{ __(" SEO + SMO") }} </label>
-                                    </div>
-                                    <div class="form-check mt-3 col-md-2">
-                                            <input type="radio" name="digital_marketing" id="google_ads" {{ $data -> marketing_plan == "Google Ads"?'Checked':'' }}  value="Google Ads" class="form-check-input" onclick="smonclickEvent()">
-                                            <label class="form-label" for="google_ads">{{ __("Google Ads") }}</label>
-                                    </div>  
-                                </div> 
-                              
-                                <div class="row mb-3">
-                                    <div class="mt-3 col-md-2 div_smo">
-                                      <input class="form-check-input" type="checkbox" name="smo_platfrom[]" value="Facebook" id="facebook" {{ $data -> smo_on && in_array('Facebook', json_decode($data -> smo_on))?'Checked':'' }}>
-                                      <label class="form-check-label" for="facebook"> Facebook </label>
-                                    </div>
-
-                                    <div class="form-check mt-3 col-md-2 div_smo">
-                                      <input class="form-check-input" type="checkbox" name="smo_platfrom[]" value="Instagram" id="instagran" {{ $data -> smo_on && in_array('Instagram', json_decode($data -> smo_on))?'Checked':'' }}>
-                                      <label class="form-check-label" for="instagran"> Instagram </label>
-                                    </div>
-
-                                    <div class="form-check mt-3 col-md-2 div_smo">
-                                      <input class="form-check-input" type="checkbox" name="smo_platfrom[]" value="Twitter" id="twitter" {{ $data -> smo_on && in_array('Twitter', json_decode($data -> smo_on))?'Checked':'' }}>
-                                      <label class="form-check-label" for="twitter"> Twitter </label>
-                                    </div>
-
-                                    <div class="form-check mt-3 col-md-2 div_smo">
-                                      <input class="form-check-input" type="checkbox" name="smo_platfrom[]" value="Youtube" id="youtube" {{ $data -> smo_on && in_array('Youtube', json_decode($data -> smo_on))?'Checked':'' }}>
-                                      <label class="form-check-label" for="youtube"> Youtube </label>
-                                    </div>
-
-                                    <div class="form-check mt-3 col-md-2 div_smo">
-                                      <input class="form-check-input" type="checkbox" name="smo_platfrom[]" value="Linkedin" id="linkedin" {{ $data -> smo_on && in_array('Linkedin', json_decode($data -> smo_on))?'Checked':'' }}>
-                                      <label class="form-check-label" for="linkedin"> Linkedin </label>
-                                    </div>
-                              </div>                                  
-                          </div>
-
-                          <div class="row" id="div_hosting">
-                                  <div class="col-md-6">
-                                    <label class="form-label" for="start_date">{{ __("Start Date") }} <span class="text-danger">*</span></label>
-                                    <input  type="date" name="start_date" id="start_date" class="form-control" value="{{ date("Y-m-d", strtotime($data -> start_date))  }}">                                        
+@section('title', 'Sales Update')
+@extends('admin.master.layout')
+@section('content')
+    <div class="page-wrapper" style="min-height: 333px;">
+        <!-- Page Content -->
+        <div class="content container-fluid">
+            <div class="crms-title row bg-white">
+                <div class="col  p-0">
+                    <h3 class="page-title m-0">
+                        <span class="page-title-icon bg-gradient-primary text-white me-2">
+                            <i class="feather-check-square"></i>
+                        </span>Sales Update
+                    </h3>
+                </div>
+                <div class="col p-0 text-end">
+                    <ul class="breadcrumb bg-white float-end m-0 ps-0 pe-0">
+                        <li class="breadcrumb-item"><a href="{{ url('/') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Sales Update</li>
+                    </ul>
+                </div>
+            </div>
+              <!-- Content Starts -->
+              <div class="row">
+                <div class="col-md-12">
+                    <div class="card mb-0">
+                        <div class="card-body">
+                          <form method="post" action="{{ route('sales.update.suceess') }}" onsubmit="return valid();">
+                            <input type="hidden" name="update_id" value="{{ $data->id }}"/>
+                              @csrf
+                              <div class="row">
+                                  <div class="col-md-6 mb-3">
+                                          <label class="form-label" for="client_name">{{ __("Client name") }} <span class="text-danger">*</span></label>
+                                          <select name="client_id" id="client_id" class="form-control">
+                                              <option value="">--Select--</option>
+                                              @foreach($client as $val)
+                                              <option value="{{ $val['id'] }}" {{ $data ->client_id == $val['id']?'Selected':'' }}>{{ $val['name'].' ('.$val['client_code'].')' }}</option>
+                                              @endforeach    
+                                          </select>
+                                          @if($errors->has('client_id'))
+                                          <small class="text-danger" id="client_iderrmsg">{{ $errors->first('client_id') }}</small>
+                                          @endif 
+                                  </div>   
+                                  <div class="col-md-6 mb-3">
+                                          <label class="form-label" for="project_name">{{ __("Project Name") }} <span class="text-danger">*</span></label>
+                                          <input  type="text" name="project_name" id="project_name" class="form-control" placeholder="Project name" value="{{ $data->project_name }}"/>
+                                          @if($errors->has('project_name'))
+                                          <small class="text-danger" id="project_nameerrmsg">{{ $errors->first('project_name') }}</small>
+                                          @endif    
                                   </div>  
-                                  <div class="col-md-6">
-                                    <label class="form-label" for="end_date">{{ __("End Date") }} <span class="text-danger">*</span></label>
-                                    <input  type="date" name="end_date" id="end_date" class="form-control" value="{{ date("Y-m-d", strtotime($data -> end_date))  }}">                                            
+                                  <div class="col-md-12 mb-3">
+                                          <label class="form-label" for="project_type">{{ __('Project Type') }}<span class="text-danger">*</span></label>
+                                          <select name="project_type" id="project_type" class="form-control" onchange="projectTypechangeEvent()">
+                                              <option value="">--Select--</option>
+                                              @foreach($project_type as $key => $val)
+                                              <option value="{{ $key }}" {{ $data->project_type == $key?'Selected':'' }}>{{ $val }}</option>
+                                              @endforeach    
+                                          </select>
+                                          @if($errors->has('project_type'))
+                                          <small class="text-danger" id="project_typeerrmsg">{{ $errors->first('project_type') }}</small>
+                                          @endif
                                   </div>
-                          </div>
-                          
-                          <div class="row" id="div_mobile_application">
-                                <div class="col-md-6" >
-                                          <label class="form-label" for="mobile_app_platform">{{ __('Platform ') }}<span class="text-danger">*</span></label>
-                                          <select text="text" name="mobile_app_platform" id="mobile_app_platform" class="form-control" >
+                              </div>  
+                              <div class="row" id="div_website">
+                                     <div class="col-md-6 mb-3" >
+                                          <label class="form-label" for="technology">{{ __('Technology/platform') }}<span class="text-danger">*</span></label>
+                                          <select name="technology" id="technology" class="form-control">                                      
+                                              <option value="">--Select--</option>
+                                              @php 
+                                                  $technology = website_technology();
+                                              @endphp
+                                              @foreach($technology as $i =>$val)
+                                              <option value="{{ $i }}" {{ $i == $data->technology ?'Selected':"" }}>{{ $val }}</option>
+                                              @endforeach       
+                                          </select>
+                                     </div>  
+                                     <div class="col-md-6 mb-3" >
+                                          <label class="form-label" for="type">{{ __('Type') }}<span class="text-danger">*</span></label>
+                                          <select name="type" id="type" class="form-control" onchange="customerOnchangeEvent()">                                      
+                                              <option value="">--Select--</option>
+                                              @php 
+                                                  $technology_type = website_technology_type();
+                                              @endphp
+                                              @foreach($technology_type as $i =>$val)
+                                              <option value="{{ $i  }}" {{ $i == $data->type ?'Selected':"" }}>{{ $val }}</option>
+                                              @endforeach    
+                                          </select>
+                                     </div>  
+                                     <div class="col-md-12 mb-3" id="div_customer_requirment">
+                                          <label class="form-label" for="customer_requerment">{{ __("Custom Requirements") }} <span class="text-danger">*</span></label>
+                                          <input name="customer_requerment" id="customer_requerment" class="form-control" placeholder="Custom Requirements" value="{{ $data->customer_requerment }}">        
+                                     </div>   
+                                     
+                                 </div> 
+                                 
+                                <div class="rowd" id="div_digital_marketing">
+                                      <div class="row">
+                                          <div class="mt-3 mb-3 col-md-1">
+                                            <div class="form-check">
+                                                  <input type="radio" name="digital_marketing" id="seo" value="SEO" {{ $data->marketing_plan == "SEO"?'Checked':'' }} class="form-check-input" onclick="smonclickEvent()" >
+                                                  <label class="form-label" for="seo">{{ __("SEO") }}</label>
+                                            </div>
+                                          </div>
+                                          <div class="form-check mt-3 mb-3 col-md-1">
+                                                  <input type="radio" name="digital_marketing" id="smo" value="SMO" {{ $data->marketing_plan == "SMO"?'Checked':'' }} class="form-check-input" onclick="smonclickEvent()">
+                                                  <label class="form-label" for="smo">{{ __("SMO") }} </label>
+                                          </div>
+                                          <div class="form-check mt-3 mb-3 col-md-2">
+                                                  <input type="radio" name="digital_marketing" id="seo_smo" value="SEO_SMO" {{ $data->marketing_plan == "SEO_SMO"?'Checked':'' }} class="form-check-input" onclick="smonclickEvent()">
+                                                  <label class="form-label" for="seo">{{ __(" SEO + SMO") }} </label>
+                                          </div>
+                                          <div class="form-check mt-3 mb-3 col-md-2">
+                                                  <input type="radio" name="digital_marketing" id="google_ads" {{ $data->marketing_plan == "Google Ads"?'Checked':'' }}  value="Google Ads" class="form-check-input" onclick="smonclickEvent()">
+                                                  <label class="form-label" for="google_ads">{{ __("Google Ads") }}</label>
+                                          </div>  
+                                      </div> 
+                                    
+                                      <div class="row mb-3">
+                                          <div class="mt-3 col-md-2 mb-3 div_smo">
+                                            <input class="form-check-input" type="checkbox" name="smo_platfrom[]" value="Facebook" id="facebook" {{ $data->smo_on && in_array('Facebook', json_decode($data->smo_on))?'Checked':'' }}>
+                                            <label class="form-check-label" for="facebook"> Facebook </label>
+                                          </div>
+      
+                                          <div class="form-check mt-3 mb-3 col-md-2 div_smo">
+                                            <input class="form-check-input" type="checkbox" name="smo_platfrom[]" value="Instagram" id="instagran" {{ $data -> smo_on && in_array('Instagram', json_decode($data -> smo_on))?'Checked':'' }}>
+                                            <label class="form-check-label" for="instagran"> Instagram </label>
+                                          </div>
+      
+                                          <div class="form-check mt-3 mb-3 col-md-2 div_smo">
+                                            <input class="form-check-input" type="checkbox" name="smo_platfrom[]" value="Twitter" id="twitter" {{ $data -> smo_on && in_array('Twitter', json_decode($data -> smo_on))?'Checked':'' }}>
+                                            <label class="form-check-label" for="twitter"> Twitter </label>
+                                          </div>
+      
+                                          <div class="form-check mt-3 mb-3 col-md-2 div_smo">
+                                            <input class="form-check-input" type="checkbox" name="smo_platfrom[]" value="Youtube" id="youtube" {{ $data -> smo_on && in_array('Youtube', json_decode($data -> smo_on))?'Checked':'' }}>
+                                            <label class="form-check-label" for="youtube"> Youtube </label>
+                                          </div>
+      
+                                          <div class="form-check mt-3 mb-3 col-md-2 div_smo">
+                                            <input class="form-check-input" type="checkbox" name="smo_platfrom[]" value="Linkedin" id="linkedin" {{ $data -> smo_on && in_array('Linkedin', json_decode($data -> smo_on))?'Checked':'' }}>
+                                            <label class="form-check-label" for="linkedin"> Linkedin </label>
+                                          </div>
+                                    </div>                                  
+                                </div>
+      
+                                <div class="row" id="div_hosting">
+                                        <div class="col-md-6 mb-3">
+                                          <label class="form-label" for="start_date">{{ __("Start Date") }} <span class="text-danger">*</span></label>
+                                          <input  type="date" name="start_date" id="start_date" class="form-control" value="{{ date("Y-m-d", strtotime($data->start_date))  }}">                                        
+                                        </div>  
+                                        <div class="col-md-6 mb-3">
+                                          <label class="form-label" for="end_date">{{ __("End Date") }} <span class="text-danger">*</span></label>
+                                          <input  type="date" name="end_date" id="end_date" class="form-control" value="{{ date("Y-m-d", strtotime($data->end_date))  }}">                                            
+                                        </div>
+                                </div>
+                                
+                                <div class="row" id="div_mobile_application">
+                                      <div class="col-md-6 mb-3" >
+                                                <label class="form-label" for="mobile_app_platform">{{ __('Platform ') }}<span class="text-danger">*</span></label>
+                                                <select text="text" name="mobile_app_platform" id="mobile_app_platform" class="form-control" >
+                                                  
+                                                    <option value="">--Select--</option>
+                                                    @php 
+                                                        $mobile = mobile_application();
+                                                    @endphp
+                                                    @foreach($mobile as $i =>$val)
+                                                    <option value="{{ $i  }}" {{ $i == $data->platform_name?'Selected':''}}>{{ $val }}</option>
+                                                    @endforeach    
+                                                </select>
+                                        </div> 
+                                        <div class="col-md-6 mb-3" >
+                                          <label class="form-label" for="preferred_technology">{{ __('Preferred technology') }}<span class="text-danger">*</span></label>
+                                          <select name="preferred_technology" id="preferred_technology" class="form-control">
                                             
                                               <option value="">--Select--</option>
                                               @php 
-                                                  $mobile = mobile_application();
+                                                  $t_preferred = mobile_application_preferred();
                                               @endphp
-                                              @foreach($mobile as $i =>$val)
-                                              <option value="{{ $i  }}" {{ $i == $data -> platform_name?'Selected':''}}>{{ $val }}</option>
+                                              @foreach($t_preferred as $i =>$val)
+                                              <option value="{{ $i  }}" {{ $i == $data->prefer_technology?'Selected':''}}>{{ $val }}</option>
                                               @endforeach    
                                           </select>
-                                  </div> 
-                                  <div class="col-md-6" >
-                                    <label class="form-label" for="preferred_technology">{{ __('Preferred technology') }}<span class="text-danger">*</span></label>
-                                    <select name="preferred_technology" id="preferred_technology" class="form-control">
-                                      
-                                        <option value="">--Select--</option>
-                                        @php 
-                                            $t_preferred = mobile_application_preferred();
-                                        @endphp
-                                        @foreach($t_preferred as $i =>$val)
-                                        <option value="{{ $i  }}" {{ $i == $data -> prefer_technology?'Selected':''}}>{{ $val }}</option>
-                                        @endforeach    
-                                    </select>
-                               </div>   
-
-                          </div>
-
-                          <div class="row" id="div_customised_platforms">
-                            <div class="col-md-12">
-                                <label class="form-label" for="cus_project_description">{{ __("Project Description") }} <span class="text-danger">*</span></label>
-                                <textarea  type="text" name="cus_project_description" id="cus_project_description" class="form-control" placeholder="Project details">{{ $data -> others }}</textarea>                                
-                            </div>  
-                          </div>
-
-                          <div class="row" id="div_video_graphics">
-                              <div class="col-md-12">
-                                  <label class="form-label" for="gra_project_description">{{ __("Project Description") }} <span class="text-danger">*</span></label>
-                                  <textarea  type="text" name="gra_project_description" id="gra_project_description" class="form-control" placeholder="Project details">{{ $data -> others }}</textarea>
-                                              
-                              </div>
-                          </div>
-
-                          <div class="row" id="div_ui_ux">
-                              <div class="col-md-12">
-                                    <label class="form-label" for="ui_project_description">{{ __("Project Description") }} <span class="text-danger">*</span></label>
-                                   <textarea  type="text" name="ui_project_description" id="ui_project_description" class="form-control" placeholder="Project details">{{ $data -> others }}</textarea>               
-                              </div>
-                          </div>
-                          <div class="row">
-                              <div class="col-md-6">
-                                          <label class="form-label" for="business_name">{{ __("Business Name") }} <span class="text-danger">*</span></label>
-                                          <input  type="text" name="business_name" id="business_name" class="form-control" placeholder="Business name" value="{{ $data -> business_name }}">          
-                              </div>
-                              <div class="col-md-6" >
-                                    <label class="form-label" for="closer_name">{{ __('Closer name') }}<span class="text-danger">*</span></label>
-                                    <input type="text" name="closer_name" id="closer_name" class="form-control" placeholder="Closer name" value="{{ $data -> closer_name }}">     
-                                    @if($errors->has('closer_name'))
-                                    <small class="text-danger" id="client_nameerrmsg">{{ $errors->first('closer_name') }}</small>
-                                    @endif 
-                               </div>   
-                               <div class="col-md-6" >
-                                    <label class="form-label" for="agent_name">{{ __('Agent Name') }}<span class="text-danger">*</span></label>
-                                    <input type="text" name="agent_name" id="agent_name" class="form-control" placeholder="Agent name" value="{{ $data -> agent_name }}">     
-                                    @if($errors->has('agent_name'))
-                                    <small class="text-danger" id="agent_nameerrmsg">{{ $errors->first('agent_name') }}</small>
-                                    @endif 
-                               </div>   
-                               <div class="col-md-6" >
-                                    <label class="form-label" for="reference_site">{{ __('Reference Sites') }}</label>
-                                    <input type="text" name="reference_site" id="reference_site" class="form-control" placeholder="Reference Sites" value="{{ $data ->reference_sites }}"/>              
-                               </div>   
-
-                               <div class="col-md-12">
-                                          <label class="form-label" for="remark">{{ __("Remarks") }} <span class="text-danger">*</span></label>
-                                          <textarea  type="text" name="remark" id="remark" class="form-control" placeholder="Remark">{{ $data -> remarks }}</textarea>  
-                                          @if($errors->has('remark'))
-                                    <small class="text-danger">{{ $errors->first('remark') }}</small>
-                                    @endif       
-                              </div>
-
-                              <div class="col-md-12">
-                                          <label class="form-label" for="upsale">{{ __("Upsale Opportunities") }}</label>
-                                          <input  type="text" name="upsale" id="upsale" class="form-control" placeholder="Upsale opportunities" value="{{ $data -> upsale_opportunities }}">       
-                              </div>
-
-                              <div class="col-md-6">
-                                <label class="form-label" for="upsale_type">{{ __('Currency') }} <span class="text-danger">*</span></label>
-                                <select name="currency" id="currency" class="form-control">
-                                    <option value="">--Select--</option>
-                                    @foreach(currency() as $key => $val)
-                                    <option value="{{ $key }}" {{ $key == $data->currency?'Selected':'' }}>{{ $val }}</option>
-                                    @endforeach                                   
-                                </select>
-                                @if($errors->has('currency'))
-                                <small class="text-danger">{{ $errors->first('currency') }}</small>
-                                @endif
-                            </div>
-
-                              <div class="col-md-6">
-                                    <label class="form-label" for="gross_amt">{{ __("Gross Amount") }} <span class="text-danger">*</span></label>
-                                    <input  type="number" name="gross_amt" id="gross_amt" class="form-control pendingamount" placeholder="$" value="{{ $data -> gross_amount }}">
-                                    @if($errors->has('gross_amt'))
-                                    <small class="text-danger">{{ $errors->first('gross_amt') }}</small>
-                                    @endif               
-                              </div>
-                              <div class="col-md-6">
-                                    <label class="form-label" for="net_amt">{{ __("Net Amount") }} <span class="text-danger">*</span></label>
-                                    <input  type="number" name="net_amt" id="net_amt" class="form-control pendingamount" placeholder="$" value="{{ $data -> net_amount }}">   
-                                    @if($errors->has('net_amt'))
-                                    <small class="text-danger">{{ $errors->first('net_amt') }}</small>
-                                    @endif             
-                              </div>
-                              <div class="col-md-6">
-                                    <label class="form-label" for="due_amt">{{ __("Due Amount") }} <span class="text-danger">*</span></label>
-                                    <input  type="text" readonly name="due_amt" id="due_amt" class="form-control" placeholder="$" value="{{ $data -> gross_amount - $data -> net_amount }}">              
-                              </div>
-                              <div class="col-md-6">
-                                    <label class="form-label" for="sale_date">{{ __("Sale Date") }} <span class="text-danger">*</span></label>
-                                    <input  type="date" name="sale_date" id="sale_date" class="form-control" value="{{ date('Y-m-d', strtotime($data -> sale_date) )}}">  
-                                    @if($errors->has('sale_date'))
-                                    <small class="text-danger">{{ $errors->first('sale_date') }}</small>
-                                    @endif             
-                              </div>
-                              <div class="col-md-6" >
-                                    <label class="form-label" for="payment_mode">{{ __('Payment Mode') }}<span class="text-danger">*</span></label>
-                                    <select name="payment_mode" id="payment_mode" class="form-control" onchange="paymentonchangeevent()">
-                                      
-                                        <option value="">--Select--</option>
-                                        @php 
-                                            $payment = payment_mode();
-                                        @endphp
-                                        @foreach($payment as $i =>$val)
-                                        <option value="{{ $i }}" {{ $data -> payment_mode == $i?'Selected':'' }}>{{ $val }}</option>
-                                        @endforeach    
-                                    </select>
-                                    @if($errors->has('payment_mode'))
-                                    <small class="text-danger">{{ $errors->first('payment_mode') }}</small>
-                                    @endif 
+                                     </div>   
+      
+                                </div>
+      
+                                <div class="row" id="div_customised_platforms">
+                                  <div class="col-md-12 mb-3">
+                                      <label class="form-label" for="cus_project_description">{{ __("Project Description") }} <span class="text-danger">*</span></label>
+                                      <textarea  type="text" name="cus_project_description" id="cus_project_description" class="form-control" placeholder="Project details">{{ $data->others }}</textarea>                                
+                                  </div>  
+                                </div>
+      
+                                <div class="row" id="div_video_graphics">
+                                    <div class="col-md-12 mb-3">
+                                        <label class="form-label" for="gra_project_description">{{ __("Project Description") }} <span class="text-danger">*</span></label>
+                                        <textarea  type="text" name="gra_project_description" id="gra_project_description" class="form-control" placeholder="Project details">{{ $data->others }}</textarea>
+                                                    
+                                    </div>
+                                </div>
+      
+                                <div class="row" id="div_ui_ux">
+                                    <div class="col-md-12 mb-3">
+                                          <label class="form-label" for="ui_project_description">{{ __("Project Description") }} <span class="text-danger">*</span></label>
+                                         <textarea  type="text" name="ui_project_description" id="ui_project_description" class="form-control" placeholder="Project details">{{ $data->others }}</textarea>               
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                                <label class="form-label" for="business_name">{{ __("Business Name") }} <span class="text-danger">*</span></label>
+                                                <input  type="text" name="business_name" id="business_name" class="form-control" placeholder="Business name" value="{{ $data->business_name }}">          
+                                    </div>
+                                    <div class="col-md-6 mb-3" >
+                                          <label class="form-label" for="closer_name">{{ __('Closer name') }}<span class="text-danger">*</span></label>
+                                          <input type="text" name="closer_name" id="closer_name" class="form-control" placeholder="Closer name" value="{{ $data->closer_name }}">     
+                                          @if($errors->has('closer_name'))
+                                          <small class="text-danger" id="client_nameerrmsg">{{ $errors->first('closer_name') }}</small>
+                                          @endif 
+                                     </div>   
+                                     <div class="col-md-6 mb-3" >
+                                          <label class="form-label" for="agent_name">{{ __('Agent Name') }}<span class="text-danger">*</span></label>
+                                          <input type="text" name="agent_name" id="agent_name" class="form-control" placeholder="Agent name" value="{{ $data->agent_name }}">     
+                                          @if($errors->has('agent_name'))
+                                          <small class="text-danger" id="agent_nameerrmsg">{{ $errors->first('agent_name') }}</small>
+                                          @endif 
+                                     </div>   
+                                     <div class="col-md-6 mb-3" >
+                                          <label class="form-label" for="reference_site">{{ __('Reference Sites') }}</label>
+                                          <input type="text" name="reference_site" id="reference_site" class="form-control" placeholder="Reference Sites" value="{{ $data ->reference_sites }}"/>              
+                                     </div>   
+      
+                                     <div class="col-md-12 mb-3">
+                                                <label class="form-label" for="remark">{{ __("Remarks") }} <span class="text-danger">*</span></label>
+                                                <textarea  type="text" name="remark" id="remark" class="form-control" placeholder="Remark">{{ $data->remarks }}</textarea>  
+                                                @if($errors->has('remark'))
+                                          <small class="text-danger">{{ $errors->first('remark') }}</small>
+                                          @endif       
+                                    </div>
+      
+                                    <div class="col-md-12 mb-3">
+                                                <label class="form-label" for="upsale">{{ __("Upsale Opportunities") }}</label>
+                                                <input  type="text" name="upsale" id="upsale" class="form-control" placeholder="Upsale opportunities" value="{{ $data -> upsale_opportunities }}">       
+                                    </div>
+      
+                                    <div class="col-md-6 mb-3">
+                                      <label class="form-label" for="upsale_type">{{ __('Currency') }} <span class="text-danger">*</span></label>
+                                      <select name="currency" id="currency" class="form-control">
+                                          <option value="">--Select--</option>
+                                          @foreach(currency() as $key => $val)
+                                          <option value="{{ $key }}" {{ $key == $data->currency?'Selected':'' }}>{{ $val }}</option>
+                                          @endforeach                                   
+                                      </select>
+                                      @if($errors->has('currency'))
+                                      <small class="text-danger">{{ $errors->first('currency') }}</small>
+                                      @endif
+                                  </div>
+      
+                                    <div class="col-md-6 mb-3">
+                                          <label class="form-label" for="gross_amt">{{ __("Gross Amount") }} <span class="text-danger">*</span></label>
+                                          <input  type="number" name="gross_amt" id="gross_amt" class="form-control pendingamount" placeholder="$" value="{{ $data -> gross_amount }}">
+                                          @if($errors->has('gross_amt'))
+                                          <small class="text-danger">{{ $errors->first('gross_amt') }}</small>
+                                          @endif               
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                          <label class="form-label" for="net_amt">{{ __("Net Amount") }} <span class="text-danger">*</span></label>
+                                          <input  type="number" name="net_amt" id="net_amt" class="form-control pendingamount" placeholder="$" value="{{ $data -> net_amount }}">   
+                                          @if($errors->has('net_amt'))
+                                          <small class="text-danger">{{ $errors->first('net_amt') }}</small>
+                                          @endif             
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                          <label class="form-label" for="due_amt">{{ __("Due Amount") }} <span class="text-danger">*</span></label>
+                                          <input  type="text" readonly name="due_amt" id="due_amt" class="form-control" placeholder="$" value="{{ $data -> gross_amount - $data -> net_amount }}">              
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                          <label class="form-label" for="sale_date">{{ __("Sale Date") }} <span class="text-danger">*</span></label>
+                                          <input  type="date" name="sale_date" id="sale_date" class="form-control" value="{{ date('Y-m-d', strtotime($data -> sale_date) )}}">  
+                                          @if($errors->has('sale_date'))
+                                          <small class="text-danger">{{ $errors->first('sale_date') }}</small>
+                                          @endif             
+                                    </div>
+                                    <div class="col-md-6 mb-3" >
+                                          <label class="form-label" for="payment_mode">{{ __('Payment Mode') }}<span class="text-danger">*</span></label>
+                                          <select name="payment_mode" id="payment_mode" class="form-control" onchange="paymentonchangeevent()">
+                                            
+                                              <option value="">--Select--</option>
+                                              @php 
+                                                  $payment = payment_mode();
+                                              @endphp
+                                              @foreach($payment as $i =>$val)
+                                              <option value="{{ $i }}" {{ $data -> payment_mode == $i?'Selected':'' }}>{{ $val }}</option>
+                                              @endforeach    
+                                          </select>
+                                          @if($errors->has('payment_mode'))
+                                          <small class="text-danger">{{ $errors->first('payment_mode') }}</small>
+                                          @endif 
+                                     </div>
+                                     
+                                     <div class="col-md-12 mb-3" id="div_other_pay">
+                                          <label class="form-label" for="other_pay">{{ __("Payment Description") }} <span class="text-danger">*</span></label>
+                                          <input  type="text" name="other_pay" id="other_pay" class="form-control" placeholder="Description" value="{{ $data -> other_pay }}" >              
+                                    </div>
+      
+                                    <div class="col-md-12 mb-3" id="div_other_pay">
+                                      <label class="form-label" for="other_pay">{{ __("Project Status") }} <span class="text-danger">*</span></label>
+                                      <select name="status" id="status" class="form-control">
+                                        <option value="">Select</option>
+                                        @foreach(projectstatus() as $val)
+                                        <option value="{{ $val }}" {{ $val == $data->status?'Selected':'' }}>{{ $val }}</option>
+                                        @endforeach
+                                      </select>
+                                    </div>
+      
+                                </div>                   
+                               <div class="row">
+                                  <div class="col-md-12 text-center">
+                                      <button type="submit" class="btn btn-primary mt-5">Submit</button>
+                                  </div>
                                </div>
-                               
-                               <div class="col-md-12" id="div_other_pay">
-                                    <label class="form-label" for="other_pay">{{ __("Payment Description") }} <span class="text-danger">*</span></label>
-                                    <input  type="text" name="other_pay" id="other_pay" class="form-control" placeholder="Description" value="{{ $data -> other_pay }}" >              
-                              </div>
-
-                              <div class="col-md-12" id="div_other_pay">
-                                <label class="form-label" for="other_pay">{{ __("Project Status") }} <span class="text-danger">*</span></label>
-                                <select name="status" id="status" class="form-control">
-                                  <option value="">Select</option>
-                                  @foreach(projectstatus() as $val)
-                                  <option value="{{ $val }}" {{ $val == $data->status?'Selected':'' }}>{{ $val }}</option>
-                                  @endforeach
-                                </select>
-                              </div>
-
-                          </div>                   
-                         <div class="row">
-                            <div class="col-md-12 text-center">
-                                <button type="submit" class="btn btn-primary mt-5">Submit</button>
-                            </div>
-                         </div>
-                      </form>
+                            </form>
+                        </div>
                     </div>
-                  </div>
                 </div>
-                
-              </div>
             </div>
-<x-footer-component/>
+            <!-- /Content End -->
+        </div>
+        <!-- /Page Content -->
+  </div>
 
+@endsection
+@section('script')
 <script>
-
-function valid(){
+  function valid(){
   if($("#client_id").val() == ""){
     toastr.error('Client name is a require field!');
     $("#client_id").focus();
@@ -724,11 +744,5 @@ function paymentonchangeevent(){
       $("#div_other_pay").hide();
   }
 }
-               
-              
-            
-     
-
-
-
 </script>
+@endsection

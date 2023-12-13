@@ -13,7 +13,7 @@
                           @csrf
                           <input type="hidden" name="upate_id" id="update_id"/>
                           <div class="row">
-                                  <div class="col-md-6">
+                                  <div class="col-md-12">
                                       <label class="form-label" for="name">Project Name <span class="text-danger">*</span></label>
                                       <select name="sale_id" id="sale_id" class="form-control">
                                           <option value="">Select</option>
@@ -24,14 +24,26 @@
                                       <small class="text-danger" id="sale_id_formerrmsg"></small>
                                   </div>
                                   <div class="col-md-6">
-                                      <label class="form-label" for="assign_to">{{ __("Assign to") }} <span class="text-danger">*</span></label>
-                                          <select name="assign_to[]" id="assign_to" multiple class="form-control">
-                                              <option value="">Select</option>
-                                              @foreach($developer as $key => $val)
+                                    <label class="form-label" for="assign_type">{{ __("Assign Type") }} <span class="text-danger">*</span></label>
+                                        <select name="assign_type" id="assign_type" class="form-control">
+                                            <option value="">Select Type</option>
+                                            @foreach(role() as $key => $val)
                                               <option value="{{ $key }}">{{ $val }}</option>
-                                              @endforeach
-                                          </select>
-                                      <small class="text-danger" id="assignto_formerrmsg">{{ $errors->first('assign_to') }}</small>
+                                            @endforeach
+                                        </select>
+                                    <small class="text-danger" id="assigntype_formerrmsg"></small>
+                                </div>
+                                  <div class="col-md-6">
+                                    <div class="dynamic_assign_to">
+                                        <label class="form-label" for="assign_to">{{ __("Assign to") }} <span class="text-danger">*</span></label>
+                                        <select name="assign_to[]" id="assign_to" multiple="multiple" class="form-control js-example-basic-multiple">
+                                            {{-- <option value="">Select</option> --}}
+                                            @foreach($developer as $key => $val)
+                                            <option value="{{ $key }}">{{ $val }}</option>
+                                            @endforeach
+                                        </select>
+                                        <small class="text-danger" id="assignto_formerrmsg">{{ $errors->first('assign_to') }}</small>
+                                    </div>
                                   </div>  
                                   <div class="col-md-12">
                                       <label class="form-label" for="title">{{ __("Title") }} <span class="text-danger">*</span></label>

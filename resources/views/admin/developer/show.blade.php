@@ -13,7 +13,7 @@
                               <h4 class="fw-bold py-3 mb-4 text-left">{{ __('Task details' )}}</h4>
                             </div>
                             <div class="btn btn-info">
-                              <time id="timer">{{ $jobStatus?$jobStatus->currenttime:'0:00:00' }}</time>
+                              <time id="timer">{{ $jobStatus? $jobStatus->currenttime: '0:00:00' }}</time>
                             </div>
                           </div>
                           <input type="hidden" id="job_id" value="{{ $data->id }}">

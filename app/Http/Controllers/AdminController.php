@@ -1,13 +1,28 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Http\Request;
-use Auth;
+
+use Carbon\Carbon;
+use App\Models\Sale;
+use App\Models\User;
+use App\Models\Agent;
+use App\Models\Client;
+use App\Models\Closer;
+use App\Models\Upsale;
+use App\Models\Collection;
 use App\Traits\SalesTrait;
+use App\Models\Workhistory;
+use App\Traits\ClientTrait;
 use App\Traits\UpsaleTrait;
+use Illuminate\Http\Request;
+use App\Models\Developertask;
 use App\Traits\CollectionTrait;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+
 class AdminController extends Controller
 {
+    use ClientTrait;
     use SalesTrait;
     use UpsaleTrait;
     use CollectionTrait;
@@ -39,7 +54,7 @@ class AdminController extends Controller
         }else{           
             $month = date('m');          
             
-            \DB::disableQueryLog();
+            DB::disableQueryLog();
             $task = $salesGrossAmount = $salesNetAmount = $upsaleGrossAmount = $upsaleNetAmount = $collectionAmount = $salesdata = $upsalesdata = $collections = [];
             $isEdit = $isDelete = 0; 
             $isShow = 0;
@@ -71,6 +86,13 @@ class AdminController extends Controller
                 ->get();
             }
             
+
+            // $work = Workhistory::where('developer_job_id', 1)->where('user_id', Auth::user()->id)->pluck('currenttime');
+
+
+            // dd($work);
+            
+
             return view("home", ['sales' => $salesdata, 
                                  'upsales' => $upsalesdata, 
                                  'collections' => $collections, 
@@ -101,15 +123,217 @@ class AdminController extends Controller
 
     public function profile(Request $request){
         if($request->method() == "POST"){
+
+            // dd($request->all());
+
             $request -> validate([
-                'name' => 'required|string',
-                'email' => 'required|email|unique:users,id,'.$request->input('update_id'),
+                'name'      => 'required|string',
+                'email'     => 'required|email|unique:users,id,'.$request->input('update_id'),
                 'mobile_no' => 'required',
-                'bio'=>'required'
+                'bio'       =>'required'
             ]); 
+
+            $data = [
+                'name'          => $request->name,
+                'email'         => $request->email,
+                'mobile_no'     => $request->mobile_no,
+            ];
+
+            $save = User::where('id',  Auth::id())->update($data);
+
+            if($save){
+                return response()->json(['status' => 1, 'successmsg'=> 'Profile updated successfully']);
+            }else{
+                return response()->json(['status' => 0, 'errmsg'=>' Server error Please try again']);
+            }
+
         }else{
             $userDetails = \App\Models\User::find(Auth::user()->id);
             return view('admin.profile', compact('userDetails'));
         }
     }
+
+
+
+    public function show_module_form(Request $request)
+    {
+    
+        if($request->type == 'add_client'){
+
+             if($request->id){
+                $client_data = Client::find($request->id);
+             }else{
+                $client_data = null;
+             }
+
+            return view('admin.data.add_client_form', compact('client_data'))->render();
+
+        }elseif($request->type == 'add_sales'){
+
+            if($request->sale == 'comment'){
+
+                $sales = \App\Models\Sale::where('id', $request->id)->first();
+                $comment = \App\Models\Comment::where('sale_id', $request->id)->get();   
+                $taskid = $request->id;
+
+                return view('admin.data.add_comment_form', compact('sales', 'comment', 'taskid'))->render();
+                
+            }elseif($request->sale == 'assign'){
+
+                $projectmanager = User::where('role_id', 3)->pluck('name', 'id'); 
+                $closer         = Closer::all();
+                $agent          = Agent::all();
+                $project_type   = project_type();
+                $data           = $this->getSalesById($request->id);
+                $client         = $this->getClients();
+                
+                return view('admin.data.add_assign_form', compact('projectmanager', 'closer', 'agent', 'project_type', 'data', 'client'))->render();
+                
+            }else{
+
+                if($request->id){
+                    $sales_data = Sale::find($request->id);
+                 }else{
+                    $sales_data = null;
+                 }
+     
+                 $getClients = $this->getClients();
+     
+                return view('admin.data.add_sale_form', compact('sales_data', 'getClients'))->render();
+            }
+
+       }elseif($request->type == 'add_upsale'){
+
+        if($request->id){
+            $upsale_data = Upsale::find($request->id);
+            $project     = Sale::select(['project_name', 'id'])->where(['client_id' => $upsale_data->client_id])->get();         
+        }else{
+            $upsale_data = null;
+            $project     = [];
+        }
+
+        $getClients = $this->getClients();
+
+         return view('admin.data.add_upsale_form', compact('upsale_data', 'getClients', 'project'))->render();
+     
+      }elseif($request->type == 'add_collection'){
+
+        if($request->id){
+            $collection_data = Collection::find($request->id);
+            $project         = Sale::select(['project_name', 'id'])->where(['client_id' => $collection_data->client_id])->get();         
+        }else{
+            $collection_data = null;
+            $project         = [];
+        }
+
+        $clients = $this->getClients();
+
+         return view('admin.data.add_collection_form', compact('collection_data', 'clients', 'project'))->render();
+
+     }elseif($request->type == 'add_user'){
+
+        if($request->id){
+            $user_data = User::find($request->id);
+        }else{
+            $user_data = null;
+        }
+
+        $role = role();
+
+        return view('admin.data.add_user_form', compact('user_data', 'role'))->render();
+
+     }elseif($request->type == 'profile'){
+        $userDetails = Auth::user();
+        return view('admin.data.add_profile_edit_form', compact('userDetails'))->render();
+
+     }elseif($request->type == 'add_task'){
+
+             if($request->sale == 'show'){
+
+
+
+                $running = 0;
+                $paused = 0;
+                $data = Developertask::select(['sales.project_name', 'assignby.name as assign_by_name', 'developer_jobs.*'])
+                                     ->join('sales', 'sales.id', '=', 'developer_jobs.sale_id')
+                                     ->join('users as assignby', 'assignby.id', '=', 'developer_jobs.assign_by')
+                                     ->where('developer_jobs.id', $request->id)
+                                     ->first();
+             
+                $jobStatus = \App\Models\Workhistory::where('developer_job_id', $request->id)->where('user_id', Auth::user()->id)->orderBy('id', 'desc')->first();        
+               
+                if($jobStatus?->final_status == 'start'){
+                    $running = 1;
+                }     
+                
+                if($jobStatus?->final_status == 'stop'){
+                    $paused = 1;
+                    $running = 1;
+                }
+          
+                $delayThen = $jobStatus?->delayThen;
+
+
+                $timeIntervals = Workhistory::where('developer_job_id', $request->id)->where('user_id', Auth::user()->id)->pluck('currenttime');
+
+                // Initialize a Carbon instance with zero time
+                $totalTime = Carbon::createFromFormat('H:i:s', '00:00:00');
+
+                // dd($timeIntervals);
+
+                // Loop through each time interval and add it to the total time
+                foreach ($timeIntervals as $timeInterval) {
+                    $time = Carbon::createFromFormat('H:i:s', $timeInterval);
+                    $totalTime->add($time->diff($totalTime));
+                }
+
+                // Format the total time as desired
+                $totalTimeFormatted = $totalTime->format('H:i:s');
+    
+                return view('admin.data.add_task_show_form', compact('data', 'jobStatus', 'paused', 'running', 'delayThen', 'totalTimeFormatted'));
+           
+             }else{
+                $isEdit = $isDelete = $isShow = 0; 
+                if(in_array(Auth::user() -> role_id, ['6', '7'])){
+                    $data = Developertask::where('assign_to','LIKE','%"'.Auth::user() -> id.'"%')->orderBy('id', 'desc')-> get(); 
+                    $isShow = 1;       
+                }else if(in_array(Auth::user() -> role_id, ['2', '3'])){
+                    $data = Developertask::where('assign_by', Auth::user() -> id)->get();                      
+                    $isEdit = $isDelete = 1;         
+                }else{
+                    $data = Developertask::orderBy('id', 'desc')->get(); 
+                    $isEdit = $isDelete = $isShow = 1;   
+                }         
+                $sales = Sale::pluck('project_name', 'id');
+
+                // $developer = \App\Models\User::whereIn('role_id', ["6", "7"])->pluck('name', 'id');   
+                $developer = \App\Models\User::pluck('name', 'id');   
+                $assignBy = \App\Models\User::whereIn('role_id', ["2","3","1"])->pluck('name', 'id'); 
+
+                  if($request->id){
+                    $task = Developertask::find($request->id);
+                    $role = User::whereIn('id', json_decode($task->assign_to) )->first(['role_id']);
+
+                    $stringRepresentation = $task->assign_to;
+                    $array_match = json_decode($stringRepresentation);
+                   
+                  }else{
+                    $task = null;
+                    $role = null;
+                    $array_match = [];
+                  }
+
+
+                  return view('admin.data.add_task_form', compact('data','sales', 'developer', 'assignBy', 'isEdit', 'isDelete', 'isShow', 'task', 'role', 'array_match'))->render();
+     
+             }
+
+
+    }
+
+
+       
+
+    }
+
 }

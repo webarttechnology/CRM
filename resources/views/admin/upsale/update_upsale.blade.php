@@ -1,45 +1,65 @@
-<x-header-component/> 
-<x-nav-component/>
-<div class="container-xxl flex-grow-1 container-p-y">
-    <h4 class="fw-bold py-3 mb-4">{{ __('Add Upsales' )}}</h4>
-        <div class="row">
-          <div class="col-xl">
+@section('title', 'Upsale Update')
+@extends('admin.master.layout')
+@section('content')
+    <div class="page-wrapper" style="min-height: 333px;">
+
+        <!-- Page Content -->
+        <div class="content container-fluid">
+            <div class="crms-title row bg-white">
+                <div class="col  p-0">
+                    <h3 class="page-title m-0">
+                        <span class="page-title-icon bg-gradient-primary text-white me-2">
+                            <i class="feather-check-square"></i>
+                        </span>Upsale Update
+                    </h3>
+                </div>
+                <div class="col p-0 text-end">
+                    <ul class="breadcrumb bg-white float-end m-0 ps-0 pe-0">
+                        <li class="breadcrumb-item"><a href="{{ url('/') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Upsale Update</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Content Starts -->
+            <div class="row">
+                <div class="col-md-12">
                   <div class="card mb-4">                  
                     <div class="card-body">
                       <form method="post" action="{{ route('upsale.update.success') }}" onsubmit="return valid();">
-                      <input type="hidden" name="update_id" id="update_id" value="{{ $data -> id }}">
+                      <input type="hidden" name="update_id" id="update_id" value="{{ $data->id }}">
                         @csrf
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-6 mb-3">
                                     <label class="form-label" for="client_name">{{ __("Client name") }} <span class="text-danger">*</span></label>
                                     <select name="client_id" id="client_id" class="form-control" onchange="getproject();">
                                         <option value="">--Select--</option>
                                         @foreach($clients as $val)
-                                        <option value="{{ $val['id'] }}" {{ $val['id'] == $data -> client_id?'Selected':'' }}>{{ $val['name'].' ('.$val['client_code'].')' }}</option>
+                                        <option value="{{ $val['id'] }}" {{ $val['id'] == $data->client_id?'Selected':'' }}>{{ $val['name'].' ('.$val['client_code'].')' }}</option>
                                         @endforeach    
                                     </select>
                                     @if($errors->has('client_id'))
                                     <small class="text-danger" id="client_iderrmsg">{{ $errors->first('client_id') }}</small>
                                     @endif 
                             </div>   
-                            <div class="col-md-6">
+                            <div class="col-md-6 mb-3">
                                     <label class="form-label" for="project_id">{{ __("Project Name") }} <span class="text-danger">*</span></label>
                                     <select name="project_id" id="project_id" class="form-control">
                                         <option value="">Select</option>
                                         @foreach($project as $val)
-                                        <option value="{{ $val -> id }}" {{ $val -> id == $data -> sale_id?'Selected':'' }}>{{$val -> project_name }}</option>
+                                        <option value="{{ $val->id }}" {{ $val->id == $data->sale_id?'Selected':'' }}>{{$val->project_name }}</option>
                                         @endforeach
                                     </select>
                                     @if($errors->has('project_id'))
                                     <small class="text-danger">{{ $errors->first('project_id') }}</small>
                                     @endif    
                             </div>  
-                            <div class="col-md-12">
+                            <div class="col-md-12 mb-3">
                                     <label class="form-label" for="upsale_type">{{ __('Upsale Product') }} <span class="text-danger">*</span></label>
                                     <select name="upsale_type" id="upsale_type" class="form-control" onchange="projectTypechangeEvent()">
                                         <option value="">--Select--</option>
                                         @foreach(upsale_type() as $key => $val)
-                                        <option value="{{ $key }}" {{ $key == $data -> upsale_type?'Selected':'' }}>{{ $val }}</option>
+                                        <option value="{{ $key }}" {{ $key == $data->upsale_type?'Selected':'' }}>{{ $val }}</option>
                                         @endforeach                                   
                                     </select>
                                     @if($errors->has('upsale_type'))
@@ -48,49 +68,49 @@
                             </div>
                         </div> 
                         <div class="row" id="div_hosting">
-                                  <div class="col-md-6">
+                                  <div class="col-md-6 mb-3">
                                     <label class="form-label" for="start_date">{{ __("Start Date") }} <span class="text-danger">*</span></label>
-                                    <input  type="date" name="start_date" id="start_date" class="form-control" value="{{ date("Y-m-d", strtotime($data -> start_date)) }}">                                        
+                                    <input  type="date" name="start_date" id="start_date" class="form-control" value="{{ date("Y-m-d", strtotime($data->start_date)) }}">                                        
                                   </div>  
-                                  <div class="col-md-6">
+                                  <div class="col-md-6 mb-3">
                                     <label class="form-label" for="end_date">{{ __("End Date") }} <span class="text-danger">*</span></label>
-                                    <input  type="date" name="end_date" id="end_date" class="form-control" value="{{ date('Y-m-d', strtotime($data -> end_date)) }}">                                            
+                                    <input  type="date" name="end_date" id="end_date" class="form-control" value="{{ date('Y-m-d', strtotime($data->end_date)) }}">                                            
                                   </div>
                         </div>
 
                         <div class="row" id="div_other">
-                            <div class="col-md-12">
+                            <div class="col-md-12 mb-3">
                               <label class="form-label" for="other">{{ __("Others Description") }} <span class="text-danger">*</span></label>
-                              <textarea name="other" id="other" class="form-control" placeholder="Other Description">{{ $data -> others }}</textarea>
+                              <textarea name="other" id="other" class="form-control" placeholder="Other Description">{{ $data->others }}</textarea>
                             </div> 
                         </div>
                           <div class="row">                           
-                              <div class="col-md-4">
+                              <div class="col-md-4 mb-3">
                                     <label class="form-label" for="gross_amt">{{ __("Gross Amount") }} <span class="text-danger">*</span></label>
-                                    <input  type="number" name="gross_amt" id="gross_amt" class="form-control pendingamount" placeholder="$" value="{{ $data -> gross_amount }}">  
+                                    <input  type="number" name="gross_amt" id="gross_amt" class="form-control pendingamount" placeholder="$" value="{{ $data->gross_amount }}">  
                                     @if($errors->has('gross_amt'))
                                     <small class="text-danger">{{ $errors->first('gross_amt') }}</small>
                                     @endif               
                               </div>
-                              <div class="col-md-4">
+                              <div class="col-md-4 mb-3">
                                     <label class="form-label" for="net_amt">{{ __("Net Amount") }} <span class="text-danger">*</span></label>
-                                    <input  type="number" name="net_amt" id="net_amt" class="form-control pendingamount" placeholder="$" value="{{ $data -> net_amount }}">  
+                                    <input  type="number" name="net_amt" id="net_amt" class="form-control pendingamount" placeholder="$" value="{{ $data->net_amount }}">  
                                     @if($errors->has('net_amt'))
                                     <small class="text-danger">{{ $errors->first('net_amt') }}</small>
                                     @endif             
                               </div>
-                              <div class="col-md-4">
+                              <div class="col-md-4 mb-3">
                                     <label class="form-label" for="due_amt">{{ __("Due Amount") }} <span class="text-danger">*</span></label>
-                                    <input  type="text" readonly name="due_amt" id="due_amt" class="form-control" placeholder="$" value="{{ $data -> gross_amount - $data -> net_amount }}">              
+                                    <input  type="text" readonly name="due_amt" id="due_amt" class="form-control" placeholder="$" value="{{ $data->gross_amount - $data->net_amount }}">              
                               </div>
-                              <div class="col-md-6">
+                              <div class="col-md-6 mb-3">
                                     <label class="form-label" for="sale_date">{{ __("Sale Date") }} <span class="text-danger">*</span></label>
-                                    <input  type="date" name="sale_date" id="sale_date" class="form-control" value="{{ date("Y-m-d", strtotime($data -> sale_date)) }}">  
+                                    <input  type="date" name="sale_date" id="sale_date" class="form-control" value="{{ date("Y-m-d", strtotime($data->sale_date)) }}">  
                                     @if($errors->has('sale_date'))
                                     <small class="text-danger">{{ $errors->first('sale_date') }}</small>
                                     @endif             
                               </div>
-                              <div class="col-md-6" >
+                              <div class="col-md-6 mb-3" >
                                     <label class="form-label" for="payment_mode">{{ __('Payment Mode') }}<span class="text-danger">*</span></label>
                                     <select name="payment_mode" id="payment_mode" class="form-control" onchange="paymentonchangeevent()">
                                       
@@ -99,7 +119,7 @@
                                             $payment = payment_mode();
                                         @endphp
                                         @foreach($payment as $i =>$val)
-                                        <option value="{{ $i }}" {{ $i == $data -> payment_mode?'Selected':'' }}>{{ $val }}</option>
+                                        <option value="{{ $i }}" {{ $i == $data->payment_mode?'Selected':'' }}>{{ $val }}</option>
                                         @endforeach    
                                     </select>
                                     @if($errors->has('payment_mode'))
@@ -107,9 +127,9 @@
                                     @endif 
                                </div>
                                
-                               <div class="col-md-12" id="div_other_pay">
+                               <div class="col-md-12 mb-3" id="div_other_pay">
                                     <label class="form-label" for="other_pay">{{ __("Payment Description") }} <span class="text-danger">*</span></label>
-                                    <input  type="text" name="other_payment_mode" id="other_payment_mode" class="form-control" placeholder="Description" vlaue="{{ $data -> other_payment_mode}}">              
+                                    <input  type="text" name="other_payment_mode" id="other_payment_mode" class="form-control" placeholder="Description" vlaue="{{ $data->other_payment_mode}}">              
                               </div>
                           </div>                     
                          <div class="row">
@@ -120,14 +140,15 @@
                       </form>
                     </div>
                   </div>
-                </div>
-                
-              </div>
             </div>
-<x-footer-component/>
-
+            <!-- /Content End -->
+        </div>
+        <!-- /Page Content -->
+  </div>
+@endsection
+@section('script')
 <script>
-
+  
 function valid(){
   if($("#client_id").val() == ""){
     toastr.error('Client name is a require field!');
@@ -251,3 +272,4 @@ function getproject(){
     })
 }
 </script>
+@endsection

@@ -163,14 +163,6 @@ $(document).ready(function () {
 }); 
 
 
-
-
-
-
-
-
-
-
 function paymentonchangeevent(){
   if($("#payment_mode").val() == 6){
       $("#div_other_pay").show();

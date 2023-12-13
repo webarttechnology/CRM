@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Traits\UpsaleTrait;
-use Auth;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 class UpsaleController extends Controller
 {
     use UpsaleTrait;    
@@ -65,6 +65,10 @@ class UpsaleController extends Controller
 
             $upsale -> save();
 
+            $remark = 'Upsale '.'('.$request->project_name.')'.' has been added';
+           
+            LogHistoryAdd($request->client_id, $request->project_id, $remark);
+
             return redirect() -> route('upsale.list')->with('successmsg', "Data has been added successfully.");
 
         }else{         
@@ -114,12 +118,12 @@ class UpsaleController extends Controller
 
             $upsale -> save();
 
-            return redirect() -> route('upsale.list')->with('successmsg', "Data has been added successfully.");
+            return redirect() -> route('upsale.list')->with('successmsg', "Data has been Update successfully.");
 
         }else{
             $data = $this -> getUpsaleById($updateid);
             $project = \App\Models\Sale::select(['project_name', 'id'])->where(['client_id' => $data -> client_id])->get();         
-            return view("admin.update_upsale", ['clients'=> \App\Models\Client::get(), 'data' => $data, 'project' => $project]);
+            return view("admin.upsale.update_upsale", ['clients'=> \App\Models\Client::get(), 'data' => $data, 'project' => $project]);
         }
     }
 

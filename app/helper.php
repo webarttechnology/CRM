@@ -1,4 +1,7 @@
 <?php
+
+use App\Models\LogHistory;
+
 if(!function_exists('currency')){
     function currency(){
         $p = [1=> "USD", 2=> "AUD", 3 => "GBP", 4 => "INR"];
@@ -95,7 +98,6 @@ if(!function_exists('role')){
 
 if(!function_exists('assignto')){
     function assignto($taskid){
-
         $projectManager = \App\Models\Assign::select('users.name')
                                             ->join('users', 'users.id', '=', 'tasks.assign_to')
                                             ->where('tasks.sale_id', $taskid)
@@ -148,6 +150,16 @@ if(!function_exists('getProjectStatus')){
         return $statusArray[$status];
     }
 }
+
+
+
+function LogHistoryAdd($client_id, $sale_id, $remark){
+    LogHistory::create(['client_id' => $client_id, 'sale_id' => $sale_id, 'remark' => $remark ]);
+    return true;
+}
+
+
+
 
 
 
