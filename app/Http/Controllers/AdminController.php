@@ -274,23 +274,23 @@ class AdminController extends Controller
                 $delayThen = $jobStatus?->delayThen;
 
 
-                $timeIntervals = Workhistory::where('developer_job_id', $request->id)->where('user_id', Auth::user()->id)->pluck('currenttime');
+                // $timeIntervals = Workhistory::where('developer_job_id', $request->id)->where('user_id', Auth::user()->id)->pluck('currenttime');
 
-                // Initialize a Carbon instance with zero time
-                $totalTime = Carbon::createFromFormat('H:i:s', '00:00:00');
+                // // Initialize a Carbon instance with zero time
+                // $totalTime = Carbon::createFromFormat('H:i:s', '00:00:00');
 
-                // dd($timeIntervals);
+                // // dd($timeIntervals);
 
-                // Loop through each time interval and add it to the total time
-                foreach ($timeIntervals as $timeInterval) {
-                    $time = Carbon::createFromFormat('H:i:s', $timeInterval);
-                    $totalTime->add($time->diff($totalTime));
-                }
+                // // Loop through each time interval and add it to the total time
+                // foreach ($timeIntervals as $timeInterval) {
+                //     $time = Carbon::createFromFormat('H:i:s', $timeInterval);
+                //     $totalTime->add($time->diff($totalTime));
+                // }
 
-                // Format the total time as desired
-                $totalTimeFormatted = $totalTime->format('H:i:s');
+                // // Format the total time as desired
+                // $totalTimeFormatted = $totalTime->format('H:i:s');
     
-                return view('admin.data.add_task_show_form', compact('data', 'jobStatus', 'paused', 'running', 'delayThen', 'totalTimeFormatted'));
+                return view('admin.data.add_task_show_form', compact('data', 'jobStatus', 'paused', 'running', 'delayThen'));
            
              }else{
                 $isEdit = $isDelete = $isShow = 0; 

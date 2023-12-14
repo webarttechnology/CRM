@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Sale;
+use App\Models\User;
+use App\Models\Workhistory;
 use Illuminate\Http\Request;
 use App\Models\Developertask;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+
 class DeveloperController extends Controller
 {
     public function task(Request $request){
@@ -76,7 +78,9 @@ class DeveloperController extends Controller
             }
 
 
-        }else if($request->method() == "GET"){ 
+        }else if($request->method() == "GET"){
+            
+           
                 
                 $isEdit = $isDelete = $isShow = 0; 
                 if(in_array(Auth::user() -> role_id, ['6', '7'])){

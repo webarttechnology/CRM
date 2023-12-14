@@ -16,9 +16,10 @@
                               <h4 class="fw-bold py-3 mb-4 text-left">{{ __('Task details' )}}</h4>
                             </div>
                             <div class="btn btn-info">
-                              <time id="timer" class="text-white countdown">{{ $jobStatus? $totalTimeFormatted: '0:00:00' }}</time>
+                               <time id="timer" class="text-white countdown{{ $data->id }}">{{ $jobStatus?->currenttime ?? '0:00:00' }}</time>
                             </div>
                           </div>
+
                           <input type="hidden" id="job_id" value="{{ $data->id }}">
                           <input type="hidden" id="running" value="{{ $running }}">
                           <input type="hidden" id="paused" value="{{ $paused  }}">
@@ -39,13 +40,11 @@
                 <div class="d-flex flex-row justify-content-center">
                     <div class="px-1 clonebtn">
                       @if($jobStatus?->final_status == '')
-                      <button class="btn btn-warning text-white timer-btn" data-id="{{ $jobStatus?->id }}" data-type="start">Start Task</button>
+                      <button class="btn btn-warning text-white timer-btn" data-id="{{ $data->id }}" data-type="start">Start Task</button>
                       @elseif($jobStatus?->final_status == 'start')
-                      <button class="btn btn-warning text-white timer-btn" data-id="{{ $jobStatus?->id }}" data-type="stop">Stop Task</button>
+                      <button class="btn btn-danger text-white timer-btn" data-id="{{ $data->id }}" data-type="stop">Stop Task</button>
                       @elseif($jobStatus?->final_status == 'stop')
-                      <button class="btn btn-primary timer-btn" data-id="{{ $jobStatus?->id }}" data-type="resume">Resume Task</button>
-                      @elseif($jobStatus?->final_status == 'resume')
-                      <button class="btn btn-warning text-white timer-btn" data-id="{{ $jobStatus?->id }}" data-type="start">Start Task</button>
+                      <button class="btn btn-warning text-white timer-btn" data-id="{{ $data->id }}" data-type="start">Start Task</button>
                       @endif
                     </div>              
                 </div>
