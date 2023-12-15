@@ -153,14 +153,9 @@ if(!function_exists('getProjectStatus')){
 
 
 
-function LogHistoryAdd($client_id, $sale_id, $remark){
-    LogHistory::create(['client_id' => $client_id, 'sale_id' => $sale_id, 'remark' => $remark ]);
+function LogHistoryAdd($client_id, $sale_id, $user_id , $remark) {
+    LogHistory::create(['client_id' => $client_id, 'sale_id' => $sale_id, 'user_id' => $user_id, 'remark' => $remark ]);
     return true;
 }
-
-
-
-
-
 
 ?>

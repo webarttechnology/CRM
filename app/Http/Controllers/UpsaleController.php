@@ -65,9 +65,9 @@ class UpsaleController extends Controller
 
             $upsale -> save();
 
-            $remark = 'Upsale '.'('.$request->project_name.')'.' has been added';
+            $remark = 'Upsale '.' has been added';
            
-            LogHistoryAdd($request->client_id, $request->project_id, $remark);
+            LogHistoryAdd($request->client_id, $request->input('project_id'), Auth::id(), $remark);
 
             return redirect() -> route('upsale.list')->with('successmsg', "Data has been added successfully.");
 
@@ -118,6 +118,10 @@ class UpsaleController extends Controller
 
             $upsale -> save();
 
+            $remark = 'Upsale '.'('.$request->project_name.')'.' has been Updated';
+           
+            LogHistoryAdd($request->client_id, $request->id, Auth::id(), $remark);
+
             return redirect() -> route('upsale.list')->with('successmsg', "Data has been Update successfully.");
 
         }else{
@@ -133,6 +137,11 @@ class UpsaleController extends Controller
                 $upsale = \App\Models\Upsale::find($deleteid);
                 if($upsale){
                     $upsale -> delete();
+
+                    $remark = 'Upsale '.'('.$upsale->project_name.')'.' has been Deleted';
+           
+                    LogHistoryAdd($request->client_id, $request->id, Auth::id(), $remark);
+                    
                     return redirect() -> route('upsale.list')->with('successmsg', "Data has been deleted successfully!!."); 
                 }else{
                     return redirect() -> route('upsale.list')->with('errmsg', "Error!! Please try agian."); 

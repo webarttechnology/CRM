@@ -1448,7 +1448,7 @@ table.dataTable thead>tr>td.sorting {
 -----------------------*/
 
 .header {
-	background: #fff;
+	background: #932bd9;
 	height: 60px;
 	left: 0;
 	position: fixed;
@@ -1576,7 +1576,7 @@ table.dataTable thead>tr>td.sorting {
 }
 
 .user-menu.nav>li>a {
-	color: #333;
+	color: #e7dfdf;
 	font-size: 15px;
 	line-height: 60px;
 	padding: 0 15px;
