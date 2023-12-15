@@ -142,10 +142,10 @@ class WorkhistoryController extends Controller
       
        if($work){
          $status  = $work->final_status;
-        //  $time    = '00:00:00';
+        // $time    = '00:00:00';
        }else{
          $status  = false;
-        //  $time    = '00:00:00';
+         // $time    = '00:00:00';
        }
 
        return response()->json( ['status' => $status ] );

@@ -105,7 +105,7 @@
                     if(type == 'add_task' && sale == 'show'){
                         CurrentTimeStore();
                     }
-                    
+
                     GetStatusWorkHistory(id);
 
                     $('.dynamic-form').html(data);
@@ -128,13 +128,11 @@
                 },
                 success: function(data) {
                     if (data.status == 'start') {
+                        $(`.show-task-timer`).removeClass('d-none');
                         stopCountdown();
                         startCountdown(id);
-                    } else {
-                        stopCountdown();
-                    }
+                    } 
                 },
-
             });
 
         }
