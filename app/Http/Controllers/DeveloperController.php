@@ -12,7 +12,6 @@ class DeveloperController extends Controller
     public function task(Request $request){
 
 
-
         // dd(str_replace("_", " ", config('app.name')));
         // $groupedData = User::select('name', 'id')
         // ->groupBy('name', 'id')
@@ -68,7 +67,11 @@ class DeveloperController extends Controller
                 ]);
             }          
 
-            $task -> save();            
+            $task -> save();  
+            
+            $remark = 'Task '.'('.$task->sale->project_name.')'.' has been assigned';
+            LogHistoryAdd($task->sale->client_id, $task->sale->id, Auth::id(), $remark);
+
             if($task){
                 return response()->json(['status' => 1, 'successmsg'=> $request->input('update_id') == ''?'New job has been created successfully.': 'New job has been updated successfully']);
             }else{
@@ -152,7 +155,6 @@ class DeveloperController extends Controller
 
     public function get_assign_to(Request $request)
     {
-
         $developer = User::where('role_id', $request->id)->pluck('name', 'id');  
 
         return view('admin.data.assign_to', compact('developer'))->render();

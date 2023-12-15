@@ -57,6 +57,11 @@ class CollectionController extends Controller
             ]);
 
             $collections -> save();
+
+            $remark = 'Collections '.'('.$request->project_name.')'.' has been Deleted';
+
+            LogHistoryAdd($request->client_id, $request->id, Auth::id(), $remark);
+
             return redirect() -> route('collection.list')->with('successmsg', "Data has been added successfully.");
 
         }else{
@@ -90,6 +95,11 @@ class CollectionController extends Controller
             ]);
 
             $collections -> save();
+
+            $remark = 'Collections '.'('.$request->project_name.')'.' has been added';
+
+            LogHistoryAdd($request->client_id, $request->input('project_id'), Auth::id(), $remark);
+
             return redirect() -> route('collection.list')->with('successmsg', "Data has been updated successfully.");
 
         }else{
@@ -100,7 +110,8 @@ class CollectionController extends Controller
         
     }
 
-    public function getproject(Request $request){
+    public function getproject(Request $request)
+    {
         if($request -> ajax()){
             DB::disableQueryLog();
             $data = \App\Models\Sale::select(['id', 'project_name'])->where(['client_id'=>$request -> get('client_id')])->get();
@@ -121,6 +132,11 @@ class CollectionController extends Controller
             $collections = \App\Models\Collection::find($deleteid);
             if($collections){
                 $collections -> delete();
+
+                $remark = 'Collections '.'('.$request->project_name.')'.' has been Deleted';
+
+                LogHistoryAdd($request->client_id, $request->id, Auth::id(), $remark);
+
                 return redirect() -> route('collection.list')->with('successmsg', "Data has been deleted successfully!!."); 
             }else{
                 return redirect() -> route('collection.list')->with('errmsg', "Error!! Please try agian."); 

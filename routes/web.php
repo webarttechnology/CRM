@@ -64,8 +64,7 @@ Route::group(['prefix' => 'sales'], function(){
 
     Route::group(['middleware' => ['auth', 'isAdmin']], function(){
         Route::get('/assgin/{taskid}', [App\Http\Controllers\SalesController::class, 'assign'])->name('sales.assign');
-        Route::post('/assgin', [App\Http\Controllers\SalesController::class, 'assign'])->name('sales.assign.success');
-    
+        Route::post('/assgin', [App\Http\Controllers\SalesController::class, 'assign'])->name('sales.assign.success');    
     });  
 
     
@@ -100,7 +99,7 @@ Route::group(['prefix' => 'collection'], function(){
     Route::post('/update', [App\Http\Controllers\CollectionController::class, 'updatecollection'])->middleware(['auth'])->name('collection.update.success');
     Route::get('/delete/{deleteid}', [App\Http\Controllers\CollectionController::class, 'deletecollection'])->middleware(['auth'])->name('collection.delete');
     Route::get('/get-project', [App\Http\Controllers\UpsaleController::class, 'getproject'])->middleware(['auth'])->name('collection.project');
-
+    
 });
 
 Route::group(['prefix' => 'renewal'], function(){
@@ -142,13 +141,13 @@ Route::controller(App\Http\Controllers\CommentController::class)
 
 Route::controller(App\Http\Controllers\DeveloperController::class)
  ->prefix('developer')
-    ->group(function () {
-        Route::get('task','task' )->name("developer.task");
-        Route::post('task', 'task')->name("developer.task.success");
-        Route::post('task/update', 'edit')->name("developer.task.edit");
-        Route::get('task/delete', 'delete')->name("developer.task.delete");
-        Route::get('task/show/{id}', 'show')->name("developer.task.show");
-        Route::post('get-assign-to', 'get_assign_to')->name("developer.get-assign-to");
+ ->group(function () {
+    Route::get('task','task' )->name("developer.task");
+    Route::post('task', 'task')->name("developer.task.success");
+    Route::post('task/update', 'edit')->name("developer.task.edit");
+    Route::get('task/delete', 'delete')->name("developer.task.delete");
+    Route::get('task/show/{id}', 'show')->name("developer.task.show");
+    Route::post('get-assign-to', 'get_assign_to')->name("developer.get-assign-to");
 
 })->middleware(['auth']);
 
