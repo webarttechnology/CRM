@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Workhistory;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth as FacadesAuth;
 
 class TaskController extends Controller
 {
@@ -19,7 +19,7 @@ class TaskController extends Controller
             $task = \App\Models\Assign::select(['sales.project_name', 'sales.project_type', 'tasks.assign_date', 'tasks.assign_by', 'users.name as assign_by', 'sales.remarks', 'sales.id'])
                                        ->join('sales', 'sales.id', '=', 'tasks.sale_id')
                                        ->join('users', 'users.id', '=', 'tasks.assign_by')
-                                       ->where('assign_to', Auth::user()->id)
+                                       ->where('assign_to', FacadesAuth::user()->id)
                                        ->orderBy('tasks.assign_date', 'DESC')
                                        ->get();           
             return view('admin.task.task', compact('task', 'projectType'));

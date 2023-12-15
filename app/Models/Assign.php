@@ -10,4 +10,8 @@ class Assign extends Model
     use HasFactory;
     protected $table= 'tasks';
     protected $fillable = ['sale_id', 'assign_to', 'assign_by', 'assign_date'];
+
+    public function sale(){
+        return $this -> belongsTo(\App\Models\Sale::class, 'sale_id', 'id');
+    }
 }

@@ -239,7 +239,7 @@ class SalesController extends Controller
            
            $remark = 'Sale '.'('.$request->project_name.')'.' has been added';
            
-           LogHistoryAdd($request->client_id, $sales->id, $remark);
+           LogHistoryAdd($request->client_id, $sales->id, Auth::id(), $remark);
 
            if($saleId){
                 $collectionData = new \App\Models\Collection([
@@ -333,6 +333,9 @@ class SalesController extends Controller
             ]);
             $sales -> save();
 
+            $remark = 'Sale '.'('.$request->project_name.')'.' has been Updated';
+           
+            LogHistoryAdd($request->client_id, $sales->id, Auth::id(), $remark);
 
             $collection = \App\Models\Collection::where(['sale_id'=> $request -> input('update_id'), 'instalment'=>1])->update(
                 [
@@ -381,9 +384,17 @@ class SalesController extends Controller
         if(Auth::user() -> role_id == 1){
             DB::disableQueryLog();
             $sales = \App\Models\Sale::find($deleteid);
-            if($sales){
+            
+            if($sales)
+            {
                 $sales -> delete();
+                
+                $remark = 'Sale '.'('.$sales->project_name.')'.' has been Deleted';
+           
+                LogHistoryAdd($request->client_id, $sales->id, Auth::id(), $remark);   
+              
                 return redirect() -> route('sales.new.list')->with('successmsg', "Data has been deleted successfully!!."); 
+
             }else{
                 return redirect() -> route('sales.new.list')->with('errmsg', "Error!! Please try agian."); 
             }
@@ -397,7 +408,8 @@ class SalesController extends Controller
 
             if(\App\Models\Assign::where('sale_id', $request -> input('update_id'))->count()){
 
-                $assign = \App\Models\Assign::where('sale_id', $request -> input('update_id'))->first();              
+                $assign = \App\Models\Assign::where('sale_id', $request -> input('update_id'))->with('sale')->first();  
+              
                 $assign -> fill([
                     'assign_to' => $request -> input('assign_to'),
                     'assign_by' => Auth::user()->id,
@@ -411,11 +423,14 @@ class SalesController extends Controller
                     'assign_by' => Auth::user()->id,
                     'assign_date' => date('Y-m-d')
                    ]);
-            }
-
-          
-
+            }   
+            
            if($assign -> save()){
+
+            $remark = 'Sale '.'('.$assign->sale->project_name.')'.' has been assigned';
+
+            LogHistoryAdd($request->client_id, $request->id, Auth::id(), $remark); 
+            
             return redirect() -> route('sales.new.list')->with('successmsg', 'Task assign successfully.');
            }else{
             return redirect() -> route('sales.new.list')->with('errmsg', 'Task assign error. Please try again.');

@@ -10,6 +10,6 @@ class LogHistory extends Model
 
     use HasFactory;
     
-    protected $fillable = ['client_id', 'sale_id', 'remark'];
+    protected $fillable = ['client_id', 'sale_id', 'remark', 'user_id'];
 
 }
