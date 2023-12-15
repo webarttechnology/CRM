@@ -161,6 +161,8 @@ Route::controller(App\Http\Controllers\WorkhistoryController::class)
         Route::post('store-total-workhistory-per-task', 'store_total_workhistory_per_task' );
         Route::post('get-status-work-history', 'get_status_work_history' )->name("get-status-work-history");
         Route::post('store-status-page-refresh', 'store_status_page_refresh' )->name("store-status-page-refresh");
+        Route::post('current-task-timer-get', 'current_task_timer_get' )->name("current-task-timer-get");
+        
 
 })->middleware(['auth']);
 

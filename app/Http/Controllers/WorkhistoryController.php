@@ -167,14 +167,37 @@ class WorkhistoryController extends Controller
                     'delayThen'        => 0
                 ];
              }
+
+             $timeWithoutColons = str_replace(":", "", $request->last_counter_time);
+
+             if($timeWithoutColons > 0){
+                 Workhistory::create($data);
+             }
         }
 
-       Workhistory::create($data);
-
-       return true;
+          return true;
     }
 
+    public function current_task_timer_get(Request $request)
+    {
+        
+       $work =  Workhistory::where('user_id', Auth::user()->id)->latest()->first();
+      
+       if($work){
+         $status  = $work->final_status;
+         $time    = $work->currenttime;
+         $id      = $work->developer_job_id;
+       }else{
+         $status  = false;
+         $time    = '00:00:00';
+         $id      = null;
+       }
 
+       return response()->json( ['status' => $status, 'timer' => $time, 'id' => $id  ] );
+
+    }
+
+    
     
     
 

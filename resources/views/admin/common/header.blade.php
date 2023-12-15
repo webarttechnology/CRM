@@ -58,6 +58,13 @@
 			.select2-container--default .select2-selection--multiple {
 				width: 190px !important;
 			}
+			.show-task-timer {
+				position: absolute;
+				top: 15px;
+				left: 50%;
+				font-size: 20px;
+				color: #000;
+			}
 		</style>
     </head>
     <body>
@@ -85,7 +92,7 @@
 				</a>
 				
 				<!-- Header Title -->
-                <div class="page-title-box">
+                <div class="page-title-box d-flex">
 					<div class="top-nav-search">
 							<a href="javascript:void(0);" class="responsive-search">
 								<i class="fa fa-search"></i>
@@ -95,7 +102,10 @@
 								<button class="btn" type="submit"><i class="fa fa-search"></i></button>
 							</form>
 						</div>
-                </div>
+						<div class="d-flex justify-content-center">
+							<span class="show-task-timer d-none">00:00:00</span>
+						</div>
+					</div>
 				<!-- /Header Title -->
 				
 				<a id="mobile_btn" class="mobile_btn" href="#sidebar"><i class="fa fa-bars"></i></a>
