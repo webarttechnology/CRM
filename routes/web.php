@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\TimerController;
+use App\Http\Controllers\LogHistoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -75,7 +76,32 @@ Route::group(['prefix' => 'sales'], function(){
     Route::get('/update/{updateid}', [App\Http\Controllers\SalesController::class, 'updatenewsaleslist'])->middleware(['auth'])->name('sales.update');
     Route::post('/update', [App\Http\Controllers\SalesController::class, 'updatenewsaleslist'])->middleware(['auth'])->name('sales.update.suceess');
     Route::get('/delete/{deleteid}', [App\Http\Controllers\SalesController::class, 'deletesales'])->middleware(['auth'])->name('sales.delete');
-}); 
+});
+
+Route::group(['prefix' => 'group'], function () {
+
+    // Access only for admin
+    Route::group(['middleware' => ['auth', 'isAdmin']], function () {
+        Route::get('/list', [App\Http\Controllers\GroupController::class, 'grouplist'])->name('group.new.list');
+        Route::post('/list', [App\Http\Controllers\GroupController::class, 'grouplist'])->name('group.search');
+        Route::get('/group-view/{groupid}', [App\Http\Controllers\GroupController::class, 'groupviewById'])->middleware(['auth'])->name('group.view');
+        Route::post('/add', [App\Http\Controllers\GroupController::class, 'addnewgrouplist'])->middleware(['auth'])->name('group.new.insert.suceess');
+        Route::get('/update/{updateid}', [App\Http\Controllers\GroupController::class, 'updatenewgrouplist'])->middleware(['auth'])->name('group.update');
+        Route::post('/update', [App\Http\Controllers\GroupController::class, 'updatenewgrouplist'])->middleware(['auth'])->name('group.update.suceess');
+        Route::get('/delete/{deleteid}', [App\Http\Controllers\GroupController::class, 'deletegroup'])->middleware(['auth'])->name('group.delete');
+        Route::get('/invite/{groupid}', [App\Http\Controllers\GroupController::class, 'invite'])->name('group.invite');
+        Route::post('/invite', [App\Http\Controllers\GroupController::class, 'invitegroup'])->middleware(['auth'])->name('group.new.invite');
+        Route::get('/accept-email/{email}/{uniqid}', [App\Http\Controllers\GroupController::class, 'acceptGroup'])->middleware(['auth']);
+        Route::post('/viewMember', [App\Http\Controllers\GroupController::class, 'member'])->middleware(['auth'])->name('group.viewmember');
+        Route::get('/view-member/{groupid}', [App\Http\Controllers\GroupController::class, 'allGroupMember'])->middleware(['auth'])->name('group.viewmembers');
+        Route::get('/memberdelete/{groupmemberid}', [App\Http\Controllers\GroupController::class, 'deleteMember'])->middleware(['auth'])->name('group.memberdelete');
+   
+    });
+});
+
+Route::get('/register/{email}/{uniqid}', [App\Http\Controllers\GroupController::class, 'userRegister']);
+Route::post('/userRegister', [App\Http\Controllers\GroupController::class, 'saveUser']);
+
 
 Route::group(['prefix' => 'upsales'], function(){
     Route::get('/list', [App\Http\Controllers\UpsaleController::class, 'upsalelist'])->middleware(['auth'])->name('upsale.list');
@@ -161,10 +187,20 @@ Route::controller(App\Http\Controllers\WorkhistoryController::class)
         Route::post('get-status-work-history', 'get_status_work_history' )->name("get-status-work-history");
         Route::post('store-status-page-refresh', 'store_status_page_refresh' )->name("store-status-page-refresh");
         Route::post('current-task-timer-get', 'current_task_timer_get' )->name("current-task-timer-get");
-        
+        Route::post('get-task-list', 'get_task_list' );
 
 })->middleware(['auth']);
 
+
+Route::controller(LogHistoryController::class)
+ ->prefix('log')
+ ->group(function () {
+    Route::get('history', 'index' )->name("log.history");
+    Route::get('details/{id}', 'details' )->name("log.details");
+})->middleware(['auth']);
+
+
+Route::get("/chat", [App\Http\Controllers\AdminController::class, 'chat']);
 
 
 

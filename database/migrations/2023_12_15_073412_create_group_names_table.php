@@ -13,17 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-
-        Schema::create('log_histories', function (Blueprint $table) {
+        Schema::create('group_names', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('client_id')->nullable();
-            $table->unsignedBigInteger('sale_id')->nullable();
-            $table->longText('remark');
+            $table->unsignedBigInteger('user_id');
+            $table->string('name')->nullable();
+            $table->string('uniqid')->nullable();
+            $table->enum('status', ['Active', 'Inactive']);
+            $table->enum('type', ['Deal', 'Work']);
             $table->timestamps();
-            // $table->foreign('client_id')->references('id')->on('clients');
-            // $table->foreign('sale_id')->references('id')->on('sales');
+            $table->foreign('user_id')->references('id')->on('users');
         });
-        
     }
 
     /**
@@ -33,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('log_histories');
+        Schema::dropIfExists('group_names');
     }
 };

@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Comment extends Model
+class GroupMember extends Model
 {
     use HasFactory;
-    protected $fillable = ['sale_id', 'comment_by', 'message', 'date'];
+    protected $fillable = ['group_id', 'user_id'];
 
     public function user()
     {
-        return $this->hasOne(User::class, 'id', 'comment_by');
+        return $this->hasOne(User::class, 'id', 'user_id');
     }
 }

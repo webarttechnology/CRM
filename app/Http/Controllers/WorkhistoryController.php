@@ -196,6 +196,17 @@ class WorkhistoryController extends Controller
 
     }
 
+    public function get_task_list(Request $request)
+    {
+
+       $work =  Workhistory::where('user_id', Auth::user()->id)
+       ->distinct('user_id')->latest()
+       ->where('final_status', 'stop')
+       ->orwhere('final_status', 'start')
+       ->select('user_id', 'developer_job_id', 'final_status')->get();
+
+       return view('admin.data.working-task', compact('work'))->render();
+    }
     
     
     

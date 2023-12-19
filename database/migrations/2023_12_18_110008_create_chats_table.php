@@ -13,17 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-
-        Schema::create('log_histories', function (Blueprint $table) {
+        Schema::create('chats', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('client_id')->nullable();
-            $table->unsignedBigInteger('sale_id')->nullable();
-            $table->longText('remark');
+            $table->integer('from_user_id');
+            $table->integer('to_user_id');
+            $table->string('chat_message');
+            $table->string('message_status');
             $table->timestamps();
-            // $table->foreign('client_id')->references('id')->on('clients');
-            // $table->foreign('sale_id')->references('id')->on('sales');
         });
-        
     }
 
     /**
@@ -33,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('log_histories');
+        Schema::dropIfExists('chats');
     }
 };

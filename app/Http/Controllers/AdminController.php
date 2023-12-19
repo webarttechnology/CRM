@@ -9,6 +9,8 @@ use App\Models\Agent;
 use App\Models\Client;
 use App\Models\Closer;
 use App\Models\Upsale;
+use App\Models\Comment;
+use App\Models\GroupName;
 use App\Models\Collection;
 use App\Traits\SalesTrait;
 use App\Models\Workhistory;
@@ -292,7 +294,12 @@ class AdminController extends Controller
     
                 return view('admin.data.add_task_show_form', compact('data', 'jobStatus', 'paused', 'running', 'delayThen'));
            
-             }else{
+             }elseif ($request->sale == 'comment') {
+                $sales = \App\Models\Sale::where('id', $request->id)->first();
+                $comment = Comment::where('sale_id', $request->id)->get();
+                $taskid = $request->id;
+                return view('comment', compact('sales', 'comment', 'taskid'))->render();
+            }else{
                 $isEdit = $isDelete = $isShow = 0; 
                 if(in_array(Auth::user() -> role_id, ['6', '7'])){
                     $data = Developertask::where('assign_to','LIKE','%"'.Auth::user() -> id.'"%')->orderBy('id', 'desc')-> get(); 
@@ -329,11 +336,35 @@ class AdminController extends Controller
              }
 
 
+    }elseif ($request->type == 'add_group') {
+        if($request->sale == 'invite'){
+            $group = \App\Models\GroupName::where('id', $request->id)->first();
+            $groupid = $request->id;
+            return view('admin.group.invite', compact( 'group', 'groupid'))->render();
+        }elseif($request->sale == 'viewmember'){
+            $group = \App\Models\GroupName::where('id', $request->id)->first();
+            $group_member= \App\Models\GroupMember::with('user')->where('group_id', $request->id)->get();
+            $groupid = $request->id;
+            return view('admin.group.viewMember', compact( 'group', 'groupid','group_member'))->render();
+        }else{
+            if ($request->id) {
+                $group_data = GroupName::find($request->id);
+            } else {
+                $group_data = null;
+            }
+           return view('admin.group.add_group_form', compact('group_data'))->render();
+        }
     }
 
 
        
 
+    }
+
+
+    public function chat()
+    {
+        return view('admin.chat.chat');
     }
 
 }

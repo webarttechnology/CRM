@@ -66,7 +66,15 @@
 									<li><a href="{{ route('sales.new.list') }}">Sales list</a></li>
 								</ul>
 							</li>
-
+							
+							<li class="submenu">
+								<a href="#" class="{{ Request::segment(1) == 'group' && Request::segment(2) == 'list'  ? 'active' : '' }}"><i class="feather-grid"></i> <span>Group</span>
+									<span class="menu-arrow"></span>
+								</a>
+								<ul class="sub-menus">
+									<li><a href="{{ route('group.new.list') }}">Group list</a></li>
+								</ul>
+							</li>
 							@endif
 
 							@if(Auth::user()->role_id == 2 || Auth::user()->role_id == 1)
@@ -115,6 +123,16 @@
 									<li><a href="{{ route('developer.task') }}">Task list</a></li>
 								</ul>
 							</li>
+
+							<li class="submenu">
+								<a href="#" class=" {{ Request::segment(1) == 'log' ? 'active' : '' }} "><i class="feather-file-text"></i> <span>Log History</span>
+									<span class="menu-arrow"></span>
+								</a>
+								<ul class="sub-menus">
+									<li><a href="{{ route('log.history') }}">Log list</a></li>
+								</ul>
+							</li>
+
 							@endif
 
 

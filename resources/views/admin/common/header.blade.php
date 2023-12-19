@@ -58,12 +58,33 @@
 			.select2-container--default .select2-selection--multiple {
 				width: 190px !important;
 			}
-			.show-task-timer {
+			.timer-section {
 				position: absolute;
-				top: 15px;
+				top: 10px;
 				left: 50%;
 				font-size: 20px;
 				color: #000;
+				cursor: pointer;
+			}
+			.timer-section .clock {
+				position: relative;
+				font-size: 30px;
+                color: #fff;
+			}
+			.timer-section .am-pm {
+				position: absolute;
+				top: 2px;
+				right: -16px;
+				font-size: 10px;
+                color: #fff;
+			}
+			.timer-section .timer {
+				position: absolute;
+				top: 10px;
+				right: -100px;
+			}
+			.task-list-section {
+				 width: 400px;
 			}
 		</style>
     </head>
@@ -102,8 +123,19 @@
 								<button class="btn" type="submit"><i class="fa fa-search"></i></button>
 							</form>
 						</div>
-						<div class="d-flex justify-content-center">
-							<span class="show-task-timer d-none">00:00:00</span>
+						<div class="timer-section">
+							 <div class="dropdown">
+								<div class="dropdown-toggle" data-bs-toggle="dropdown">
+									<span class="clock">
+										<span class="time">10:10</span>
+										<span class="am-pm"></span> 
+									</span>
+								    <span class="text-white timer show-task-timer d-none">00:00:00</span>
+								</div>
+								<div class="dropdown-menu mt-1 task-list-section">
+									
+								</div>
+							 </div>
 						</div>
 					</div>
 				<!-- /Header Title -->

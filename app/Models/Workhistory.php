@@ -9,4 +9,9 @@ class Workhistory extends Model
 {
     use HasFactory;
     protected $fillable = ["developer_job_id", "user_id", "final_status", "currenttime", "delayThen"];
+
+    public function developer_job()
+    {
+        return $this->belongsTo(Developertask::class);
+    }
 }

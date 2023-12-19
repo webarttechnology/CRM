@@ -91,7 +91,7 @@ if(!function_exists('country')){
 
 if(!function_exists('role')){
     function role(){
-        $role = collect(['1'=> "Admin", "2"=> "Accounts", "3" => "Project Manager", "4"=> "Sales", "5"=>"Devlopment Maneger", "6"=>"Developer","7"=>"Designer"]);
+        $role = collect(['1'=> "Admin", "2"=> "Accounts", "3" => "Project Manager", "4"=> "Sales", "5"=>"Devlopment Maneger", "6"=>"Developer", "7"=>"Designer"]);
         return $role;
     }
 }

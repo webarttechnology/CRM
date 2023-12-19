@@ -50,8 +50,9 @@
 <!-- Custom JS -->
 <script src="{{ url('panel/assets/js/app.js') }}"></script>
 
-{{-- Timer --}}
-{{-- <script src="{{ url('panel/assets/js/timer.js') }}"></script> --}}
+{{-- Clock Timer --}}
+<script src="{{ url('panel/assets/js/clock.js') }}"></script>
+
 
 @if (session('successmsg'))
     <script>
@@ -91,6 +92,7 @@
 
             var type = $(this).data('type');
             var sale = $(this).data('sale');
+            var taskId = $(this).data('id'); 
 
             $.ajax({
                 type: 'POST',
@@ -111,6 +113,8 @@
                     $('.dynamic-form').html(data);
                     $('#add_module_form').modal('show');
 
+                    getMessage(taskId);
+
                     initSelect2();
 
                 },
@@ -118,6 +122,17 @@
 
         });
 
+        const getMessage = (taskId) => {
+             $.ajax({
+                 type: 'GET',
+                 url: '{{ route("comment.list") }}',
+                 data: { task_id: taskId },
+                 success: function(data) {
+                     $("#message").html(data);
+                 }
+             });
+         }
+         
         function GetStatusWorkHistory(id) {
 
             $.ajax({
@@ -131,6 +146,7 @@
                         $(`.show-task-timer`).removeClass('d-none');
                         stopCountdown();
                         startCountdown(id);
+                        getTaskList();
                     } 
                 },
             });
@@ -227,6 +243,8 @@
 
                             startCountdown($clickBtn.data('id'));
 
+                            getTaskList();
+
                             } else if ($clickBtn.data('type') == 'stop') {
 
                             $clickBtn.removeClass('btn-danger');
@@ -238,56 +256,14 @@
 
                             stopCountdown();
 
+                            getTaskList();
+
                         }
                     }
                 },
             });
 
-            // storeTotalTime($(this).data('id'), $(this).data('type'), $clickBtn);
-
-            // if ($(this).data('type') == 'start') {
-
-            //     $(this).removeClass('btn-warning');
-            //     $(this).addClass('btn-danger');
-            //     $(this).html('Stop Task');
-            //     $(this).data('type', 'stop');
-
-            //     startCountdown($(this).data('id'));
-
-            // } else if ($(this).data('type') == 'stop') {
-
-            //     $(this).removeClass('btn-danger');
-            //     $(this).addClass('btn-warning');
-            //     $(this).html('Start Task');
-            //     $(this).data('type', 'start');
-
-            //     stopCountdown();
-
-            // }
-
         });
-
-
-        // function storeTotalTime(id, type, $clickBtn) {
-
-        //     var currentTimeGet = $(`.countdown${id}`).html();
-
-        //     $.ajax({
-        //         type: 'POST',
-        //         url: '/workhistory/store-total-workhistory-per-task',
-        //         data: {
-        //             id: id,
-        //             type: type,
-        //             time: currentTimeGet,
-        //             last_counter_time: formatTime(currentTime)
-        //         },
-        //         success: function(data) {
-        //             if (data.status == 0) {
-        //                 toastr.error(data.msg);
-        //             }
-        //         },
-        //     });
-        // }
 
         currentTaskTimerGet();
 
@@ -339,6 +315,19 @@
             // return "You have unsaved changes. Are you sure you want to leave?";
         });
         //// End Timer Section 
+
+
+        getTaskList();
+
+        function getTaskList() {
+            $.ajax({
+                type: 'POST',
+                url: '/workhistory/get-task-list',
+                success:function(data){
+                    $('.task-list-section').html(data); 
+                },
+            });
+        }
 
     });
 </script>

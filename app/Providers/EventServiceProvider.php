@@ -20,6 +20,10 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+
+        \Illuminate\Auth\Events\Login::class => [
+            \App\Listeners\UpdateUserToken::class,
+        ],
     ];
 
     /**
