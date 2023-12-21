@@ -201,8 +201,6 @@ Route::controller(LogHistoryController::class)
 })->middleware(['auth']);
 
 
-Route::get("/chat", [App\Http\Controllers\AdminController::class, 'chat']);
-
 Route::post("/show-chat-module", [AdminController::class, 'show_chat_module'])->name('show-chat-module');
 
 
