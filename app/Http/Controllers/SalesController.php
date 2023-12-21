@@ -36,11 +36,8 @@ class SalesController extends Controller
     }
 
     public function addclient(Request $request){
-        if($request -> method() == "POST"){
-            
-            
-            // dd($request->all());
-
+        if($request -> method() == "POST")
+        {
             $request -> validate([
                 'name' => 'required|string',
                 'country_name' => 'required|string',
@@ -51,7 +48,6 @@ class SalesController extends Controller
                 'closer_name' => 'required',
                 'remarks' => 'required'
             ]);
-        //   DB::disableQueryLog();
 
            $client = new Client([
                 'client_code' => rand(100000, 999999),
@@ -237,7 +233,7 @@ class SalesController extends Controller
            $saleId = $sales -> save(); 
            
            
-           $remark = 'Sale '.'('.$request->project_name.')'.' has been added';
+           $remark = 'Task '.'('.$request->project_name.')'.' has been added';
            
            LogHistoryAdd($request->client_id, $sales->id, Auth::id(), $remark);
 
@@ -256,7 +252,7 @@ class SalesController extends Controller
                 $collectionData -> save();                
            }
 
-            return redirect() -> route('sales.new.list')->with('successmsg', 'Data has been added successfully.');
+            return redirect() -> route('sales.new.list')->with('successmsg', 'Task has been added successfully.');
 
         }else{
 
@@ -300,6 +296,7 @@ class SalesController extends Controller
             // DB::disableQueryLog();
             
             $sales = \App\Models\Sale::find($request -> input('update_id'));
+            $originalData = $sales->getOriginal();
            
             $sales ->fill([
                 'client_id' => $request -> input('client_id'),
@@ -333,10 +330,6 @@ class SalesController extends Controller
             ]);
             $sales -> save();
 
-            $remark = 'Sale '.'('.$request->project_name.')'.' has been Updated';
-           
-            LogHistoryAdd($request->client_id, $sales->id, Auth::id(), $remark);
-
             $collection = \App\Models\Collection::where(['sale_id'=> $request -> input('update_id'), 'instalment'=>1])->update(
                 [
                     'currency' => $request->input('currency'),
@@ -345,7 +338,20 @@ class SalesController extends Controller
                     'other_payment_mode' => $request->input('other_payment_mode')
                 ]);
 
-            return redirect() -> route('sales.new.list')->with('successmsg', 'Data has been updated successfully.');
+
+                if ($sales->isDirty()) {
+                    $updatedFields = $sales->getDirty();
+                    $excludedFields = ['start_date', 'end_date', 'total_time'];
+    
+                    foreach ($updatedFields as $field => $value) {
+                        if (!in_array($field, $excludedFields)) {
+                            $remark = "Sale Field '$field' updated to '$value'";
+                            LogHistoryAdd($sales->sale->client_id, $sales->sale->id, Auth::id(), $remark);
+                        }
+                    }
+                }
+
+            return redirect() -> route('sales.new.list')->with('successmsg', 'Task has been updated successfully.');
 
         }else{
             $closer = Closer::all();
@@ -393,7 +399,7 @@ class SalesController extends Controller
            
                 LogHistoryAdd($request->client_id, $sales->id, Auth::id(), $remark);   
               
-                return redirect() -> route('sales.new.list')->with('successmsg', "Data has been deleted successfully!!."); 
+                return redirect() -> route('sales.new.list')->with('successmsg', "Task has been deleted successfully!!."); 
 
             }else{
                 return redirect() -> route('sales.new.list')->with('errmsg', "Error!! Please try agian."); 
@@ -427,7 +433,7 @@ class SalesController extends Controller
             
            if($assign -> save()){
 
-            $remark = 'Sale '.'('.$assign->sale->project_name.')'.' has been assigned';
+            $remark = 'Task '.'('.$assign->sale->project_name.')'.' has been assigned';
 
             LogHistoryAdd($request->client_id, $request->id, Auth::id(), $remark); 
             

@@ -58,7 +58,7 @@ class CollectionController extends Controller
 
             $collections -> save();
 
-            $remark = 'Collections '.'('.$request->project_name.')'.' has been Deleted';
+            $remark = 'Collections '.'('.$request->project_name.')'.' has been Added';
 
             LogHistoryAdd($request->client_id, $request->id, Auth::id(), $remark);
 
@@ -70,9 +70,10 @@ class CollectionController extends Controller
         
     }
 
-    public function updatecollection(Request $request, $updateid= ''){
-        if($request -> method() == "POST"){
-            $request -> validate([
+    public function updatecollection(Request $request, $updateid = '')
+    {
+        if ($request->method() == "POST") {
+            $request->validate([
                 'client_id' => 'required',
                 'project_id' => 'required',
                 'currency' => 'required',
@@ -81,34 +82,46 @@ class CollectionController extends Controller
                 'sale_date' => 'required',
                 'payment_mode' => 'required'
             ]);
-            DB::disableQueryLog();
-            $collections = \App\Models\Collection::find($request -> input('update_id'));
-            $collections -> fill([
-                'client_id' => $request -> input('client_id'),
-                'sale_id' => $request -> input('project_id'),
-                'currency' => $request -> input('currency'),
-                'instalment' => $request -> input('instalment'),
-                'net_amount' => $request -> input('net_amt'),
-                'sale_date' => $request -> input('sale_date'),
-                'payment_mode' => $request -> input('payment_mode'),
-                'other_payment_mode' => $request -> input('other_payment_mode')
+
+            $collections = \App\Models\Collection::find($request->input('update_id'));
+
+            $originalData = $collections->getOriginal();
+
+            $collections->fill([
+                'client_id' => $request->input('client_id'),
+                'sale_id' => $request->input('project_id'),
+                'currency' => $request->input('currency'),
+                'instalment' => $request->input('instalment'),
+                'net_amount' => $request->input('net_amt'),
+                'sale_date' => $request->input('sale_date'),
+                'payment_mode' => $request->input('payment_mode'),
+                'other_payment_mode' => $request->input('other_payment_mode')
             ]);
 
-            $collections -> save();
+            if ($collections->isDirty()) {
+                $updatedFields = $collections->getDirty();
+                $excludedFields = ['start_date', 'end_date', 'total_time'];
 
-            $remark = 'Collections '.'('.$request->project_name.')'.' has been added';
+                foreach ($updatedFields as $field => $value) {
+                    if (!in_array($field, $excludedFields)) 
+                    {
+                                                $remark = "Field '$field' has been updated";
+                        LogHistoryAdd($collections->client_id, $collections->sale_id, Auth::id(), $remark);
+                    }
+                }
+            }
 
-            LogHistoryAdd($request->client_id, $request->input('project_id'), Auth::id(), $remark);
+            $collections->save();
 
-            return redirect() -> route('collection.list')->with('successmsg', "Data has been updated successfully.");
-
-        }else{
-            $data = $this ->getCollectionById($updateid);
-            $project = \App\Models\Sale::where(['client_id'=>$data -> client_id])->get();
-            return view("admin.collection.update_collection", ['clients' => \App\Models\Client::select(['name', 'id', 'client_code']) -> get(), 'data' => $data, 'project' => $project]);
+            return redirect()->route('collection.list')->with('successmsg', "Data has been updated successfully.");
+        } else {
+            $data = $this->getCollectionById($updateid);
+            $project = \App\Models\Sale::where(['client_id' => $data->client_id])->get();
+            return view("admin.collection.update_collection", ['clients' => \App\Models\Client::select(['name', 'id', 'client_code'])->get(), 'data' => $data, 'project' => $project]);
         }
-        
     }
+
+
 
     public function getproject(Request $request)
     {
