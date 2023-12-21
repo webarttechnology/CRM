@@ -293,7 +293,7 @@
                                     <li><strong>Project Name :</strong></li>
                                      <li>{{ $sales->project_name }}</li>
                                       <li><strong>Sale Date :</strong></li>
-                                     <li>{{ date('Y-m-d', strtotime($sales -> sale_date) )}}</li>
+                                     <li>{{ date('Y-m-d', strtotime($sales->sale_date) )}}</li>
                                      
                                 </ul>
                             </div>

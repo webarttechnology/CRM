@@ -19,7 +19,16 @@ class CommentController extends Controller
             ]);
 
             $comment->save();
+
+            
+            $task = \App\Models\Developertask::where('id', $request->get('task_id'))->first();
+
+            $sales = \App\Models\Sale::where('id', $task->sale_id)->first();
+                
+            LogHistoryAdd($sales->client_id, $task->sale_id, Auth::id(), $request->get('message'));
+
             echo 1;
+
         } else {
             $sales = \App\Models\Sale::where('id', $taskid)->first();
             $comment = \App\Models\Comment::where('sale_id', $taskid)->get();
