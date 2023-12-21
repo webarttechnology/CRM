@@ -24,8 +24,10 @@ class CommentController extends Controller
             $task = \App\Models\Developertask::where('id', $request->get('task_id'))->first();
 
             $sales = \App\Models\Sale::where('id', $task->sale_id)->first();
+
+            $remark = 'New Comment has been posted '.$request->get('message');
                 
-            LogHistoryAdd($sales->client_id, $task->sale_id, Auth::id(), $request->get('message'));
+            LogHistoryAdd($sales->client_id, $task->sale_id, Auth::id(), $remark);
 
             echo 1;
 
