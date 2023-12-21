@@ -12,6 +12,18 @@
 </div>
 <!-- modal -->
 
+
+<!-- Full Width Modal -->
+<div class="modal right" id="fullWidthModal" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-full" role="document">
+      <div class="modal-content">
+        <div class="chat-box">
+          <!-- Modal content goes here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
 <!-- jQuery -->
 <script src="{{ url('panel/assets/js/jquery-3.6.0.min.js') }}"></script>
 
@@ -84,6 +96,10 @@
                 tags: true,
             });
         };
+
+        
+
+       
 
         $(document).on("click", ".open-module-form", function(e) {
             e.preventDefault();
@@ -287,9 +303,6 @@
         }
 
 
-
-
-
         function CurrentTimeStore(){
 
             var last_counter_time = formatTime(currentTime);
@@ -328,6 +341,25 @@
                 },
             });
         }
+
+
+        /////// Chat Model
+        $(document).on("click", ".open-chat-module", function(e) {
+            e.preventDefault();
+
+            $.ajax({
+                type: 'POST',
+                url: "{{ route('show-chat-module') }}",
+                success: function(data) {
+                    $('.chat-box').html(data);
+                    setTimeout(function() {
+                        $('#fullWidthModal').modal('show');
+                    }, 500);
+                },
+            });
+        });
+
+       
 
     });
 </script>

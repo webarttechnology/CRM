@@ -21,6 +21,7 @@ class WebSocketServer extends Command
      * The console command description.
      *
      * @var string
+     * 
      */
     protected $description = 'Command description';
 
@@ -28,6 +29,7 @@ class WebSocketServer extends Command
      * Execute the console command.
      *
      * @return int
+     * 
      */
     public function handle()
     {

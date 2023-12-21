@@ -179,7 +179,7 @@ class GroupController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'mobile_no' => $request->mobile_no,
-            'role_id' => 2,
+            'role_id' => 6,
             'password' =>  Hash::make($request->password)
         ]);
         if ($user->save()) {

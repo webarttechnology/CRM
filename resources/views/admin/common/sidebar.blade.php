@@ -29,8 +29,14 @@
 							<li class="menu-title"> 
 								<span>Main</span>
 							</li>
+
 							<li>
 								<a href="{{ url('/') }}" class=" {{ Request::segment(1) == 'dashboard' ? 'active' : '' }} "><i class="feather-home"></i> <span> Dashboard</span> </a>
+							</li>
+
+							<li>
+								<a href="#" class="open-chat-module"><i class="feather-message-circle"></i> <span> Chat</span></a>
+								<span class="menu-arrow"></span>
 							</li>
 
 

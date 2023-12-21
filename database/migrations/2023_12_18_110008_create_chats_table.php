@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->integer('from_user_id');
             $table->integer('to_user_id');
-            $table->string('chat_message');
+            $table->longText('chat_message');
             $table->string('message_status');
             $table->timestamps();
         });

@@ -285,8 +285,8 @@ class AdminController extends Controller
 
                 // // Loop through each time interval and add it to the total time
                 // foreach ($timeIntervals as $timeInterval) {
-                //     $time = Carbon::createFromFormat('H:i:s', $timeInterval);
-                //     $totalTime->add($time->diff($totalTime));
+                //     $time = Carbon::createFromFormat('H:i:s', $timeInterva $totalTime->add($time->diff($totalTime));l);
+                //    
                 // }
 
                 // // Format the total time as desired
@@ -361,10 +361,17 @@ class AdminController extends Controller
 
     }
 
+    public function show_chat_module()
+    {
+        return view('admin.chat.chat')->render();
+    }
+
+
+    
 
     public function chat()
     {
-        return view('admin.chat.chat');
+        return view('admin.chat.chat2');
     }
 
 }

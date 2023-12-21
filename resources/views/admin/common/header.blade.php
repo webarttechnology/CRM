@@ -86,6 +86,23 @@
 			.task-list-section {
 				 width: 400px;
 			}
+
+				.modal-full {
+					min-width: 100%;
+					margin: 0;
+				}
+
+				.modal-full .modal-content {
+					min-width: 100%;
+					min-height: 100vh;
+					border: 0;
+					border-radius: 0;
+				}
+
+				.modal-full .modal-content .modal-body {
+					padding: 0px !important;
+				}
+
 		</style>
     </head>
     <body>

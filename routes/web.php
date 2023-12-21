@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\TimerController;
 use App\Http\Controllers\LogHistoryController;
 
@@ -202,7 +203,7 @@ Route::controller(LogHistoryController::class)
 
 Route::get("/chat", [App\Http\Controllers\AdminController::class, 'chat']);
 
-
+Route::post("/show-chat-module", [AdminController::class, 'show_chat_module'])->name('show-chat-module');
 
 
 
