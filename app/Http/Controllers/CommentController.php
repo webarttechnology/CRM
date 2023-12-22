@@ -19,7 +19,6 @@ class CommentController extends Controller
             ]);
 
             $comment->save();
-
             
             $task = \App\Models\Developertask::where('id', $request->get('task_id'))->first();
 

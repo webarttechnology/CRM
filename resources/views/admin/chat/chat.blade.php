@@ -1,3 +1,6 @@
+
+
+
 <link rel="stylesheet" href="{{ url('panel/assets/css/chat.css') }}">
 <div class="app chat-wrapper">
     <div class="wrapper">
@@ -49,6 +52,8 @@
     conn.onmessage = function(e) {
 
         var data = JSON.parse(e.data);
+
+        console.log(data);
 
         if (data.response_load_list_user || data.response_search_user) {
             var html = '';
@@ -429,6 +434,8 @@
 
     function send_chat_message() {
 
+        
+
         document.querySelector('#send_button').disabled = true;
 
         var message = document.getElementById('message_area').value.trim()
@@ -445,6 +452,8 @@
         document.querySelector('#message_area').value = '';
 
         document.querySelector('#send_button').disabled = false;
+
+        load_list_user(from_user_id);
     }
 
    

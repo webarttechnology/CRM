@@ -2,6 +2,20 @@
 @extends('admin.master.layout')
 
 @section('content')
+
+
+{{-- @php
+    
+    $user_data = App\Models\User::where('id', '!=', 15)
+                    ->orderBy('name', 'ASC')
+                    ->get();
+
+    $sub_data =  getRecentMessages($user_data);
+
+    dd($sub_data);
+
+@endphp --}}
+
     <!-- Page Wrapper -->
     <div class="page-wrapper">
       <div class="content container-fluid">

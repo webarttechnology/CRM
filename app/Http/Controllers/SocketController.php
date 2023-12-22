@@ -40,27 +40,31 @@ class SocketController extends Controller implements MessageComponentInterface
 
             if ($data->type == 'request_load_list_user') {
 
-                $user_data = User::select('id', 'name', 'user_status', 'user_image')
-                    ->where('id', '!=', $data->from_user_id)
+                $user_data = User::where('id', '!=', $data->from_user_id)
                     ->orderBy('name', 'ASC')
                     ->get();
 
-                $sub_data = array();
+                $sub_data =  getRecentMessages($user_data);
 
-                foreach ($user_data as $row) {
-                    $sub_data[] = array(
-                        'name'       =>  $row['name'],
-                        'id'         =>   $row['id'],
-                        'status'     =>  $row['user_status'],
-                        'user_image' =>  $row['user_image']
-                    );
-                }
+                dd($sub_data);
+
+                // $sub_data = array();
+                // foreach ($user_data as $row) {
+                //     $sub_data[] = array(
+                //         'name'       =>  $row['name'],
+                //         'id'         =>   $row['id'],
+                //         'status'     =>  $row['user_status'],
+                //         'user_image' =>  $row['user_image']
+                //     );
+                // }
 
                 $sender_connection_id = User::select('connection_id')->where('id', $data->from_user_id)->get();
 
                 $send_data['data'] = $sub_data;
 
                 $send_data['response_load_list_user'] = true;
+
+                // dd($send_data);
 
                 foreach ($this->clients as $client) {
                     if ($client->resourceId == $sender_connection_id[0]->connection_id) {

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Chat;
 use App\Models\LogHistory;
 
 if(!function_exists('currency')){
@@ -157,5 +158,51 @@ function LogHistoryAdd($client_id, $sale_id, $user_id , $remark) {
     LogHistory::create(['client_id' => $client_id, 'sale_id' => $sale_id, 'user_id' => $user_id, 'remark' => $remark ]);
     return true;
 }
+
+
+
+ function getRecentMessages($users)
+{
+    $recentMessagesUser = collect();
+
+    foreach ($users as $user) {
+
+        $message = Chat::where(function ($query) use ($user) {
+            $query->where('from_user_id', auth()->id())
+                ->where('to_user_id', $user->id);
+        })
+        ->orWhere(function ($query) use ($user) {
+            $query->where('from_user_id', $user->id)
+                ->where('to_user_id', auth()->id());
+        })
+        ->orderBy('created_at', 'desc')->first();
+
+        $recentMessagesUser->push([
+            'id'            => $user->id,
+            'name'          => $user->name,
+            'type'          => 'user',
+            'last_message'  => $message->chat_message,
+            'timestamp'     => $message->created_at ?? null,
+            'status'        => $user->user_status,
+            'user_image'    => $user->user_image
+        ]);
+    }
+
+    // foreach ($groups as $group) {
+    //     $message = $group->messages()->orderBy('created_at', 'desc')->first();
+
+    //     $recentMessages->push([
+    //         'id' => $group->id,
+    //         'name' => $group->name,
+    //         'type' => 'group',
+    //         'last_message' => $message ? $message->content : null,
+    //         'timestamp' => $message ? $message->created_at : null,
+    //     ]);
+    // }
+
+    return $recentMessagesUser->sortByDesc('timestamp');
+
+}
+
 
 ?>
