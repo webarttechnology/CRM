@@ -177,7 +177,7 @@ class SocketController extends Controller implements MessageComponentInterface
 
                             $send_data['message_status'] = 'Send';
                         } else {
-                            $send_data['message_status'] = 'Not Send';
+                            $send_data['message_status'] = $chat->message_status;
                         }
 
                         $client->send(json_encode($send_data));

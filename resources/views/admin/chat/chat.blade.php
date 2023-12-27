@@ -64,8 +64,8 @@
                   html +=`<img class="msg-profile" src="{{ url('panel/assets/img/profiles/user-profile.png') }}" alt="profile-photo" />`;
                   html +=`<div class="msg-detail">`;
                   html +=``+ data.data[count].name+``;
-                  if(from_user_id == ''){
-                      html +=`<span class="user_unread_message chat-badge badge badge-primary rounded-pill" data-id="`+data.data[count].id+`" id="user_unread_message_`+data.data[count].id+`">`+data.data[count].unread_chat+`</span>`;
+                   if(from_user_id == ''){
+                    html +=`<span class="user_unread_message chat-badge badge badge-primary rounded-pill" data-id="`+data.data[count].id+`" id="user_unread_message_`+data.data[count].id+`">`+data.data[count].unread_chat+`</span>`;
                   }
                   html +=`<div class="msg-content">`;
                   html +=`<span class="msg-message">`+data.data[count].last_message+`</span>`;
@@ -87,7 +87,6 @@
             var html = '';
 
             if (data.from_user_id == from_user_id) {
-
 
                 var icon_style = '';
     
@@ -118,15 +117,12 @@
                 `;
             } else {
 
-                // console.log("Received msg1", to_user_id);
-                // console.log("Received msg1", data.to_user_id);
-
                 load_list_user(from_user_id);
+                // load_chat_data(from_user_id, to_user_id);
 
                 if (data.from_user_id == to_user_id) 
                 {
-                    //console.log("Received msg2", to_user_id);
-
+                  
                     html +=`
                     <div class="chat-msg">
                         <div class="chat-msg-profile">
@@ -200,8 +196,6 @@
                         {
                             icon_style = '<span class="tick" id="chat_status_'+data.chat_history[index].messages[count].id+'"><svg width="16px" height="16px" viewBox="0 -0.5 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"/><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/><g id="SVGRepo_iconCarrier"> <path d="M5.03033 11.4697C4.73744 11.1768 4.26256 11.1768 3.96967 11.4697C3.67678 11.7626 3.67678 12.2374 3.96967 12.5303L5.03033 11.4697ZM8.5 16L7.96967 16.5303C8.26256 16.8232 8.73744 16.8232 9.03033 16.5303L8.5 16ZM17.0303 8.53033C17.3232 8.23744 17.3232 7.76256 17.0303 7.46967C16.7374 7.17678 16.2626 7.17678 15.9697 7.46967L17.0303 8.53033ZM9.03033 11.4697C8.73744 11.1768 8.26256 11.1768 7.96967 11.4697C7.67678 11.7626 7.67678 12.2374 7.96967 12.5303L9.03033 11.4697ZM12.5 16L11.9697 16.5303C12.2626 16.8232 12.7374 16.8232 13.0303 16.5303L12.5 16ZM21.0303 8.53033C21.3232 8.23744 21.3232 7.76256 21.0303 7.46967C20.7374 7.17678 20.2626 7.17678 19.9697 7.46967L21.0303 8.53033ZM3.96967 12.5303L7.96967 16.5303L9.03033 15.4697L5.03033 11.4697L3.96967 12.5303ZM9.03033 16.5303L17.0303 8.53033L15.9697 7.46967L7.96967 15.4697L9.03033 16.5303ZM7.96967 12.5303L11.9697 16.5303L13.0303 15.4697L9.03033 11.4697L7.96967 12.5303ZM13.0303 16.5303L21.0303 8.53033L19.9697 7.46967L11.9697 15.4697L13.0303 16.5303Z" fill="#34BBE5"/> </g></svg></span>';
                         }
-
-
 
                         html += `<div class="chat-msg owner">
                                     <div class="chat-msg-profile">

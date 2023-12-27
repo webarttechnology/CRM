@@ -178,7 +178,6 @@ function LogHistoryAdd($client_id, $sale_id, $user_id , $remark) {
         ->orderBy('created_at', 'desc') // Order by created_at DESC
         ->first();
 
-
         $unread_chat_data = Chat::where('message_status', '!=', 'Read')->where('to_user_id', $user->id)->count();
 
         $recentMessagesUser->push([
@@ -189,7 +188,7 @@ function LogHistoryAdd($client_id, $sale_id, $user_id , $remark) {
             'timestamp'     => $message->created_at ?? '',
             'status'        => $user->user_status,
             'user_image'    => $user->user_image,
-            'unread_chat'   => $unread_chat_data > 0 ? $unread_chat_data : '',
+            'unread_chat'   => '',
         ]);
         
     }

@@ -30,6 +30,14 @@ class User extends Authenticatable
         'user_image'
     ];
 
+
+    public function unreadMessagesCount()
+    {
+        return Chat::where('to_form_id', $this->id)
+            ->whereNot('message_status', 'Read')
+            ->count();
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *
