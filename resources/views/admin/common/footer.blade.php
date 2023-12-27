@@ -104,11 +104,10 @@
         $(document).on("click", ".open-module-form", function(e) {
             e.preventDefault();
 
-            var id = $(this).data('id');
-
-            var type = $(this).data('type');
-            var sale = $(this).data('sale');
-            var taskId = $(this).data('id'); 
+            var id      = $(this).data('id');
+            var type    = $(this).data('type');
+            var sale    = $(this).data('sale');
+            var taskId  = $(this).data('id'); 
 
             $.ajax({
                 type: 'POST',
@@ -176,7 +175,6 @@
         let intervalId = null;
 
         function startCountdown(index) {
-
             $.ajax({
                 type: 'POST',
                 url: '/workhistory/get-total-workhistory-per-task',
@@ -188,8 +186,6 @@
                     intervalId = setInterval(() => updateCountdown(index), 1000);
                 },
             });
-
-
         }
 
         function stopCountdown() {
@@ -304,9 +300,7 @@
 
 
         function CurrentTimeStore(){
-
             var last_counter_time = formatTime(currentTime);
-
             $.ajax({
                 type: 'POST',
                 url: "{{ route('store-status-page-refresh') }}",
@@ -318,7 +312,6 @@
                     console.log(response);
                 },
             });
-
         }
 
 
@@ -328,7 +321,6 @@
             // return "You have unsaved changes. Are you sure you want to leave?";
         });
         //// End Timer Section 
-
 
         getTaskList();
 
@@ -342,11 +334,27 @@
             });
         }
 
+        $(document).on('click', '#breakButton, #stopButton', function() {
+
+        setTimeout(function() {
+            var stopButton = $(".timer-btn[data-type='stop']")[0];
+            // alert(stopButton);
+            if (stopButton) {
+                stopButton.click();
+            }
+            // console.log("5 seconds have passed!");
+        }, 5000);
+
+        });
+
+        $(".times_track").click(function() {
+        $("#popUp").slideToggle();
+        });
+
 
         /////// Chat Model
         $(document).on("click", ".open-chat-module", function(e) {
             e.preventDefault();
-
             $.ajax({
                 type: 'POST',
                 url: "{{ route('show-chat-module') }}",
@@ -358,8 +366,6 @@
                 },
             });
         });
-
-       
 
     });
 </script>

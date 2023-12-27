@@ -9,6 +9,9 @@
         <meta name="robots" content="noindex, nofollow">
 		<meta name="csrf-token" content="{{ csrf_token() }}" />
         <title>@yield('title')</title>
+
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
 		
 		<!-- Favicon -->
         <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.png">
@@ -52,40 +55,199 @@
 		<!-- Main CSS -->
         <link rel="stylesheet" href="{{ url('panel/assets/css/style.css') }}" class="themecls">
 		<style>
-			.select2-container--default .select2-selection--single .select2-selection__rendered {
-				width: 190px !important;
-			}
-			.select2-container--default .select2-selection--multiple {
-				width: 190px !important;
-			}
-			.timer-section {
-				position: absolute;
-				top: 10px;
-				left: 50%;
-				font-size: 20px;
-				color: #000;
-				cursor: pointer;
-			}
-			.timer-section .clock {
-				position: relative;
-				font-size: 30px;
-                color: #fff;
-			}
-			.timer-section .am-pm {
-				position: absolute;
-				top: 2px;
-				right: -16px;
-				font-size: 10px;
-                color: #fff;
-			}
-			.timer-section .timer {
-				position: absolute;
-				top: 10px;
-				right: -100px;
-			}
-			.task-list-section {
-				 width: 400px;
-			}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+            width: 190px !important;
+        }
+
+        .select2-container--default .select2-selection--multiple {
+            width: 190px !important;
+        }
+
+        .timer-section {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            font-size: 20px;
+            color: #000;
+            cursor: pointer;
+        }
+
+        .timer-section .clock {
+            position: relative;
+            font-size: 30px;
+            color: #fff;
+        }
+
+        .am-pm {
+            /* position: absolute;
+            top: 2px;
+            right: -16px; */
+            font-size: 10px;
+            color: #fff;
+        }
+
+        .timer-section .timer {
+            /* position: absolute;
+            top: 10px;
+            right: -100px; */
+        }
+
+        .task-list-section {
+            width: 400px;
+        }
+
+        a {
+            text-decoration: none !important;
+        }
+
+        *,
+        ::after,
+        ::before {
+            box-sizing: border-box;
+        }
+
+        header {
+            background: linear-gradient(to right, rgba(40, 123, 200, 1) 0%, rgba(72, 75, 199, 1) 68%, rgba(72, 75, 199, 1) 68%, rgba(119, 62, 200, 1) 100%);
+            padding: 10px 0;
+            color: #fff;
+        }
+
+        .times_track {
+            /* background: rgba(255, 255, 255, 0.2); */
+            border-radius: 8px;
+            max-width: 350px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 0 0 94px;
+            align-items: center;
+            /* -webkit-box-shadow: 0px 0px 27px -11px rgba(0, 0, 0, 0.75);
+            -moz-box-shadow: 0px 0px 27px -11px rgba(0, 0, 0, 0.75); */
+            /* box-shadow: 0px 0px 27px -11px rgba(0, 0, 0, 0.75); */
+            position: relative;
+        }
+
+        .times_track a {
+            color: #fff;
+        }
+
+        header h1 {
+            font-weight: 600;
+            margin: 0;
+            padding: 0;
+            font-size: 35px;
+        }
+
+        header h1 sup {
+            font-weight: 300;
+            margin: 0;
+            padding: 0;
+            font-size: 50%;
+        }
+
+        .times_track small span {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            margin-left: 8px;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            line-height: 25px;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .time_popups {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 100%;
+            display: none;
+            margin: 0 auto;
+            width: 386px;
+            padding: 10px 20px;
+            background: #fff;
+            -webkit-box-shadow: 0px 0px 27px -11px rgba(0, 0, 0, 0.75);
+            -moz-box-shadow: 0px 0px 27px -11px rgba(0, 0, 0, 0.75);
+            box-shadow: 0px 0px 27px -11px rgba(0, 0, 0, 0.75);
+        }
+
+        .pop_head {
+            background: #464dee;
+            border-radius: 20px;
+            padding: 45px 15px 25px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            color: #333;
+        }
+
+        .pop_head::before {
+            position: absolute;
+            left: 10px;
+            bottom: 10px;
+            top: 25px;
+            width: calc(100% - 20px);
+            background-color: #fff;
+            border-radius: 20px;
+            content: "";
+            height: calc(100% - 35px);
+            z-index: -1;
+        }
+
+        header h2 {
+            margin: 0 0 12px;
+            padding: 0;
+            font-size: 40px;
+            font-weight: 300;
+        }
+
+        header h4 {
+            margin: 0;
+            padding: 0;
+        }
+
+        .dots {
+            position: absolute;
+            bottom: 100%;
+            left: 40%;
+            background: #464dee;
+            width: 5px;
+            height: 10px;
+        }
+
+        .dots.right {
+            right: 40%;
+            left: auto;
+        }
+
+        .custom_btn {
+            border-radius: 6px;
+            padding: 8px 20px;
+            color: #fff;
+            background: #333;
+            font-weight: 600;
+            margin: 0 5px;
+        }
+
+        .clockout {
+            background-color: #464dee;
+        }
+
+        .edit {
+            position: absolute;
+            top: -18px;
+            right: -10px;
+            color: #fff;
+            background: #999;
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            line-height: 34px;
+            display: inline-block;
+            font-size: 13px;
+        }
 
 				.modal-full {
 					min-width: 100%;
@@ -128,33 +290,85 @@
 						<span></span>
 					</span>
 				</a>
-				
-				<!-- Header Title -->
-                <div class="page-title-box d-flex">
+				 <!-- Header Title -->
+				 <div class="page-title-box d-flex">
 					<div class="top-nav-search">
-							<a href="javascript:void(0);" class="responsive-search">
-								<i class="fa fa-search"></i>
-						   </a>
-							<form action="search.html">
-								<input class="form-control" type="text" placeholder="Search here">
-								<button class="btn" type="submit"><i class="fa fa-search"></i></button>
-							</form>
-						</div>
-						<div class="timer-section">
-							 <div class="dropdown">
-								<div class="dropdown-toggle" data-bs-toggle="dropdown">
-									<span class="clock">
-										<span class="time">10:10</span>
-										<span class="am-pm"></span> 
-									</span>
-								    <span class="text-white timer show-task-timer d-none">00:00:00</span>
-								</div>
-								<div class="dropdown-menu mt-1 task-list-section">
-									
-								</div>
-							 </div>
-						</div>
+						<a href="javascript:void(0);" class="responsive-search">
+							<i class="fa fa-search"></i>
+						</a>
+						<form action="#">
+							<input class="form-control" type="text" placeholder="Search here">
+							<button class="btn" type="submit"><i class="fa fa-search"></i></button>
+						</form>
 					</div>
+					@if (Auth::user()->id !== 1)
+						{{-- <div class="clock-section mt-2">
+	
+							<button id="startButton" class="btn btn-sm btn-success">Clock In</button>
+							<button id="breakButton" class="btn btn-sm btn-info" style="display: none;">Take a
+								Break</button>
+							<button id="continueButton" class="btn btn-sm btn-warning"
+								style="display: none;">Continue</button>
+							<button id="stopButton" class="btn btn-sm btn-danger" style="display: none;">Clock Out</button>
+							<div id="start_timer" style="display: block; background-color: white; color:rgb(3, 10, 10);">
+								{{ @$starttime->timer_data ? $starttime->timer_data : '00:00:00' }}</div>
+							<div id="break_timer" style="display: none; background-color: white; color:rgb(12, 207, 29);">
+								{{ @$breaktime->timer_data ? $breaktime->timer_data : '00:00:00' }}</div>
+						</div> --}}
+	
+						<div class="times_track">
+							<small><a class="text-white"
+									style="
+								margin-right: 38px;
+							"><span
+										class="timer show-task-timer d-none">30:55:42</span></a></small>
+							<h1 class="clock"><a href="#" class="time"></a><sup class="am-pm"
+									style="color: #fff"></sup></h1>
+							<div class="time_popups" id="popUp">
+								<div class="pop_head">
+									<span class="dots"></span>
+									<span class="dots right"></span>
+									<h4 id="startduration">Working Day Duration</h4>
+									<h4 id="breakduration" style="diplay:none;">Break Duration</h4>
+									<h2 id="start_timer"
+										style="display: block; background-color: white; color:rgb(45, 236, 45);">
+										{{ @$starttime->timer_data ? $starttime->timer_data : '00:00:00' }}</h2>
+									<h2 id="break_timer"
+										style="display: none; background-color: white; color:rgb(219, 10, 38);">
+										{{ @$breaktime->timer_data ? $breaktime->timer_data : '00:00:00' }}</h2>
+									<small><button id="startButton" class="custom_btn break"><i
+												class="fa-solid fa-play"></i>
+											&nbsp;Clock In</button></small>
+									<small><button id="continueButton" class="custom_btn break" style="display: none;"><i
+												class="fa-solid fa-play"></i>
+											&nbsp;Continue</button></small>
+									<small><button id="breakButton" style="display: none;" class="custom_btn break"><i
+												class="fa-solid fa-play"></i>
+											&nbsp;Break</button></small>
+									<small><button id="stopButton" class="custom_btn clockout" style="display: none;"><i
+												class="fa-solid fa-play"></i>
+											&nbsp;Clock
+											Out</button></small>
+								</div>
+							</div>
+						</div>
+					@endif
+	
+					{{-- <div class="timer-section">
+						<div class="dropdown">
+							<div class="dropdown-toggle" data-bs-toggle="dropdown">
+								<span class="clock">
+									<span class="time">10:10</span>
+									<span class="am-pm"></span>
+								</span>
+								<span class="text-white timer show-task-timer d-none">00:00:00</span>
+							</div>
+							<div class="dropdown-menu mt-1 task-list-section">
+	
+							</div>
+						</div>
+					</div> --}}
+				</div>
 				<!-- /Header Title -->
 				
 				<a id="mobile_btn" class="mobile_btn" href="#sidebar"><i class="fa fa-bars"></i></a>

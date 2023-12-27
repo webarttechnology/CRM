@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TimeLog;
 use App\Models\Workhistory;
 use Illuminate\Http\Request;
 use App\Models\Developertask;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-
 class WorkhistoryController extends Controller
 {
     public function create(Request $request){   
@@ -206,6 +207,108 @@ class WorkhistoryController extends Controller
        ->select('user_id', 'developer_job_id', 'final_status')->get();
 
        return view('admin.data.working-task', compact('work'))->render();
+    }
+
+    public function store_workstatus_page_refresh(Request $request)
+    {
+        $today = Carbon::today();
+        $work =  TimeLog::where('user_id', Auth::user()->id)->whereDate('created_at', $today)->orderBy('id', 'desc')->first();
+        $startTime =  Carbon::parse($request->start_time);
+        $startTime->setTimezone('Asia/Kolkata');
+        if ($work) {
+
+            $data  = [
+                'user_id'       => Auth::user()->id,
+                'start_time'    => $startTime->format('H:i:s'),
+                'timer_data'    =>  $request->last_counter_time,
+                'type' =>  $work->type,
+                'status' =>   $work->status,
+            ];
+            TimeLog::create($data);
+        }
+        return true;
+    }
+
+
+    public function current_work_timer_get(Request $request)
+    {
+
+        $today = Carbon::today();
+        $work =  TimeLog::where('user_id', Auth::user()->id)->whereDate('created_at', $today)->orderBy('id', 'desc')->first();
+        if ($work) {
+            $start_time = $work->start_time;
+            $timer_data = $work->timer_data;
+            $type =  $work->type;
+            $status =  $work->status;
+        } else {
+            $start_time = null;
+            $timer_data = null;
+            $type =  null;
+            $status =  null;
+        }
+
+        return response()->json(['start_time' => $start_time, 'timer_data' => $timer_data, 'type' => $type, 'status' => $status]);
+    }
+
+    public function last_work_timer_get(Request $request)
+    {
+
+        $previousDay = now()->subDay(); // Get the date of the previous day
+        $works =  TimeLog::where('user_id', Auth::user()->id)->whereDate('created_at', $previousDay->toDateString())->orderBy('id', 'desc')->first();
+        return response()->json(['works' => $works]);
+    }
+
+    public function saveReason(Request $request)
+    {
+        // dd($request->all());
+        // $validatedData = $request->validate([
+        //     'date' => 'required|date',
+        //     'time' => 'required',
+        //     'reason' => 'required',
+        // ]);
+
+        $workHistory = new TimeLog();
+        $workHistory->user_id = Auth::user()->id;
+        // $workHistory->start_time = $validatedData['time'];
+        $workHistory->start_time = $request->time;
+        $workHistory->type = "work";
+        $workHistory->status = "end";
+        $workHistory->reason = $request->reason;
+        $workHistory->created_at = $request->created;
+        $workHistory->updated_at = $request->updated;
+        $workHistory->save();
+
+        // You can return a response as needed (for example, JSON response)
+        return response()->json(['message' => 'Data saved successfully']);
+    }
+
+
+
+    public function previous_work_timer_get(Request $request)
+    {
+        $today = Carbon::today();
+        $prevWork =  TimeLog::where('user_id', Auth::user()->id)->whereDate('created_at', $today->toDateString())->orderBy('id', 'desc')->first();
+        // dd($prevWork);
+
+        // Calculate current time and duration
+        $currentTime = Carbon::now();
+        $startTime = Carbon::parse($prevWork->start_time);
+        $startTime->setTimezone('Asia/Kolkata');
+        $elapsedTime = $currentTime->diffInSeconds($startTime);
+
+        // Add the elapsed time to the previous timer_data
+        $newTimerData = Carbon::parse($prevWork->timer_data)->addSeconds($elapsedTime)->format('H:i:s');
+
+        if($prevWork){
+            $newtime = new TimeLog();
+            $newtime->user_id = Auth::user()->id;
+            $newtime->start_time = $currentTime->format('H:i:s');
+            $newtime->timer_data = $newTimerData;
+            $newtime->type = $prevWork->type;
+            $newtime->status = $prevWork->status;
+            $newtime->save();
+        }
+        return response()->json(['prevworks' => $prevWork]);
     }
     
     

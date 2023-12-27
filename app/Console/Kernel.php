@@ -17,7 +17,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         // $schedule->command('websocket:init')->everyMinute(1);
-        // $schedule->command('websocket:init');
+        $schedule->command('websocket:init');
     }
 
     /**

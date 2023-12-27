@@ -14,4 +14,9 @@ class Workhistory extends Model
     {
         return $this->belongsTo(Developertask::class);
     }
+
+    public function users()
+    {
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
 }

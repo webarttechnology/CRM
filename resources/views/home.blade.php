@@ -3,23 +3,9 @@
 
 @section('content')
 
-
-{{-- @php
-    
-    $user_data = App\Models\User::where('id', '!=', 15)
-                    ->orderBy('name', 'ASC')
-                    ->get();
-
-    $sub_data =  getRecentMessages($user_data);
-
-    dd($sub_data);
-
-@endphp --}}
-
-    <!-- Page Wrapper -->
-    <div class="page-wrapper">
-      <div class="content container-fluid">
-
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+  <div class="content container-fluid">
 <!-- Page Header -->
 <div class="crms-title row bg-white mb-4">
           <div class="col">
@@ -43,6 +29,7 @@
     <div class="card h-100">
               <div class="card-body">
                 <h3 class="card-title">Total Lead</h3>
+                <h4></h4>
                  <canvas id="pie-chart" width="800" height="450"></canvas>
               </div>
             </div>

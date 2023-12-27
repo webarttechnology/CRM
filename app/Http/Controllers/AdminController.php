@@ -8,6 +8,9 @@ use App\Models\User;
 use App\Models\Agent;
 use App\Models\Client;
 use App\Models\Closer;
+use Illuminate\Support\Str;
+use App\Mail\ResetPassword;
+use Illuminate\Support\Facades\Mail;
 use App\Models\Upsale;
 use App\Models\Comment;
 use App\Models\GroupName;
@@ -21,6 +24,7 @@ use App\Models\Developertask;
 use App\Traits\CollectionTrait;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -248,94 +252,120 @@ class AdminController extends Controller
         $userDetails = Auth::user();
         return view('admin.data.add_profile_edit_form', compact('userDetails'))->render();
 
-     }elseif($request->type == 'add_task'){
+     }elseif ($request->type == 'add_task') {
 
-             if($request->sale == 'show'){
+        if ($request->sale == 'show') {
+            $running = 0;
+            $paused = 0;
+            $data = Developertask::select(['sales.project_name', 'assignby.name as assign_by_name', 'developer_jobs.*'])
+                ->join('sales', 'sales.id', '=', 'developer_jobs.sale_id')
+                ->join('users as assignby', 'assignby.id', '=', 'developer_jobs.assign_by')
+                ->where('developer_jobs.id', $request->id)
+                ->first();
+            $sales = \App\Models\Sale::where('id', $request->id)->first();
+            $comment = Comment::where('sale_id', $request->id)->get();
+            $taskid = $request->id;
 
+            $jobStatus = \App\Models\Workhistory::where('developer_job_id', $request->id)->where('user_id', Auth::user()->id)->orderBy('id', 'desc')->first();
 
+            if ($jobStatus?->final_status == 'start') {
+                $running = 1;
+            }
 
-                $running = 0;
-                $paused = 0;
-                $data = Developertask::select(['sales.project_name', 'assignby.name as assign_by_name', 'developer_jobs.*'])
-                                     ->join('sales', 'sales.id', '=', 'developer_jobs.sale_id')
-                                     ->join('users as assignby', 'assignby.id', '=', 'developer_jobs.assign_by')
-                                     ->where('developer_jobs.id', $request->id)
-                                     ->first();
-             
-                $jobStatus = \App\Models\Workhistory::where('developer_job_id', $request->id)->where('user_id', Auth::user()->id)->orderBy('id', 'desc')->first();        
-               
-                if($jobStatus?->final_status == 'start'){
-                    $running = 1;
-                }     
-                
-                if($jobStatus?->final_status == 'stop'){
-                    $paused = 1;
-                    $running = 1;
-                }
-          
-                $delayThen = $jobStatus?->delayThen;
+            if ($jobStatus?->final_status == 'stop') {
+                $paused = 1;
+                $running = 1;
+            }
 
+            $delayThen = $jobStatus?->delayThen;
 
-                // $timeIntervals = Workhistory::where('developer_job_id', $request->id)->where('user_id', Auth::user()->id)->pluck('currenttime');
-
-                // // Initialize a Carbon instance with zero time
-                // $totalTime = Carbon::createFromFormat('H:i:s', '00:00:00');
-
-                // // dd($timeIntervals);
-
-                // // Loop through each time interval and add it to the total time
-                // foreach ($timeIntervals as $timeInterval) {
-                //     $time = Carbon::createFromFormat('H:i:s', $timeInterva $totalTime->add($time->diff($totalTime));l);
-                //    
-                // }
-
-                // // Format the total time as desired
-                // $totalTimeFormatted = $totalTime->format('H:i:s');
-    
-                return view('admin.data.add_task_show_form', compact('data', 'jobStatus', 'paused', 'running', 'delayThen'));
-           
-             }elseif ($request->sale == 'comment') {
-                $sales = \App\Models\Sale::where('id', $request->id)->first();
-                $comment = Comment::where('sale_id', $request->id)->get();
-                $taskid = $request->id;
-                return view('comment', compact('sales', 'comment', 'taskid'))->render();
-            }else{
-                $isEdit = $isDelete = $isShow = 0; 
-                if(in_array(Auth::user() -> role_id, ['6', '7'])){
-                    $data = Developertask::where('assign_to','LIKE','%"'.Auth::user() -> id.'"%')->orderBy('id', 'desc')-> get(); 
-                    $isShow = 1;       
-                }else if(in_array(Auth::user() -> role_id, ['2', '3'])){
-                    $data = Developertask::where('assign_by', Auth::user() -> id)->get();                      
-                    $isEdit = $isDelete = 1;         
-                }else{
-                    $data = Developertask::orderBy('id', 'desc')->get(); 
-                    $isEdit = $isDelete = $isShow = 1;   
-                }         
-                $sales = Sale::pluck('project_name', 'id');
-
-                // $developer = \App\Models\User::whereIn('role_id', ["6", "7"])->pluck('name', 'id');   
-                $developer = \App\Models\User::pluck('name', 'id');   
-                $assignBy = \App\Models\User::whereIn('role_id', ["2","3","1"])->pluck('name', 'id'); 
-
-                  if($request->id){
-                    $task = Developertask::find($request->id);
-                    $role = User::whereIn('id', json_decode($task->assign_to) )->first(['role_id']);
-
-                    $stringRepresentation = $task->assign_to;
-                    $array_match = json_decode($stringRepresentation);
-                   
-                  }else{
-                    $task = null;
-                    $role = null;
-                    $array_match = [];
-                  }
+            $assignToIds = json_decode($data->assign_to);
+            $sales = \App\Models\Sale::where('id', $data->sale_id)->first();
+            $workhistory = Workhistory::with('users')->whereIn('user_id', $assignToIds)->where('final_status', 'start')->get();
 
 
-                  return view('admin.data.add_task_form', compact('data','sales', 'developer', 'assignBy', 'isEdit', 'isDelete', 'isShow', 'task', 'role', 'array_match'))->render();
-     
-             }
+            // $timeIntervals = Workhistory::where('developer_job_id', $request->id)->where('user_id', Auth::user()->id)->pluck('currenttime');
+
+            // // Initialize a Carbon instance with zero time
+            // $totalTime = Carbon::createFromFormat('H:i:s', '00:00:00');
+
+            // // dd($timeIntervals);
+
+            // // Loop through each time interval and add it to the total time
+            // foreach ($timeIntervals as $timeInterval) {
+            //     $time = Carbon::createFromFormat('H:i:s', $timeInterval);
+            //     $totalTime->add($time->diff($totalTime));
+            // }
+
+            // // Format the total time as desired
+            // $totalTimeFormatted = $totalTime->format('H:i:s');
+
+            return view('admin.data.add_task_show_form', compact('data', 'jobStatus', 'paused', 'running', 'delayThen', 'sales', 'comment', 'taskid','workhistory'));
+        } elseif ($request->sale == 'comment') {
+            $sales = \App\Models\Sale::where('id', $request->id)->first();
+            $comment = Comment::where('sale_id', $request->id)->get();
+            $taskid = $request->id;
+            return view('comment', compact('sales', 'comment', 'taskid'))->render();
+        } elseif ($request->sale == 'details') {
+            $data = Developertask::select(['sales.project_name', 'assignby.name as assign_by_name', 'developer_jobs.*'])
+                ->join('sales', 'sales.id', '=', 'developer_jobs.sale_id')
+                ->join('users as assignby', 'assignby.id', '=', 'developer_jobs.assign_by')
+                ->where('developer_jobs.id', $request->id)
+                ->first();
+            $datas = Developertask::where('id', $request->id)->first();
+            $assignToIds = json_decode($data->assign_to);
+            $sales = \App\Models\Sale::where('id', $data->sale_id)->first();
+            $workhistory = Workhistory::with('users')->whereIn('user_id', $assignToIds)->where('final_status', 'start')->get();
+            
 
 
+            // // Calculate total currenttime
+            // $totalCurrentTime = $workhistory->reduce(function ($carry, $item) {
+            //     // Convert currenttime to seconds
+            //     $timeParts = explode(':', $item->currenttime);
+            //     $seconds = ($timeParts[0] * 3600) + ($timeParts[1] * 60) + $timeParts[2];
+
+            //     // Add to the carry
+            //     return $carry + $seconds;
+            // }, 0); // Initial value set to 0
+
+            // // Convert $totalCurrentTime back to HH:MM:SS format if needed
+            // $totalCurrentTimeFormatted = gmdate('H:i:s', $totalCurrentTime);
+            $taskid = $request->id;
+            return view('admin.data.takdetails', compact('sales', 'workhistory', 'taskid', 'data'))->render();
+        } else {
+            $isEdit = $isDelete = $isShow = 0;
+            if (in_array(Auth::user()->role_id, ['6', '7'])) {
+                $data = Developertask::where('assign_to', 'LIKE', '%"' . Auth::user()->id . '"%')->orderBy('id', 'desc')->get();
+                $isShow = 1;
+            } else if (in_array(Auth::user()->role_id, ['2', '3'])) {
+                $data = Developertask::where('assign_by', Auth::user()->id)->get();
+                $isEdit = $isDelete = 1;
+            } else {
+                $data = Developertask::orderBy('id', 'desc')->get();
+                $isEdit = $isDelete = $isShow = 1;
+            }
+            $sales = Sale::pluck('project_name', 'id');
+
+            // $developer = \App\Models\User::whereIn('role_id', ["6", "7"])->pluck('name', 'id');   
+            $developer = \App\Models\User::pluck('name', 'id');
+            $assignBy = \App\Models\User::whereIn('role_id', ["2", "3", "1"])->pluck('name', 'id');
+
+            if ($request->id) {
+                $task = Developertask::find($request->id);
+                $role = User::whereIn('id', json_decode($task->assign_to))->first(['role_id']);
+
+                $stringRepresentation = $task->assign_to;
+                $array_match = json_decode($stringRepresentation);
+            } else {
+                $task = null;
+                $role = null;
+                $array_match = [];
+            }
+
+
+            return view('admin.data.add_task_form', compact('data', 'sales', 'developer', 'assignBy', 'isEdit', 'isDelete', 'isShow', 'task', 'role', 'array_match'))->render();
+        }
     }elseif ($request->type == 'add_group') {
         if($request->sale == 'invite'){
             $group = \App\Models\GroupName::where('id', $request->id)->first();
@@ -372,6 +402,67 @@ class AdminController extends Controller
     public function chat()
     {
         return view('admin.chat.chat2');
+    }
+
+
+
+    public function forgotPassword()
+    {
+        return view('admin.forgotpassword');
+    }
+
+    public function sendResetLinkEmail(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
+        $newToken = Str::random(60);
+        $user->remember_token = hash('sha256', $newToken);
+        $user->save();
+        //Generate, the password reset link. The token generated is embedded in the link
+        $link = '/password/resetdata/' . '?token=' . $user->remember_token . '&id=' . $user->id;
+        try {
+            Mail::to($request->email)->send(new ResetPassword($link));
+            return redirect(url('/forgot-password'))->with('successmsg', 'Link send successfully.');
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+            return false;
+        }
+    }
+
+    public function showResetForm(Request $request)
+    {
+        // $providedToken = $request->token;
+        // $hashedProvidedToken = hash('sha256', $providedToken);
+        $user = User::where('id', $request->id)->where('remember_token', $request->token)->first();
+        if ($user) {
+            return view('admin.resetpassword', compact('user'));
+        } else {
+            return response()->json(['message' => 'Token is invalid'], 401);
+        }
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string|min:8|confirmed',
+            'password_confirmation' => 'required'
+        ]);
+        $updatePassword = User::where([
+            'email' => $request->email,
+        ])
+            ->first();
+
+        if (!$updatePassword) {
+            return response()->json(['status' => 'error', 'type' => 'login', 'msg' => 'Invalid Credential!']);
+        }
+
+        $user = User::where('email', $request->email)
+            ->update([
+                'password' => Hash::make($request->password),
+                'remember_token' => NULL
+            ]);
+
+        return redirect('/')->with('message', 'Your password has been changed!');
     }
 
 }

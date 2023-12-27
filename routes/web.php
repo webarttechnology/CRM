@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\TimerController;
+use App\Http\Controllers\TimeLogController;
 use App\Http\Controllers\LogHistoryController;
 
 /*
@@ -43,6 +44,12 @@ Route::group(['prefix' => 'admin', 'middleware'=>'auth'], function(){
     Route::post('/show-module-form', [App\Http\Controllers\AdminController::class, 'show_module_form'])->name('show-module-form');
 
 }); 
+
+Route::get('/forgot-password', [App\Http\Controllers\AdminController::class, 'forgotPassword']);
+Route::post('/password/email', [App\Http\Controllers\AdminController::class, 'sendresetLinkemail']);
+Route::get('/password/resetdata', [App\Http\Controllers\AdminController::class, 'showResetForm']);  
+Route::post('/password/reset', [App\Http\Controllers\AdminController::class, 'resetPassword']);
+
 
 Route::group(['prefix' => 'sales'], function(){
     // Access only for admin, Account manager & sales team.
@@ -166,6 +173,8 @@ Route::controller(App\Http\Controllers\CommentController::class)
 })->middleware(['auth']);
 
 
+Route::resource('timelogs', TimeLogController::class);
+
 Route::controller(App\Http\Controllers\DeveloperController::class)
  ->prefix('developer')
  ->group(function () {
@@ -189,6 +198,14 @@ Route::controller(App\Http\Controllers\WorkhistoryController::class)
         Route::post('store-status-page-refresh', 'store_status_page_refresh' )->name("store-status-page-refresh");
         Route::post('current-task-timer-get', 'current_task_timer_get' )->name("current-task-timer-get");
         Route::post('get-task-list', 'get_task_list' );
+
+        Route::post('store-workstatus-page-refresh', 'store_workstatus_page_refresh' )->name("store-workstatus-page-refresh");
+        Route::post('current-work-timer-get', 'current_work_timer_get' )->name("current-work-timer-get");
+        Route::post('last-work-timer-get', 'last_work_timer_get' )->name("last-work-timer-get");
+        Route::post('save-reason', 'saveReason' )->name("save-reason");
+        Route::post('previous-work-timer-get', 'previous_work_timer_get' )->name("previous-work-timer-get");
+
+
 
 })->middleware(['auth']);
 

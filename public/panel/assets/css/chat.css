@@ -448,10 +448,13 @@
 }
 
 .owner .chat-msg-text {
-    background-color: var(--theme-color);
-    color: #fff;
+    /* background-color: var(--theme-color); */
+    /* color: #fff; */
+    background-color: #E9FECB;
+    color: #000;
     border-radius: 20px 20px 0 20px;
 }
+
 
 .owner .chat-msg-date {
     left: auto;
@@ -865,4 +868,19 @@
 }
 .chat-badge {
     margin-left: 10px;
+}
+
+.groupdate {
+  text-align: center;
+  background-color: yellow;
+  position: sticky;
+  color: #fff;
+  width: 100%;
+  top: 0;
+  left: 50%;
+  /* translate: -50% */
+}
+
+.tick {
+    margin-left: 5px;
 }

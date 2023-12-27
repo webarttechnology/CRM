@@ -161,36 +161,41 @@ function LogHistoryAdd($client_id, $sale_id, $user_id , $remark) {
 
 
 
- function getRecentMessages($users)
+ function getRecentMessages($users, $from_user_id)
 {
     $recentMessagesUser = collect();
 
     foreach ($users as $user) {
 
-        $message = Chat::where(function ($query) use ($user) {
-            $query->where('from_user_id', auth()->id())
+        $message = Chat::where(function ($query) use ($user, $from_user_id) {
+            $query->where('from_user_id', $from_user_id)
                 ->where('to_user_id', $user->id);
         })
-        ->orWhere(function ($query) use ($user) {
+        ->orWhere(function ($query) use ($user, $from_user_id) {
             $query->where('from_user_id', $user->id)
-                ->where('to_user_id', auth()->id());
+                ->where('to_user_id', $from_user_id);
         })
-        ->orderBy('created_at', 'desc')->first();
+        ->orderBy('created_at', 'desc') // Order by created_at DESC
+        ->first();
+
+
+        $unread_chat_data = Chat::where('message_status', '!=', 'Read')->where('to_user_id', $user->id)->count();
 
         $recentMessagesUser->push([
             'id'            => $user->id,
             'name'          => $user->name,
             'type'          => 'user',
-            'last_message'  => $message->chat_message,
-            'timestamp'     => $message->created_at ?? null,
+            'last_message'  => $message->chat_message ?? '',
+            'timestamp'     => $message->created_at ?? '',
             'status'        => $user->user_status,
-            'user_image'    => $user->user_image
+            'user_image'    => $user->user_image,
+            'unread_chat'   => $unread_chat_data > 0 ? $unread_chat_data : '',
         ]);
+        
     }
 
     // foreach ($groups as $group) {
     //     $message = $group->messages()->orderBy('created_at', 'desc')->first();
-
     //     $recentMessages->push([
     //         'id' => $group->id,
     //         'name' => $group->name,
@@ -204,5 +209,19 @@ function LogHistoryAdd($client_id, $sale_id, $user_id , $remark) {
 
 }
 
+
+
+function convertUrlsToLinks($text) {
+    // Define a regular expression pattern to match URLs
+    $pattern = '/(https?:\/\/[^\s]+)/';
+
+    // Use preg_replace_callback to replace URLs with HTML <a> tags
+    $text = preg_replace_callback($pattern, function($matches) {
+        $url = $matches[0];
+        return "<a href='$url' target='_blank'>$url</a>";
+    }, $text);
+
+    return $text;
+}
 
 ?>

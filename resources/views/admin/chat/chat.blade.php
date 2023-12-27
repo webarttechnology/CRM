@@ -1,6 +1,3 @@
-
-
-
 <link rel="stylesheet" href="{{ url('panel/assets/css/chat.css') }}">
 <div class="app chat-wrapper">
     <div class="wrapper">
@@ -37,7 +34,8 @@
 
         console.log("Connection established!");
 
-        load_list_user(from_user_id)
+        load_list_user(from_user_id);
+
     };
 
     conn.onclose = function(event) {
@@ -51,10 +49,11 @@
 
     conn.onmessage = function(e) {
 
+        
         var data = JSON.parse(e.data);
 
         console.log(data);
-
+    
         if (data.response_load_list_user || data.response_search_user) {
             var html = '';
 
@@ -65,10 +64,14 @@
                   html +=`<img class="msg-profile" src="{{ url('panel/assets/img/profiles/user-profile.png') }}" alt="profile-photo" />`;
                   html +=`<div class="msg-detail">`;
                   html +=``+ data.data[count].name+``;
-                  html +=`<span class="user_unread_message chat-badge badge badge-primary rounded-pill" data-id="`+data.data[count].id+`" id="user_unread_message_`+data.data[count].id+`"></span>  `;
+                  if(from_user_id == ''){
+                      html +=`<span class="user_unread_message chat-badge badge badge-primary rounded-pill" data-id="`+data.data[count].id+`" id="user_unread_message_`+data.data[count].id+`">`+data.data[count].unread_chat+`</span>`;
+                  }
                   html +=`<div class="msg-content">`;
-                //   html +=`<span class="msg-message">What time was our meet</span>`;
-                //   html +=`<span class="msg-date">20m</span>`;
+                  html +=`<span class="msg-message">`+data.data[count].last_message+`</span>`;
+                  if(data.data[count].last_message){
+                    html +=`<span class="msg-date">`+data.data[count].last_time+`</span>`;
+                  }
                   html +=`</div>`;
                   html +=`</div>`;
                   html +=`</div>`;
@@ -77,7 +80,7 @@
                 html = '<div class="msg">No User Found</div>';
             }
             document.getElementById('user_list').innerHTML = html;
-
+            // check_unread_message();
         }
 
         if (data.message) {
@@ -85,24 +88,40 @@
 
             if (data.from_user_id == from_user_id) {
 
-                // console.log("send msg");
+
+                var icon_style = '';
+    
+                if(data.message_status == 'Not Send')
+                {
+                    icon_style = '<span id="chat_status_'+data.chat_message_id+'" class="tick"><svg width="16px" height="16px" viewBox="0 -0.5 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"/><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/><g id="SVGRepo_iconCarrier"> <path d="M5.5 12.5L10.167 17L19.5 8" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g></svg></span>';
+                }
+                if(data.message_status == 'Send')
+                {
+                    icon_style = '<span id="chat_status_'+data.chat_message_id+'" class="tick"><svg width="16px" height="16px" viewBox="0 -0.5 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M5.03033 11.4697C4.73744 11.1768 4.26256 11.1768 3.96967 11.4697C3.67678 11.7626 3.67678 12.2374 3.96967 12.5303L5.03033 11.4697ZM8.5 16L7.96967 16.5303C8.26256 16.8232 8.73744 16.8232 9.03033 16.5303L8.5 16ZM17.0303 8.53033C17.3232 8.23744 17.3232 7.76256 17.0303 7.46967C16.7374 7.17678 16.2626 7.17678 15.9697 7.46967L17.0303 8.53033ZM9.03033 11.4697C8.73744 11.1768 8.26256 11.1768 7.96967 11.4697C7.67678 11.7626 7.67678 12.2374 7.96967 12.5303L9.03033 11.4697ZM12.5 16L11.9697 16.5303C12.2626 16.8232 12.7374 16.8232 13.0303 16.5303L12.5 16ZM21.0303 8.53033C21.3232 8.23744 21.3232 7.76256 21.0303 7.46967C20.7374 7.17678 20.2626 7.17678 19.9697 7.46967L21.0303 8.53033ZM3.96967 12.5303L7.96967 16.5303L9.03033 15.4697L5.03033 11.4697L3.96967 12.5303ZM9.03033 16.5303L17.0303 8.53033L15.9697 7.46967L7.96967 15.4697L9.03033 16.5303ZM7.96967 12.5303L11.9697 16.5303L13.0303 15.4697L9.03033 11.4697L7.96967 12.5303ZM13.0303 16.5303L21.0303 8.53033L19.9697 7.46967L11.9697 15.4697L13.0303 16.5303Z" fill="#000000"></path> </g></svg></span>';
+                }
+    
+                if(data.message_status == 'Read')
+                {
+                    icon_style = '<span class="tick" id="chat_status_'+data.chat_message_id+'"><svg width="16px" height="16px" viewBox="0 -0.5 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"/><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/><g id="SVGRepo_iconCarrier"> <path d="M5.03033 11.4697C4.73744 11.1768 4.26256 11.1768 3.96967 11.4697C3.67678 11.7626 3.67678 12.2374 3.96967 12.5303L5.03033 11.4697ZM8.5 16L7.96967 16.5303C8.26256 16.8232 8.73744 16.8232 9.03033 16.5303L8.5 16ZM17.0303 8.53033C17.3232 8.23744 17.3232 7.76256 17.0303 7.46967C16.7374 7.17678 16.2626 7.17678 15.9697 7.46967L17.0303 8.53033ZM9.03033 11.4697C8.73744 11.1768 8.26256 11.1768 7.96967 11.4697C7.67678 11.7626 7.67678 12.2374 7.96967 12.5303L9.03033 11.4697ZM12.5 16L11.9697 16.5303C12.2626 16.8232 12.7374 16.8232 13.0303 16.5303L12.5 16ZM21.0303 8.53033C21.3232 8.23744 21.3232 7.76256 21.0303 7.46967C20.7374 7.17678 20.2626 7.17678 19.9697 7.46967L21.0303 8.53033ZM3.96967 12.5303L7.96967 16.5303L9.03033 15.4697L5.03033 11.4697L3.96967 12.5303ZM9.03033 16.5303L17.0303 8.53033L15.9697 7.46967L7.96967 15.4697L9.03033 16.5303ZM7.96967 12.5303L11.9697 16.5303L13.0303 15.4697L9.03033 11.4697L7.96967 12.5303ZM13.0303 16.5303L21.0303 8.53033L19.9697 7.46967L11.9697 15.4697L13.0303 16.5303Z" fill="#34BBE5"/> </g></svg></span>';
+                }
 
                 html += `
                 <div class="chat-msg owner">
                         <div class="chat-msg-profile">
                             <img class="chat-msg-img"  src="{{ url('panel/assets/img/profiles/user-profile.png') }}" alt />
-                           
+                           <div class="chat-msg-date">`+data.time + icon_style +`</div>
                         </div>
                         <div class="chat-msg-content">
                             <div class="chat-msg-text">`+data.message+`</div>
                         </div>
                 </div>
                 `;
-
             } else {
 
-                console.log("Received msg1", to_user_id);
-                console.log("Received msg1", data.to_user_id);
+                // console.log("Received msg1", to_user_id);
+                // console.log("Received msg1", data.to_user_id);
+
+                load_list_user(from_user_id);
 
                 if (data.from_user_id == to_user_id) 
                 {
@@ -112,6 +131,7 @@
                     <div class="chat-msg">
                         <div class="chat-msg-profile">
                             <img class="chat-msg-img" src="{{ url('panel/assets/img/profiles/user-profile.png') }}" alt>
+                            <div class="chat-msg-date">`+data.time+`</div>
                         </div>
                         <div class="chat-msg-content">
                             <div class="chat-msg-text">`+data.message+`</div>
@@ -123,9 +143,7 @@
 
                 }else{
 
-
                     var count_unread_message_element = document.getElementById('user_unread_message_'+data.from_user_id+'');
-                    
                     if(count_unread_message_element)
                     {
                         var count_unread_message = count_unread_message_element.textContent;
@@ -161,48 +179,72 @@
         if (data.chat_history) {
             var html = '';
 
-            for (var count = 0; count < data.chat_history.length; count++) {
-                if (data.chat_history[count].from_user_id == from_user_id) {
+            for (var index = 0; index < data.chat_history.length; index++) {
+                html += `<div class="groupdate">`+data.chat_history[index].date+`</div>`;
+                   for (let count = 0; count < data.chat_history[index].messages.length; count++) {
+                    if (data.chat_history[index].messages[count].from_user_id == from_user_id) {
 
-                    html += `<div class="chat-msg owner">
+                        var icon_style = '';
+    
+                        if(data.chat_history[index].messages[count].message_status == 'Not Send')
+                        {
+                            icon_style = '<span id="chat_status_'+data.chat_history[index].messages[count].id+'" class="tick"><svg width="16px" height="16px" viewBox="0 -0.5 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"/><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/><g id="SVGRepo_iconCarrier"> <path d="M5.5 12.5L10.167 17L19.5 8" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g></svg></i></span>';
+                        }
+        
+                        if(data.chat_history[index].messages[count].message_status == 'Send')
+                        {
+                            icon_style = '<span id="chat_status_'+data.chat_history[index].messages[count].id+'" class="tick"><svg width="16px" height="16px" viewBox="0 -0.5 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M5.03033 11.4697C4.73744 11.1768 4.26256 11.1768 3.96967 11.4697C3.67678 11.7626 3.67678 12.2374 3.96967 12.5303L5.03033 11.4697ZM8.5 16L7.96967 16.5303C8.26256 16.8232 8.73744 16.8232 9.03033 16.5303L8.5 16ZM17.0303 8.53033C17.3232 8.23744 17.3232 7.76256 17.0303 7.46967C16.7374 7.17678 16.2626 7.17678 15.9697 7.46967L17.0303 8.53033ZM9.03033 11.4697C8.73744 11.1768 8.26256 11.1768 7.96967 11.4697C7.67678 11.7626 7.67678 12.2374 7.96967 12.5303L9.03033 11.4697ZM12.5 16L11.9697 16.5303C12.2626 16.8232 12.7374 16.8232 13.0303 16.5303L12.5 16ZM21.0303 8.53033C21.3232 8.23744 21.3232 7.76256 21.0303 7.46967C20.7374 7.17678 20.2626 7.17678 19.9697 7.46967L21.0303 8.53033ZM3.96967 12.5303L7.96967 16.5303L9.03033 15.4697L5.03033 11.4697L3.96967 12.5303ZM9.03033 16.5303L17.0303 8.53033L15.9697 7.46967L7.96967 15.4697L9.03033 16.5303ZM7.96967 12.5303L11.9697 16.5303L13.0303 15.4697L9.03033 11.4697L7.96967 12.5303ZM13.0303 16.5303L21.0303 8.53033L19.9697 7.46967L11.9697 15.4697L13.0303 16.5303Z" fill="#000000"></path> </g></svg></span>';
+                        }
+        
+                        if(data.chat_history[index].messages[count].message_status == 'Read')
+                        {
+                            icon_style = '<span class="tick" id="chat_status_'+data.chat_history[index].messages[count].id+'"><svg width="16px" height="16px" viewBox="0 -0.5 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"/><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/><g id="SVGRepo_iconCarrier"> <path d="M5.03033 11.4697C4.73744 11.1768 4.26256 11.1768 3.96967 11.4697C3.67678 11.7626 3.67678 12.2374 3.96967 12.5303L5.03033 11.4697ZM8.5 16L7.96967 16.5303C8.26256 16.8232 8.73744 16.8232 9.03033 16.5303L8.5 16ZM17.0303 8.53033C17.3232 8.23744 17.3232 7.76256 17.0303 7.46967C16.7374 7.17678 16.2626 7.17678 15.9697 7.46967L17.0303 8.53033ZM9.03033 11.4697C8.73744 11.1768 8.26256 11.1768 7.96967 11.4697C7.67678 11.7626 7.67678 12.2374 7.96967 12.5303L9.03033 11.4697ZM12.5 16L11.9697 16.5303C12.2626 16.8232 12.7374 16.8232 13.0303 16.5303L12.5 16ZM21.0303 8.53033C21.3232 8.23744 21.3232 7.76256 21.0303 7.46967C20.7374 7.17678 20.2626 7.17678 19.9697 7.46967L21.0303 8.53033ZM3.96967 12.5303L7.96967 16.5303L9.03033 15.4697L5.03033 11.4697L3.96967 12.5303ZM9.03033 16.5303L17.0303 8.53033L15.9697 7.46967L7.96967 15.4697L9.03033 16.5303ZM7.96967 12.5303L11.9697 16.5303L13.0303 15.4697L9.03033 11.4697L7.96967 12.5303ZM13.0303 16.5303L21.0303 8.53033L19.9697 7.46967L11.9697 15.4697L13.0303 16.5303Z" fill="#34BBE5"/> </g></svg></span>';
+                        }
+
+
+
+                        html += `<div class="chat-msg owner">
+                                    <div class="chat-msg-profile">
+                                        <img class="chat-msg-img"  src="{{ url('panel/assets/img/profiles/user-profile.png') }}" alt />
+                                        <div class="chat-msg-date">`+data.chat_history[index].messages[count].time + icon_style +`</div>
+                                    </div>
+                                    <div class="chat-msg-content">
+                                        <div class="chat-msg-text">`+data.chat_history[index].messages[count].chat_message+`</div>
+                                    </div>
+                                </div>`;
+
+                        } else {
+
+                        if(data.chat_history[index].messages[count].message_status != 'Read')
+                        {
+                            update_message_status(data.chat_history[index].messages[count].id, data.chat_history[index].messages[count].from_user_id, data.chat_history[index].messages[count].to_user_id, 'Read');
+                        }
+
+                        html += `
+                            <div class="chat-msg">
                                 <div class="chat-msg-profile">
-                                    <img class="chat-msg-img"  src="{{ url('panel/assets/img/profiles/user-profile.png') }}" alt />
-                                
+                                    <img class="chat-msg-img" src="{{ url('panel/assets/img/profiles/user-profile.png') }}" alt>
+                                    <div class="chat-msg-date">`+data.chat_history[index].messages[count].time+`</div>
                                 </div>
                                 <div class="chat-msg-content">
-                                    <div class="chat-msg-text">`+data.chat_history[count].chat_message+`</div>
+                                    <div class="chat-msg-text">`+data.chat_history[index].messages[count].chat_message+`</div>
                                 </div>
                             </div>`;
 
-                } else {
 
+                        var count_unread_message_element = document.getElementById('user_unread_message_'+data.chat_history[index].messages[count].from_user_id+'');
+                        if(count_unread_message_element)
+                        {
+                            count_unread_message_element.innerHTML = '';
+                        }
 
-                    if(data.chat_history[count].message_status != 'Read')
-                    {
-                        update_message_status(data.chat_history[count].id, data.chat_history[count].from_user_id, data.chat_history[count].to_user_id, 'Read');
-                    }
+                        }  
+                    
+                   }
 
-                    html += `
-                        <div class="chat-msg">
-                            <div class="chat-msg-profile">
-                                <img class="chat-msg-img" src="{{ url('panel/assets/img/profiles/user-profile.png') }}" alt>
-                            </div>
-                            <div class="chat-msg-content">
-                                <div class="chat-msg-text">`+data.chat_history[count].chat_message+`</div>
-                            </div>
-                        </div>`;
-
-
-                    var count_unread_message_element = document.getElementById('user_unread_message_'+data.chat_history[count].from_user_id+'');
-    
-                    if(count_unread_message_element)
-                    {
-                        count_unread_message_element.innerHTML = '';
-                    }
-
-                }
             }
 
+           
             document.querySelector('#chat_history').innerHTML = html;
 
             scroll_top();
@@ -212,7 +254,7 @@
         {
             
             if(data.unread_msg)
-            {
+            { 
                 var count_unread_message_element = document.getElementById('user_unread_message_'+data.from_user_id+'');
     
                 if(count_unread_message_element)
@@ -230,6 +272,7 @@
     
                     count_unread_message_element.innerHTML = '<span class="badge bg-danger rounded-pill">'+count_unread_message+'</span>';
                 }
+
             }
         }
 
@@ -429,12 +472,14 @@
         element.style.backgroundColor = 'transparent';
 
         to_user_id = user_id;
+
+        load_list_user(from_user_id);
+        load_chat_data(from_user_id, to_user_id);
+
     }
 
 
     function send_chat_message() {
-
-        
 
         document.querySelector('#send_button').disabled = true;
 
@@ -454,19 +499,23 @@
         document.querySelector('#send_button').disabled = false;
 
         load_list_user(from_user_id);
+
+        load_chat_data(from_user_id, to_user_id);
+
     }
 
    
     function sendMsgEnter(event) {
-    // You can perform actions based on the keypress event here
+       // You can perform actions based on the keypress event here
         if (event.keyCode === 13) {
         event.preventDefault(); // Prevent the default behavior for Enter key
-        send_chat_message()
+          send_chat_message()
         }
   }
 
 
     function load_chat_data(from_user_id, to_user_id) {
+        
         var data = {
             from_user_id: from_user_id,
             to_user_id: to_user_id,
@@ -474,6 +523,7 @@
         };
 
         conn.send(JSON.stringify(data));
+
     }
 
 
@@ -488,6 +538,7 @@
         };
     
         conn.send(JSON.stringify(data));
+
     }
 
     function check_unread_message()
@@ -505,7 +556,11 @@
             };
     
             conn.send(JSON.stringify(data));
+
+            load_list_user(from_user_id);
+
         }
+
     }
 
 
