@@ -264,7 +264,7 @@ $(function () {
 			type: 'POST',
 			url: '/workhistory/store-workstatus-page-refresh',
 			data: {
-				last_counter_time: visibleTimerValue,
+				last_counter_times: visibleTimerValue,
 				start_time: startTime
 			},
 			success: function (response) {

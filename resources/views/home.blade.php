@@ -3,6 +3,13 @@
 
 @section('content')
 
+@php
+  //  $user_data = App\Models\User::where('id', '!=', 15)
+  //                   ->orderBy('name', 'ASC')
+  //                   ->get();
+  //   dd(getRecentMessages($user_data, 15));
+@endphp
+
 <!-- Page Wrapper -->
 <div class="page-wrapper">
   <div class="content container-fluid">

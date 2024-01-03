@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Traits\CollectionTrait;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class CollectionController extends Controller
 {
@@ -35,7 +36,8 @@ class CollectionController extends Controller
 
     public function addcollection(Request $request){
         if($request -> method() == "POST"){
-            $request -> validate([
+
+            $validator   =  Validator::make($request->all(), [
                 'client_id' => 'required',
                 'project_id' => 'required',
                 'currency' => 'required',
@@ -44,7 +46,12 @@ class CollectionController extends Controller
                 'sale_date' => 'required',
                 'payment_mode' => 'required'
             ]);
-            DB::disableQueryLog();
+            
+            if ($validator->fails()) {
+                return response()->json(['status' => 'errors', 'message' => $validator->errors()->all()]);
+            }
+
+
             $collections = new \App\Models\Collection([
                 'client_id' => $request -> input('client_id'),
                 'sale_id' => $request -> input('project_id'),
@@ -62,7 +69,7 @@ class CollectionController extends Controller
 
             LogHistoryAdd($request->client_id, $request->id, Auth::id(), $remark);
 
-            return redirect() -> route('collection.list')->with('successmsg', "Data has been added successfully.");
+            return response()->json(['status' => 'success', 'type' => 'store', 'message' => 'Data has been added successfully.']);
 
         }else{
             return view("admin.collection.add_collection", ['clients' => \App\Models\Client::select(['name', 'id', 'client_code']) -> get()]);
@@ -73,15 +80,20 @@ class CollectionController extends Controller
     public function updatecollection(Request $request, $updateid = '')
     {
         if ($request->method() == "POST") {
-            $request->validate([
-                'client_id' => 'required',
-                'project_id' => 'required',
-                'currency' => 'required',
-                'instalment' => 'required',
+
+            $validator   =  Validator::make($request->all(), [
+                'client_id'     => 'required',
+                'project_id'    => 'required',
+                'currency'      => 'required',
+                'instalment'    => 'required',
                 'net_amt' => 'required',
                 'sale_date' => 'required',
                 'payment_mode' => 'required'
             ]);
+            
+            if ($validator->fails()) {
+                return response()->json(['status' => 'errors', 'message' => $validator->errors()->all()]);
+            }
 
             $collections = \App\Models\Collection::find($request->input('update_id'));
 
@@ -113,7 +125,8 @@ class CollectionController extends Controller
 
             $collections->save();
 
-            return redirect()->route('collection.list')->with('successmsg', "Data has been updated successfully.");
+            return response()->json(['status' => 'success', 'type' => 'store', 'message' => 'Data has been updated successfully.']);
+
         } else {
             $data = $this->getCollectionById($updateid);
             $project = \App\Models\Sale::where(['client_id' => $data->client_id])->get();

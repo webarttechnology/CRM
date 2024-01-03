@@ -89,7 +89,7 @@
                                                     @foreach($data as $val)               
                                                     <tr>
                                                         <td>{{ $val->client_name }}</td>
-                                                        <td>{{ $val->project_name }}</td>
+                                                        <td>{{ Str::limit($val->project_name, 20, '...') }}</td>
                                                         <td>{{ $currency[$val->currency] }}</td>
                                                         <td>{{ number_format($val->net_amount, 2) }}</td>
                                                         <td>{{ $instalment[$val->instalment] }}</td>
@@ -130,52 +130,52 @@
 <script>
 $(function(){
 
-    $(document).on("click", ".form-submit", function(e) {
-		e.preventDefault();
-        if($("#client_id").val() == ""){
-        toastr.error('Client name is a require field!');
-        $("#client_id").focus();
-        $("#client_id").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
-        return false;
-        }else  if($("#project_id").val() == ""){
-        toastr.error('Project name is a require field!');
-        $("#project_id").focus();
-        $("#project_id").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
-        return false;
-        }else  if($("#currency").val() == ""){
-        toastr.error('Currency is a require field!');
-        $("#currency").focus();
-        $("#currency").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
-        return false;
-        }else  if($("#instalment").val() == ""){
-        toastr.error('Instalment is a require field!');
-        $("#instalment").focus();
-        $("#instalment").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
-        return false;
-        }else  if($("#net_amt").val() == ""){
-        toastr.error('Net amount is a require field!');
-        $("#net_amt").focus();
-        $("#net_amt").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
-        return false;
-        }else  if($("#sale_date").val() == ""){
-        toastr.error('Sale date is a require field!');
-        $("#sale_date").focus();
-        $("#sale_date").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
-        return false;
-        }else  if($("#payment_mode").val() == ""){
-        toastr.error('Payment mode is a require field!');
-        $("#payment_mode").focus();
-        $("#payment_mode").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
-        return false;
-        }else  if($("#payment_mode").val() == 6 && $("#other_payment_mode").val() == ''){
-        toastr.error('Other payment mode is a require field!');
-        $("#other_payment_mode").focus();
-        $("#other_payment_mode").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
-        return false;
-        }else{
-            $('.form-save').submit();
-        } 
-});
+//     $(document).on("click", ".form-submit", function(e) {
+// 		e.preventDefault();
+//         if($("#client_id").val() == ""){
+//         toastr.error('Client name is a require field!');
+//         $("#client_id").focus();
+//         $("#client_id").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+//         return false;
+//         }else  if($("#project_id").val() == ""){
+//         toastr.error('Project name is a require field!');
+//         $("#project_id").focus();
+//         $("#project_id").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+//         return false;
+//         }else  if($("#currency").val() == ""){
+//         toastr.error('Currency is a require field!');
+//         $("#currency").focus();
+//         $("#currency").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+//         return false;
+//         }else  if($("#instalment").val() == ""){
+//         toastr.error('Instalment is a require field!');
+//         $("#instalment").focus();
+//         $("#instalment").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+//         return false;
+//         }else  if($("#net_amt").val() == ""){
+//         toastr.error('Net amount is a require field!');
+//         $("#net_amt").focus();
+//         $("#net_amt").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+//         return false;
+//         }else  if($("#sale_date").val() == ""){
+//         toastr.error('Sale date is a require field!');
+//         $("#sale_date").focus();
+//         $("#sale_date").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+//         return false;
+//         }else  if($("#payment_mode").val() == ""){
+//         toastr.error('Payment mode is a require field!');
+//         $("#payment_mode").focus();
+//         $("#payment_mode").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+//         return false;
+//         }else  if($("#payment_mode").val() == 6 && $("#other_payment_mode").val() == ''){
+//         toastr.error('Other payment mode is a require field!');
+//         $("#other_payment_mode").focus();
+//         $("#other_payment_mode").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+//         return false;
+//         }else{
+//             $('.form-save').submit();
+//         } 
+// });
 
 });
 </script>

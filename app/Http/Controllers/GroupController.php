@@ -10,8 +10,9 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 
 
 class GroupController extends Controller
@@ -49,9 +50,15 @@ class GroupController extends Controller
     {
         // dd($request->all());
         if ($request->method() == "POST") {
-            $request->validate([
-                'group_name' => 'required',
+
+            $validator   =  Validator::make($request->all(), [
+                'group_name'        => 'required',
+                'group_type'        => 'required',
             ]);
+            
+            if ($validator->fails()) {
+                return response()->json(['status' => 'errors', 'message' => $validator->errors()->all()]);
+            }
 
             $group = new \App\Models\GroupName([
                 'user_id' => Auth::user()->id,
@@ -63,7 +70,10 @@ class GroupController extends Controller
 
             $group->save();
 
-            return redirect()->route('group.new.list')->with('successmsg', 'Data has been added successfully.');
+            return response()->json(['status' => 'success', 'type' => 'store', 'message' => 'Data has been added successfully.']);
+
+            // return redirect()->route('group.new.list')->with('successmsg', 'Data has been added successfully.');
+        
         } else {
             return view("admin.group.add_group_form");
         }
@@ -75,22 +85,30 @@ class GroupController extends Controller
         if ($request->method() == "POST") {
 
 
-            $request->validate([
-                'group_name' => 'required',
+            $validator   =  Validator::make($request->all(), [
+                'group_name'        => 'required',
+                'group_type'        => 'required',
             ]);
+            
+            if ($validator->fails()) {
+                return response()->json(['status' => 'errors', 'message' => $validator->errors()->all()]);
+            }
 
             $group = \App\Models\GroupName::find($request->input('update_id'));
 
             $group->fill([
-                'user_id' => Auth::user()->id,
-                'name'    => $request->input('group_name'),
-                'uniqid' =>   Str::random(10),
-                'type' => $request->input('group_type'),
-                'status' => "Active",
+                'user_id'   => Auth::user()->id,
+                'name'      => $request->input('group_name'),
+                'uniqid'    => Str::random(10),
+                'type'      => $request->input('group_type'),
+                'status'    => "Active",
             ]);
             $group->save();
 
-            return redirect()->route('group.new.list')->with('successmsg', 'Data has been updated successfully.');
+            return response()->json(['status' => 'success', 'type' => 'update', 'message' => 'Data has been updated successfully.']);
+
+            // return redirect()->route('group.new.list')->with('successmsg', 'Data has been updated successfully.');
+        
         } else {
 
             return view("admin.group.add_group_form");

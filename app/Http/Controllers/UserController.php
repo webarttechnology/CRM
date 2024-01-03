@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -35,25 +36,45 @@ class UserController extends Controller
 
     public function add(Request $request){
         if($request ->method() == "POST"){
-            $request -> validate([
-                'name' => 'required|string',
-                'email' => 'required|email|unique:users',
-                'role_id' => 'required|in:2,3,4,5,6,7',
-                'password' => 'required'
+
+        
+            $validator   =  Validator::make($request->all(), [
+                'name'      => 'required|string',
+                'email'     => 'required|email|unique:users',
+                'role_id'   => 'required|in:2,3,4,5,6,7',
+                'profile_image' => 'required|file|mimes:jpeg,png,jpg,webp|max:2048',
+                'password'  => 'required'
             ]);
+            
+            if ($validator->fails()) {
+                return response()->json(['status' => 'errors', 'message' => $validator->errors()->all()]);
+            }
+
+
+            if(isset($request->profile_image)){
+                $file = $request->file('profile_image');
+                $new_file = rand().'_'.$file->getClientOriginalName();
+                $destinationPath = public_path('admin/Employee');
+                $file->move($destinationPath, $new_file);
+                $image = url('/').'/admin/Employee/'.$new_file;
+            }else{
+                $image = null;
+            }
+
 
             $user = new User([
-                'name' => $request->post('name'),
-                'email' => $request->post('email'),
-                'mobile_no' => $request->post('mobile_no'),
-                'role_id' => $request->post('role_id'),
-                'password' =>  Hash::make($request->post('password'))
+                'name'      => $request->name,
+                'email'     => $request->email,
+                'mobile_no' => $request->mobile_no,
+                'role_id'   => $request->role_id,
+                'user_image'=> $image,
+                'password'  => Hash::make($request->password)
            ]);
 
            if($user -> save()){
-            return redirect() -> route('user.index')->with('successmsg', "Data has been added successfully.");
+            return response()->json(['status' => 'success', 'type' => 'store', 'message' => 'Data has been added successfully.']);
            }else{
-            return redirect() -> route('user.index')->with('errmsg', "Data added error. Try again");
+            return response()->json(['status' => 'error', 'message' => 'Data added error. Try again']);
            }
 
         }else{
@@ -66,25 +87,49 @@ class UserController extends Controller
     public function update(Request $request, $updateid=''){
         if($request ->method() == "POST"){
 
-            $request -> validate([
-                'name' => 'required|string',
-                'email' => 'required|email|unique:users,id,'.$request->input('update_id'),
-                'role_id' => 'required|in:2,3,4',
+         
+            $validator   =  Validator::make($request->all(), [
+                'name'      => 'required|string',
+                'email'     => 'required|email|unique:users,id,'.$request->input('update_id'),
+                'role_id'   => 'required|in:2,3,4,5,6,7',
                 'is_active' => 'required|in:0,1',
-            ]);          
+            ]);
+            
+            if ($validator->fails()) {
+                return response()->json(['status' => 'errors', 'message' => $validator->errors()->all()]);
+            }
+
+            if(isset($request->profile_image)){
+
+                $validator   =  Validator::make($request->all(), [
+                    'profile_image' => 'required|file|mimes:jpeg,png,jpg,webp|max:2048',
+                ]);
+                
+                if ($validator->fails()) {
+                    return response()->json(['status' => 'errors', 'message' => $validator->errors()->all()]);
+                }
+
+                $file = $request->file('profile_image');
+                $new_file = rand().'_'.$file->getClientOriginalName();
+                $destinationPath = public_path('admin/Employee');
+                $file->move($destinationPath, $new_file);
+                $image = url('/').'/admin/Employee/'.$new_file;
+            }else{
+                $image = $request->old_image;
+            }
 
             $data = [
-                'name'      => $request->input('name'),
-                'email'     => $request->input('email'),
-                'role_id'   => $request->input('role_id'),
-                'mobile_no' => $request->input('mobile_no'),
-                'is_active' => $request->input('is_active') 
+                'name'      => $request->name,
+                'email'     => $request->email,
+                'mobile_no' => $request->mobile_no,
+                'role_id'   => $request->role_id,
+                'user_image'=> $image,
+                'is_active' => $request->is_active 
             ];
 
             User::where('id', $request->update_id)->update($data);
 
-            return redirect() -> route('user.index')->with('successmsg', "Data has been updated successfully.");
-
+            return response()->json(['status' => 'success', 'type' => 'store', 'message' => 'Data has been updated successfully.']);
 
         }else{
             $role = role();

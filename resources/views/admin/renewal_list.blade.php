@@ -43,7 +43,7 @@
                                                 <tbody>
                                                     @foreach($sales as $val)               
                                                     <tr>
-                                                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{ $val->name.' ('. $val->client_code.' )' }}</strong></td>
+                                                        <td><strong>{{ $val->name.' ('. $val->client_code.' )' }}</strong></td>
                                                         <td>{{ $val->email }}</td>
                                                         <td>{{ $val->project_name }}</td>
                                                         <td>{{ $project_type[$val->project_type] }}</td>
@@ -52,7 +52,7 @@
                                                     @endforeach
                                                     @foreach($upsales as $uval)
                                                     <tr>
-                                                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{ $uval->name.' ('. $uval->client_code.' )' }}</strong></td>
+                                                        <td><strong>{{ $uval->name.' ('. $uval->client_code.' )' }}</strong></td>
                                                         <td>{{ $uval->email }}</td>
                                                         <td>{{ $uval->project_name }}</td>
                                                         <td>{{ $upsale_type[$uval->upsale_type] }}</td>

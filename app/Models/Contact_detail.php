@@ -12,5 +12,5 @@ class Contact_detail extends Model
 
     public function client(){
         return $this -> belongsTo(\App\Models\Client::class);
-     }
+    }
 }

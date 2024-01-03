@@ -302,10 +302,26 @@ class AdminController extends Controller
 
             return view('admin.data.add_task_show_form', compact('data', 'jobStatus', 'paused', 'running', 'delayThen', 'sales', 'comment', 'taskid','workhistory'));
         } elseif ($request->sale == 'comment') {
+
+            // $sales = \App\Models\Sale::where('id', $request->id)->first();
+            // $comment = Comment::where('sale_id', $request->id)->get();
+            // $taskid = $request->id;
+
+         
+            $data = Developertask::select(['sales.project_name', 'assignby.name as assign_by_name', 'developer_jobs.*'])
+                ->join('sales', 'sales.id', '=', 'developer_jobs.sale_id')
+                ->join('users as assignby', 'assignby.id', '=', 'developer_jobs.assign_by')
+                ->where('developer_jobs.id', $request->id)
+                ->first();
+
             $sales = \App\Models\Sale::where('id', $request->id)->first();
             $comment = Comment::where('sale_id', $request->id)->get();
             $taskid = $request->id;
-            return view('comment', compact('sales', 'comment', 'taskid'))->render();
+
+            $sales = \App\Models\Sale::where('id', $data->sale_id)->first();
+
+            return view('comment', compact('sales', 'comment', 'taskid', 'data'))->render();
+
         } elseif ($request->sale == 'details') {
             $data = Developertask::select(['sales.project_name', 'assignby.name as assign_by_name', 'developer_jobs.*'])
                 ->join('sales', 'sales.id', '=', 'developer_jobs.sale_id')

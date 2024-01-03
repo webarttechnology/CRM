@@ -14,7 +14,7 @@
                 @csrf
                 <div class="row">
                         <div class="col-md-6 mb-3">
-                        <label class="form-label" for="name">Client Name <span
+                        <label class="form-label" for="name">Client Name<span
                                 class="text-danger">*</span></label>
                         <input type="text" name="name" class="form-control" id="name"
                                 placeholder="John Doe" value="{{ $client_data  ?  $client_data->name : null }}" />

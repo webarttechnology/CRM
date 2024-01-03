@@ -141,37 +141,37 @@
 <script>
     $(function(){
 
-     $(document).on("click", ".form-submit", function(e) {
-		e.preventDefault();
-        if($("#client_id").val() == ""){
-            toastr.error('Client name is a require field!');
-            $("#client_id").focus();
-            $("#client_id").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
-            return false;
-        }else  if($("#project_id").val() == ""){
-            toastr.error('Project name is a require field!');
-            $("#project_id").focus();
-            $("#project_id").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
-            return false;
-        }else  if($("#upsale_type").val() == ""){
-            toastr.error('Upsale type is a require field!');
-            $("#upsale_type").focus();
-            $("#upsale_type").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
-            return false;
-        }else  if(($("#upsale_type").val() == 1 || $("#upsale_type").val() == 2 || $("#upsale_type").val() == 3) && $("#start_date").val() == ""){
-            toastr.error('Start date is a required field!');
-            $("#start_date").focus();
-            $("#start_date").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
-            return false;
-        }else  if(($("#upsale_type").val() == 1 || $("#upsale_type").val() == 2 || $("#upsale_type").val() == 3) && $("#end_date").val() == ""){
-            toastr.error('Start date is a required field!');
-            $("#end_date").focus();
-            $("#end_date").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
-            return false;
-        }else{
-            $('.form-save').submit();
-        } 
-});
+//      $(document).on("click", ".form-submit", function(e) {
+// 		e.preventDefault();
+//         if($("#client_id").val() == ""){
+//             toastr.error('Client name is a require field!');
+//             $("#client_id").focus();
+//             $("#client_id").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+//             return false;
+//         }else  if($("#project_id").val() == ""){
+//             toastr.error('Project name is a require field!');
+//             $("#project_id").focus();
+//             $("#project_id").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+//             return false;
+//         }else  if($("#upsale_type").val() == ""){
+//             toastr.error('Upsale type is a require field!');
+//             $("#upsale_type").focus();
+//             $("#upsale_type").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+//             return false;
+//         }else  if(($("#upsale_type").val() == 1 || $("#upsale_type").val() == 2 || $("#upsale_type").val() == 3) && $("#start_date").val() == ""){
+//             toastr.error('Start date is a required field!');
+//             $("#start_date").focus();
+//             $("#start_date").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+//             return false;
+//         }else  if(($("#upsale_type").val() == 1 || $("#upsale_type").val() == 2 || $("#upsale_type").val() == 3) && $("#end_date").val() == ""){
+//             toastr.error('Start date is a required field!');
+//             $("#end_date").focus();
+//             $("#end_date").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+//             return false;
+//         }else{
+//             $('.form-save').submit();
+//         } 
+// });
           
 
     });

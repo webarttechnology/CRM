@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Chat;
+use App\Models\GroupMember;
 use App\Models\LogHistory;
 
 if(!function_exists('currency')){
@@ -161,7 +162,7 @@ function LogHistoryAdd($client_id, $sale_id, $user_id , $remark) {
 
 
 
- function getRecentMessages($users, $from_user_id)
+ function getRecentMessages($users, $from_user_id, $search = null)
 {
     $recentMessagesUser = collect();
 
@@ -175,10 +176,11 @@ function LogHistoryAdd($client_id, $sale_id, $user_id , $remark) {
             $query->where('from_user_id', $user->id)
                 ->where('to_user_id', $from_user_id);
         })
-        ->orderBy('created_at', 'desc') // Order by created_at DESC
+        ->orderBy('created_at', 'desc')
         ->first();
 
-        $unread_chat_data = Chat::where('message_status', '!=', 'Read')->where('to_user_id', $user->id)->count();
+
+        $unread_chat_data = Chat::where('message_status', '!=', 'Read')->where('from_user_id', $user->id)->whereNotNull('group_id',)->count();
 
         $recentMessagesUser->push([
             'id'            => $user->id,
@@ -188,21 +190,43 @@ function LogHistoryAdd($client_id, $sale_id, $user_id , $remark) {
             'timestamp'     => $message->created_at ?? '',
             'status'        => $user->user_status,
             'user_image'    => $user->user_image,
-            'unread_chat'   => '',
+            'unread_chat'   => $unread_chat_data,
+            'message_status'=> $message->message_status ?? '',
+            'from_user_id'  => $from_user_id,
         ]);
-        
+
     }
 
-    // foreach ($groups as $group) {
-    //     $message = $group->messages()->orderBy('created_at', 'desc')->first();
-    //     $recentMessages->push([
-    //         'id' => $group->id,
-    //         'name' => $group->name,
-    //         'type' => 'group',
-    //         'last_message' => $message ? $message->content : null,
-    //         'timestamp' => $message ? $message->created_at : null,
-    //     ]);
-    // }
+
+    $group = GroupMember::where('user_id', $from_user_id)->get();
+
+    foreach ($group as $item) {
+
+        $message = $item->group_name?->chat()?->orderBy('created_at', 'desc')
+        ->first();
+       
+        $recentMessagesUser->push([
+            'id'    => $item->group_id,
+            'name'  => $item->group_name?->name,
+            'type'  => 'group',
+            'last_message'  => $message->chat_message ?? '',
+            'timestamp'     => $message->created_at ?? '',
+            'status'        => '',
+            'user_image'    => '',
+            'unread_chat'   => '',
+            'message_status'=> $message->message_status ?? '',
+            'from_user_id'  => $from_user_id,
+        ]);
+
+    }
+
+     // Filter the results based on the search term
+
+    if ($search) {
+        $recentMessagesUser = $recentMessagesUser->filter(function ($item) use ($search) {
+            return stripos($item['name'], $search) !== false;
+        });
+    }
 
     return $recentMessagesUser->sortByDesc('timestamp');
 

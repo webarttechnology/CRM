@@ -6,10 +6,10 @@
         <div class="row">
         <div class="col-md-12">
            @if ($user_data)
-           <form method="post" action="{{ route('user.update.success') }}"  class="save" autocomplete="off"> 
+           <form method="post" action="{{ route('user.update.success') }}" enctype="multipart/form-data" class="save" autocomplete="off"> 
             <input type="hidden" name="update_id" id="update_id" value="{{ $user_data->id }}">
            @else
-           <form method="post" action="{{ route('user.add.success') }}"  class="save" autocomplete="off"> 
+           <form method="post" action="{{ route('user.add.success') }}"  enctype="multipart/form-data" class="save" autocomplete="off"> 
            @endif
          
             @csrf
@@ -65,13 +65,27 @@
                       <label class="form-label" for="role">{{ __('Status') }}</label>
                       <select name="is_active" id="is_active" class="form-control">
                           <option value="">Select</option>
-                          <option value="1" {{ $user_data?->is_active == 1?'Selected':'' }}>Active</option>
-                          <option value="0" {{ $user_data?->is_active == 0?'Selected':'' }}>Inactive</option>
+                          <option value="1" {{ $user_data?->is_active == 1? 'Selected':'' }}>Active</option>
+                          <option value="0" {{ $user_data?->is_active == 0? 'Selected':'' }}>Inactive</option>
                       </select>
                       @if($errors->has('is_active'))
                       <small class="text-danger" id="is_active">{{ $errors->first('is_active') }}</small>
                       @endif
                   </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label" for="role">{{ __('Profile Image') }}</label>
+                    <input type="file" class="form-control" id="profile_image" name="profile_image" />
+                    @if ($user_data?->user_image)
+                    <input type="hidden" name="old_image" value="{{ $user_data->user_image }}">
+                    <div class="my-3">
+                        <img src="{{ url($user_data->user_image) }}" width="100" alt="image">
+                    </div>
+                 @endif
+                    @if ($errors->has('profile_image'))
+                        <small class="text-danger" id="profile_image">{{ $errors->first('profile_image') }}</small>
+                    @endif
+                </div>
 
             </div>                        
              <div class="row">

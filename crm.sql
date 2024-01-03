@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 22, 2023 at 04:56 AM
+-- Generation Time: Jan 03, 2024 at 12:03 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -65,24 +65,13 @@ CREATE TABLE `assign_logs` (
 CREATE TABLE `chats` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `from_user_id` int(11) NOT NULL,
-  `to_user_id` int(11) NOT NULL,
+  `to_user_id` int(11) DEFAULT NULL,
+  `group_id` int(11) DEFAULT NULL,
   `chat_message` longtext NOT NULL,
   `message_status` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `chats`
---
-
-INSERT INTO `chats` (`id`, `from_user_id`, `to_user_id`, `chat_message`, `message_status`, `created_at`, `updated_at`) VALUES
-(5, 8, 15, 'hi', 'Read', '2023-12-21 06:13:21', '2023-12-21 06:17:37'),
-(6, 8, 15, 'assdsf', 'Read', '2023-12-21 06:16:45', '2023-12-21 06:17:37'),
-(7, 1, 8, 'hhggjgj', 'Not Send', '2023-12-21 06:25:21', '2023-12-21 06:25:21'),
-(8, 1, 8, 'hjgjhjh', 'Not Send', '2023-12-21 06:26:08', '2023-12-21 06:26:08'),
-(9, 14, 15, 'fghhh', 'Send', '2023-12-21 06:40:47', '2023-12-21 06:40:47'),
-(10, 14, 15, 'kjkj', 'Send', '2023-12-21 06:41:26', '2023-12-21 06:41:26');
 
 -- --------------------------------------------------------
 
@@ -297,7 +286,15 @@ INSERT INTO `clients` (`id`, `client_code`, `name`, `email`, `country_name`, `ad
 (185, 923081, 'Josiah Walters', 'fofuw@mailinator.com', 'Canada', 'Ut est duis in elig', 'https://www.bihaceroci.tv', 'Jessamine Greer', 'Ciaran Lamb', 'Doloremque pariatur', NULL, '2023-12-07 04:35:09', '2023-12-07 04:35:09'),
 (186, 141329, 'Irma Malone', 'keho@mailinator.com', 'USA', 'Voluptate molestiae', 'https://www.lupunolivoq.org.uk', 'Dillon House', 'Jonah Butler', 'Adipisci nihil volup', NULL, '2023-12-07 06:10:04', '2023-12-07 06:10:04'),
 (187, 633252, 'kjhhhkj', 'loxabu@mailinator.com', 'AUS', 'bbbv', 'https://www.kovevew.us', 'nbbnnb', 'Declan Best', 'klk', NULL, '2023-12-07 23:03:01', '2023-12-07 23:03:01'),
-(188, 927139, 'New Client', 'tushar@gmail.com', 'USA', 'US', NULL, 'kjkj', 'duuyt', 'tyuiy reut', NULL, '2023-12-21 03:43:05', '2023-12-21 03:43:05');
+(188, 927139, 'New Client', 'tushar@gmail.com', 'USA', 'US', NULL, 'kjkj', 'duuyt', 'tyuiy reut', NULL, '2023-12-21 03:43:05', '2023-12-21 03:43:05'),
+(189, 654655, 'Test Client', 'client@gmail.com', 'USA', 'US', NULL, 'Tushar', 'Sayandip', 'test', NULL, '2024-01-02 10:59:04', '2024-01-02 10:59:04'),
+(190, 395202, 'Safikul', 'test@gmail.com', 'USA', 'US', 'https://www.humusiwaxini.in', 'Ishmael Byrd', 'fdfd', 'dsgg', NULL, '2024-01-02 11:13:31', '2024-01-02 11:13:31'),
+(191, 210082, 'hgjkkh', 'safikul@gmail.com', 'USA', 'jjkhj', 'https://www.humusiwaxini.in', 'Gisela Greer', 'Sayandip', 'vcn', NULL, '2024-01-02 11:42:28', '2024-01-02 11:42:28'),
+(192, 292797, 'Safikul Islam', 'test5565@gmail.com', 'USA', 'jjkhj', NULL, 'nbvnmbm', 'bvnnbv', 'nmbmm', NULL, '2024-01-02 11:45:09', '2024-01-02 11:45:09'),
+(193, 647940, 'Safikul Islam', 'test556555@gmail.com', 'USA', 'jjkhj', NULL, 'nbvnmbm', 'bvnnbv', 'nmbmm', NULL, '2024-01-02 11:45:28', '2024-01-02 11:45:28'),
+(194, 100623, 'Safikul Islam', 'tes6555@gmail.com', 'USA', 'US', NULL, 'nbvnmbm', 'new bvnnbv', 'This is my new project', NULL, '2024-01-02 11:47:36', '2024-01-03 04:23:40'),
+(195, 613047, 'Safikul', 'test89898@gmail.com', 'USA', 'Eos quaerat magna u', NULL, 'Tushar', 'Declan Best', 'nbm', NULL, '2024-01-02 11:49:29', '2024-01-02 11:49:29'),
+(196, 515381, 'Safikul', '121test@gmail.com', 'UK', 'US dfhdh', 'https://www.loryfe.org', 'Tushar', 'Sayandip', 'uiooiup', NULL, '2024-01-03 04:58:46', '2024-01-03 04:58:46');
 
 -- --------------------------------------------------------
 
@@ -397,7 +394,7 @@ INSERT INTO `collections` (`id`, `client_id`, `sale_id`, `currency`, `instalment
 (50, 57, 69, 1, 1, 250.00, '2023-03-08', 3, NULL, '2023-08-25 04:46:03', '2023-08-25 08:46:03'),
 (51, 58, 70, 1, 1, 300.00, '2023-03-08', 2, NULL, '2023-08-25 04:50:01', '2023-08-25 08:50:01'),
 (52, 59, 71, 1, 1, 200.00, '2023-03-10', 2, NULL, '2023-08-25 04:53:38', '2023-08-25 08:53:38'),
-(53, 60, 72, 1, 1, 300.00, '2023-03-13', 2, NULL, '2023-08-25 04:56:38', '2023-08-25 08:56:38'),
+(53, 60, 72, 1, 1, 300.00, '2023-03-13', 2, NULL, '2023-08-25 04:56:38', '2024-01-03 06:08:19'),
 (54, 61, 73, 1, 1, 100.00, '2023-03-14', 2, NULL, '2023-08-25 04:59:45', '2023-08-25 08:59:45'),
 (55, 62, 74, 1, 1, 100.00, '2023-03-14', 2, NULL, '2023-08-25 05:02:21', '2023-08-25 09:02:21'),
 (56, 63, 75, 1, 1, 181.00, '2023-03-15', 2, NULL, '2023-08-25 05:05:31', '2023-08-25 09:05:31'),
@@ -464,7 +461,7 @@ INSERT INTO `collections` (`id`, `client_id`, `sale_id`, `currency`, `instalment
 (117, 123, 136, 1, 1, 200.00, '2023-05-06', 2, NULL, '2023-08-25 09:27:53', '2023-08-25 13:27:53'),
 (118, 124, 137, 1, 1, 250.00, '2023-06-05', 2, NULL, '2023-08-25 09:31:55', '2023-08-25 13:31:55'),
 (119, 125, 138, 1, 1, 220.00, '2023-06-07', 2, NULL, '2023-08-25 09:36:12', '2023-08-25 13:36:12'),
-(120, 126, 139, 1, 1, 200.00, '2023-06-07', 2, NULL, '2023-08-25 09:40:01', '2023-08-25 13:40:01'),
+(120, 126, 139, 1, 1, 200.00, '2023-06-07', 2, NULL, '2023-08-25 09:40:01', '2024-01-03 05:56:16'),
 (121, 127, 140, 1, 1, 150.00, '2023-06-08', 2, NULL, '2023-08-25 09:42:48', '2023-08-25 13:42:48'),
 (122, 128, 141, 1, 1, 150.00, '2023-06-09', 2, NULL, '2023-08-25 09:49:53', '2023-08-25 13:49:53'),
 (123, 129, 142, 1, 1, 500.00, '2023-06-09', 2, NULL, '2023-08-25 09:54:28', '2023-08-25 13:54:28'),
@@ -509,7 +506,7 @@ INSERT INTO `collections` (`id`, `client_id`, `sale_id`, `currency`, `instalment
 (162, 168, 181, 1, 1, 297.00, '2023-08-14', 2, NULL, '2023-08-28 06:21:37', '2023-08-28 10:21:37'),
 (163, 169, 182, 1, 1, 250.00, '2023-08-14', 2, NULL, '2023-08-28 06:24:51', '2023-08-28 10:24:51'),
 (164, 170, 183, 1, 1, 300.00, '2023-08-14', 2, NULL, '2023-08-28 06:28:17', '2023-08-28 10:28:17'),
-(165, 171, 184, 1, 1, 150.00, '2023-08-16', 2, NULL, '2023-08-28 06:30:53', '2023-08-28 10:30:53'),
+(165, 171, 184, 1, 1, 150.00, '2023-08-16', 2, NULL, '2023-08-28 06:30:53', '2024-01-03 05:55:21'),
 (166, 172, 185, 1, 1, 250.00, '2023-08-17', 2, NULL, '2023-08-28 06:34:19', '2023-08-28 10:34:19'),
 (167, 173, 186, 1, 1, 300.00, '2023-08-16', 2, NULL, '2023-08-28 06:36:58', '2023-08-28 10:36:58'),
 (168, 174, 187, 1, 1, 300.00, '2023-08-16', 2, NULL, '2023-08-28 06:40:11', '2023-08-28 10:40:11'),
@@ -521,7 +518,9 @@ INSERT INTO `collections` (`id`, `client_id`, `sale_id`, `currency`, `instalment
 (174, 4, 193, 2, 1, 10.00, '2023-12-01', 2, NULL, '2023-12-08 04:54:38', '2023-12-07 23:24:38'),
 (175, 4, 14, 1, 1, 10.00, '2023-12-15', 2, NULL, '2023-12-08 07:37:39', '2023-12-08 02:07:39'),
 (176, 1, 194, 1, 1, 100.00, '1970-01-01', 2, NULL, '2023-12-13 09:44:32', '2023-12-13 04:14:32'),
-(177, 188, 195, 1, 1, 500.00, '2023-01-01', 2, NULL, '2023-12-21 09:16:56', '2023-12-21 03:46:56');
+(177, 188, 195, 1, 1, 500.00, '2023-01-01', 2, NULL, '2023-12-21 09:16:56', '2023-12-21 03:46:56'),
+(178, 14, 196, 1, 1, 100.00, '1970-01-01', 2, NULL, '2024-01-03 11:04:18', '2024-01-03 05:34:18'),
+(179, 1, 4, 1, 1, 100.00, '2024-01-19', 2, NULL, '2024-01-03 14:18:02', '2024-01-03 08:48:02');
 
 -- --------------------------------------------------------
 
@@ -597,7 +596,9 @@ INSERT INTO `comments` (`id`, `sale_id`, `comment_by`, `message`, `date`, `creat
 (51, 17, 15, 'hjjhkk', '2023-12-21 10:09:50', '2023-12-21 10:09:50', '2023-12-21 04:39:50'),
 (52, 17, 15, 'ghkfh', '2023-12-21 10:11:46', '2023-12-21 10:11:46', '2023-12-21 04:41:46'),
 (53, 17, 15, 'h kjjlh', '2023-12-21 10:11:51', '2023-12-21 10:11:51', '2023-12-21 04:41:51'),
-(54, 17, 15, 'hljkjhl', '2023-12-21 10:11:56', '2023-12-21 10:11:56', '2023-12-21 04:41:56');
+(54, 17, 15, 'hljkjhl', '2023-12-21 10:11:56', '2023-12-21 10:11:56', '2023-12-21 04:41:56'),
+(55, 17, 1, 'kll', '2024-01-03 02:50:49', '2024-01-03 14:50:49', '2024-01-03 09:20:49'),
+(56, 2, 1, '.llk;', '2024-01-03 02:51:07', '2024-01-03 14:51:07', '2024-01-03 09:21:07');
 
 -- --------------------------------------------------------
 
@@ -608,8 +609,8 @@ INSERT INTO `comments` (`id`, `sale_id`, `comment_by`, `message`, `date`, `creat
 CREATE TABLE `contact_details` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `client_id` int(11) NOT NULL,
-  `email_id` varchar(255) NOT NULL,
-  `mobile_no` varchar(255) NOT NULL,
+  `email_id` varchar(255) DEFAULT NULL,
+  `mobile_no` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -647,7 +648,10 @@ INSERT INTO `contact_details` (`id`, `client_id`, `email_id`, `mobile_no`, `crea
 (35, 185, 'quvavukyda@mailinator.com', '236541547', NULL, NULL),
 (36, 185, 'kemavezika@mailinator.com', '787878888', NULL, NULL),
 (37, 186, 'dijujif@mailinator.com', 'Ab doloremque animi', NULL, NULL),
-(38, 187, 'henog@mailinator.com', '12132132131', NULL, NULL);
+(38, 187, 'henog@mailinator.com', '12132132131', NULL, NULL),
+(39, 190, 'jitoxucaru@mailinator.com', 'Quaerat et nostrud a', NULL, NULL),
+(40, 191, 'jitoxucaru@mailinator.com', '0123456789', NULL, NULL),
+(42, 195, 'jitoxucaru@mailinator.com', '0123456789', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -677,9 +681,10 @@ CREATE TABLE `developer_jobs` (
 --
 
 INSERT INTO `developer_jobs` (`id`, `sale_id`, `assign_to`, `assign_by`, `title`, `details`, `start_date`, `end_date`, `remarks`, `status`, `total_time`, `deleted_at`, `created_at`, `updated_at`) VALUES
-(1, 4, '[\"8\"]', 1, 'test', 'Test', '2023-08-07 12:10:00', '2023-08-10 12:10:00', 'Test', 1, '{\"year\":0,\"months\":0,\"days\":1,\"hours\":0,\"minutes\":0}', NULL, '2023-08-07 06:40:15', '2023-12-15 06:34:14'),
-(2, 65, '[\"8\",\"15\"]', 3, 'Countrywide process', '<p>Countrywideprocess process serving form submittion</p>', '2023-08-07 12:11:00', '2023-08-17 12:11:00', 'Countrywideprocess process serving form submittion', 1, '{\"year\":0,\"months\":0,\"days\":1,\"hours\":0,\"minutes\":0}', NULL, '2023-08-07 06:41:39', '2023-12-21 04:06:00'),
-(17, 195, '[\"15\"]', 1, 'Ecommerce project', 'laravel project', '2023-12-01 14:48:00', '2023-12-30 14:48:00', 'j fdkjjgh', 1, '{\"year\":0,\"months\":0,\"days\":1,\"hours\":0,\"minutes\":0}', NULL, '2023-12-21 09:18:39', '2023-12-21 04:06:12');
+(1, 4, '[\"8\"]', 1, 'test', 'Test', '2023-08-07 12:10:00', '2023-08-10 12:10:00', 'Test', 1, '{\"year\":0,\"months\":0,\"days\":1,\"hours\":0,\"minutes\":0}', NULL, '2023-08-07 06:40:15', '2024-01-03 10:42:39'),
+(2, 65, '[\"8\",\"15\"]', 3, 'Countrywide process', '<p>Countrywideprocess process serving form submittion</p>', '2023-08-07 12:11:00', '2023-08-17 12:11:00', 'Countrywideprocess process serving form submittion', 1, '{\"year\":0,\"months\":0,\"days\":1,\"hours\":0,\"minutes\":0}', NULL, '2023-08-07 06:41:39', '2023-12-27 06:07:34'),
+(17, 195, '[\"15\"]', 1, 'Ecommerce project', 'laravel project', '2023-12-01 14:48:00', '2023-12-30 14:48:00', 'j fdkjjgh', 3, '{\"year\":0,\"months\":0,\"days\":1,\"hours\":0,\"minutes\":0}', NULL, '2023-12-21 09:18:39', '2023-12-27 10:32:30'),
+(18, 13, '[\"8\"]', 1, 'Test Hello', 'Task Details', '2024-01-04 15:53:00', '2024-01-25 15:53:00', 'Test Remark', 0, '{\"year\":0,\"months\":0,\"days\":1,\"hours\":0,\"minutes\":0}', NULL, '2024-01-03 15:53:24', '2024-01-03 10:26:23');
 
 -- --------------------------------------------------------
 
@@ -711,6 +716,15 @@ CREATE TABLE `group_members` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `group_members`
+--
+
+INSERT INTO `group_members` (`id`, `group_id`, `user_id`, `created_at`, `updated_at`) VALUES
+(3, 2, 17, '2023-12-27 10:58:06', '2023-12-27 10:58:06'),
+(4, 2, 15, '2023-12-27 10:58:06', '2023-12-27 10:58:06'),
+(6, 2, 8, '2023-12-27 10:58:06', '2023-12-27 10:58:06');
+
 -- --------------------------------------------------------
 
 --
@@ -727,6 +741,14 @@ CREATE TABLE `group_names` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `group_names`
+--
+
+INSERT INTO `group_names` (`id`, `user_id`, `name`, `uniqid`, `status`, `type`, `created_at`, `updated_at`) VALUES
+(2, 1, 'Funfriend', 'k3fP9ppZG3', 'Active', 'Work', '2023-12-27 10:51:58', '2023-12-27 10:51:58'),
+(3, 1, 'WebArt', 'Vd5q93EInM', 'Active', 'Work', '2024-01-02 03:57:30', '2024-01-03 06:28:15');
 
 -- --------------------------------------------------------
 
@@ -757,7 +779,16 @@ INSERT INTO `log_histories` (`id`, `client_id`, `sale_id`, `user_id`, `remark`, 
 (7, 188, 195, '15', 'hjjhkk', '2023-12-21 04:39:50', '2023-12-21 04:39:50'),
 (8, 188, 195, '15', 'ghkfh', '2023-12-21 04:41:46', '2023-12-21 04:41:46'),
 (9, 188, 195, '15', 'h kjjlh', '2023-12-21 04:41:51', '2023-12-21 04:41:51'),
-(10, 188, 195, '15', 'hljkjhl', '2023-12-21 04:41:56', '2023-12-21 04:41:56');
+(10, 188, 195, '15', 'hljkjhl', '2023-12-21 04:41:56', '2023-12-21 04:41:56'),
+(11, 14, 196, '1', 'Task (Garrison Heath) has been added', '2024-01-03 05:34:18', '2024-01-03 05:34:18'),
+(12, 1, 4, '1', 'Upsale  has been added', '2024-01-03 07:00:15', '2024-01-03 07:00:15'),
+(13, 1, NULL, '1', 'Upsale () has been Updated', '2024-01-03 07:08:41', '2024-01-03 07:08:41'),
+(14, 101, 114, '1', 'Upsale  has been added', '2024-01-03 07:32:12', '2024-01-03 07:32:12'),
+(15, 101, NULL, '1', 'Upsale () has been Updated', '2024-01-03 07:32:43', '2024-01-03 07:32:43'),
+(16, 1, NULL, '1', 'Collections () has been Added', '2024-01-03 08:48:02', '2024-01-03 08:48:02'),
+(17, 188, 195, '1', 'New Comment has been posted kll', '2024-01-03 09:20:49', '2024-01-03 09:20:49'),
+(18, 53, 65, '1', 'New Comment has been posted .llk;', '2024-01-03 09:21:07', '2024-01-03 09:21:07'),
+(19, 1, 13, '1', 'Task (Countrywide capital) has been assigned', '2024-01-03 10:23:24', '2024-01-03 10:23:24');
 
 -- --------------------------------------------------------
 
@@ -1011,7 +1042,7 @@ INSERT INTO `sales` (`id`, `client_id`, `project_name`, `project_type`, `technol
 (136, 123, 'Shopify Modification', 4, NULL, NULL, 'Shopify Modification', '', '', NULL, NULL, NULL, NULL, NULL, 'http://www.discountgoldanddiamonds.com', 'Akash', 'MISC', NULL, '\"Client sign up for shopify customization for him. Where we have to create a new page for him where he will add approx 30 products & he will give us images and all description. The pages will like https://discountgoldanddiamonds.com/collections/engagement-rings/products/diamond-engagement-ring-rsk50536-e-c?variant=42336473120927 and the 360 view videos will be also provided by client. He will start with 1 product at first then by the time he will provide rest of the products to us for upload.\r\nHis first priority is to change the banner with a hyperlink. He already provided us that. The link he provided that is http://discountgoldanddiamonds.hibid.com/auctions/current which we have to hyperlink on the banner which is given in to the chat.\r\nAM team needs to call him at 4-5pm EST (1.30-2.30 IST)\"', '', NULL, '1', '2023-05-06', 1, 300.00, 200.00, 100.00, '2', NULL, 'Active', NULL, '2023-08-25 13:27:53', '2023-08-25 13:27:53'),
 (137, 124, 'WEBSITE', 1, '1', '1', '', '', '', NULL, NULL, NULL, NULL, NULL, 'https://www.victorymediapro.com/', 'Akash', 'MISC', NULL, 'Client sign up for a basic website development where he is planning to show all of his services and client can get in touch with him for services. Services he provide photography, videography, graphics design, Video editing etc. Project cost $500 and sign up with $250. AM team can contact with him by tomorrow 6.6.23 at 1pm Central Time (11.30 IST)', '', NULL, '1', '2023-06-05', 1, 500.00, 250.00, 250.00, '2', NULL, 'Active', NULL, '2023-08-25 13:31:55', '2023-08-25 13:31:55'),
 (138, 125, 'SEO', 2, NULL, NULL, '', 'SEO', 'null', '2023-06-07', '2024-06-07', NULL, NULL, NULL, 'https://www.farrowpulicelaw.com/sarasota-personal-injury-lawyer/', 'Saikat', 'suman', NULL, '\"Client signed up for Search Engine Optimization. currently he ranked number 33, we have to make it 1 in ranking this is his website (https://www.farrowpulicelaw.com/sarasota-personal-injury-lawyer/) . He also provide the keyword, we have optimize this one keyword (sarasota personal injury lawyer)\r\n.We asked the client to give the time to call him.\"', '', NULL, '1', '2023-06-07', 1, 440.00, 220.00, 220.00, '2', NULL, 'Active', NULL, '2023-08-25 13:36:11', '2023-08-25 13:36:11'),
-(139, 126, 'Landing page, Blank Template E-commerce website and demonstration of E-commerce', 1, '1', '3', '', '', '', NULL, NULL, NULL, NULL, NULL, 'sys2com.com', 'Akash', 'Sarnab Kolay', NULL, 'Client is looking for a eCommerce template of lorem version. We will give him the shopluxusa.com and there will be no content and all. His Idea is he wants to learn how e-commerce will work and its internal feature. For that we will also help him for demonstration and guidance on that. He also want a separate landing page where he wants to showcase himself as a e-commerce manager and about himself. We have to provide him a template for that and we have to set up that page with his content and images. AM team can contact him by tomorrow on 8.6.23 but before that he ask for a whatsapp text is he available or not. We have to create a whatsapp group as well with him. He asks for a female project manager as his other business in-charge are also female so that will be convenient for them if there is a female project manager. ( Rest $300 he will pay in 2 break ups as $150 each)', '', NULL, '1', '2023-06-07', 1, 500.00, 200.00, 300.00, '2', NULL, 'Active', NULL, '2023-08-25 13:40:01', '2023-08-25 13:40:01'),
+(139, 126, 'Landing page', 1, '1', '3', '', '', '', NULL, NULL, NULL, NULL, NULL, 'sys2com.com', 'Akash', 'Sarnab Kolay', NULL, 'Client is looking for a eCommerce template of lorem version. We will give him the shopluxusa.com and there will be no content and all. His Idea is he wants to learn how e-commerce will work and its internal feature. For that we will also help him for demonstration and guidance on that. He also want a separate landing page where he wants to showcase himself as a e-commerce manager and about himself. We have to provide him a template for that and we have to set up that page with his content and images. AM team can contact him by tomorrow on 8.6.23 but before that he ask for a whatsapp text is he available or not. We have to create a whatsapp group as well with him. He asks for a female project manager as his other business in-charge are also female so that will be convenient for them if there is a female project manager. ( Rest $300 he will pay in 2 break ups as $150 each)', '', NULL, '1', '2023-06-07', 1, 500.00, 200.00, 300.00, '2', '', 'Active', NULL, '2023-08-25 13:40:01', '2024-01-03 05:56:16'),
 (140, 127, '4 UI/UX Designs', 6, NULL, NULL, '4 UI/UX Designs', '', '', NULL, NULL, NULL, NULL, NULL, 'locallatitude.com', 'Prodipto', 'Misc', NULL, 'Client signed up for 4 UI UX designs for his website. His website is https://platftou.elementor.cloud/. It will be opened with the pin - 7880. We have to create 4 UI UX for Destination page. We have to create the designs for explore our citites, attractions, cuisines and start planning. He likes the design of this website https://www.simpleviewinc.com/. AM team needs to call him today at 4 AM IST.', '', NULL, '1', '2023-06-08', 1, 250.00, 150.00, 100.00, '2', NULL, 'Active', NULL, '2023-08-25 13:42:48', '2023-08-25 13:42:48'),
 (141, 128, 'Email Marketing', 2, NULL, NULL, '', 'SEO', '[\"Facebook\"]', '2023-06-09', '2024-06-10', NULL, NULL, NULL, 'makeservicegreatagain.com', 'Saikat', 'Trambak Singha Roy', NULL, 'Client sign up for email marketing. We have to provide him 2 email template. He have a mailchimp account & he will provide us an access. Dev also had a word with the client and understand the project very well. Sign up for $150 for the project. AM team have to contact with him on monday 12.6.23 at 10.30 Eastern Time (8PM IST)', '', NULL, '1', '2023-06-09', 1, 300.00, 150.00, 150.00, '2', NULL, 'Active', NULL, '2023-08-25 13:49:53', '2023-08-25 13:49:53'),
 (142, 129, 'WEBSITE', 1, '1', '1', '', '', '', NULL, NULL, NULL, NULL, NULL, 'http://midvalleydealers.com/', 'Prodipto', 'Kamaljit', NULL, 'I am attaching client\'s requirement in the sales deal. AM team needs to call him on Monday, i.e, 12.06.2023 at 11.30 AM Texas time.', '', NULL, '1', '2023-06-09', 1, 3000.00, 500.00, 2500.00, '2', NULL, 'Active', NULL, '2023-08-25 13:54:28', '2023-08-25 13:54:28'),
@@ -1057,7 +1088,7 @@ INSERT INTO `sales` (`id`, `client_id`, `project_name`, `project_type`, `technol
 (181, 168, 'SMO', 2, NULL, NULL, '', 'SMO', '[\"Facebook\",\"Instagram\",\"Twitter\",\"Youtube\",\"Linkedin\"]', '2023-08-14', '2024-08-14', NULL, NULL, NULL, 'bottle4hope.com', 'Prodipto', 'Samiran', NULL, 'Client\'s sister is a piano teacher. Client is a partner client. She has just shifted with the client so she wants new student for her piano class. She is planning to do a open house so we have to give her footfalls for the open house. They will be running the ads as well. The ad budget has not been decided. We can provide the ad budget to them. AM team needs to call him at 10.45PM IST today.', '', NULL, '1', '2023-08-14', 1, 594.00, 297.00, 297.00, '2', NULL, 'Active', NULL, '2023-08-28 10:21:37', '2023-08-28 10:21:37'),
 (182, 169, 'SMO', 2, NULL, NULL, '', 'SMO', '[\"Facebook\",\"Instagram\",\"Twitter\",\"Youtube\",\"Linkedin\"]', '2023-08-14', '2024-08-14', NULL, NULL, NULL, 'greater-minds.com', 'Saikat', 'ANIKET', NULL, 'client signed up for 1 month of SMO (FB, INSTAGRAM, INSTAGRAM THREAD, LINKEDin) paid $250 . AM need to call him on WEDNESDAY 16th August evening time EST', '', NULL, '1', '2023-08-14', 1, 250.00, 250.00, 0.00, '2', NULL, 'Active', NULL, '2023-08-28 10:24:51', '2023-08-28 10:24:51'),
 (183, 170, 'DigiMix(SMO+SEO)+Website Optimization', 2, NULL, NULL, '', 'SEO_SMO', '[\"Facebook\",\"Instagram\",\"Twitter\",\"Youtube\",\"Linkedin\"]', '2023-08-14', '2024-08-14', NULL, NULL, NULL, 'faulknerwalshdesigns.com', 'Prodipto', 'Surajit', NULL, 'Client signed up for SMO and SEO for her business , we also have to optimize her website. This is her website (https://faulknerwalshdesigns.com/). Total project cost will be 600USD for 2 months of SMO and SEO. She Signed up with 300USD and she will pay rest of the 300USD next month. AM team needs to call her today at 5:35M IST.', '', NULL, '1', '2023-08-14', 1, 600.00, 300.00, 300.00, '2', NULL, 'Active', NULL, '2023-08-28 10:28:17', '2023-08-28 10:28:17'),
-(184, 171, 'WEBSITE', 1, '1', '1', '', '', '', NULL, NULL, NULL, NULL, NULL, 'almudenakonrad.com', 'Akash', 'Tanmoy Pramanick', NULL, 'Client is an author and sign up for a website where she wants to sell her books. Currently she have only 2 Books. Website will have payment gateway feature. Client sent a reference website https://davidgoggins.com/. Website price is $550 and client sign up with $150. AM team need to follow up with her at 11.30 Pacific Time (12 IST).', '', NULL, '1', '2023-08-16', 1, 550.00, 150.00, 400.00, '2', NULL, 'Active', NULL, '2023-08-28 10:30:53', '2023-08-28 10:30:53'),
+(184, 171, 'WEBSITE', 1, '1', '1', '', '', '', NULL, NULL, NULL, NULL, NULL, 'almudenakonrad.com', 'Akash', 'Tanmoy Pramanick', NULL, 'Client is an author and sign up for a website where she wants to sell her books. Currently she have only 2 Books. Website will have payment gateway feature. Client sent a reference website https://davidgoggins.com/. Website price is $550 and client sign up with $150. AM team need to follow up with her at 11.30 Pacific Time (12 IST).', '', NULL, '1', '2023-08-16', 1, 550.00, 150.00, 400.00, '2', '', 'Active', NULL, '2023-08-28 10:30:53', '2024-01-03 05:55:21'),
 (185, 172, 'Google Reviews', 2, NULL, NULL, '', 'Google Ads', 'null', '2023-08-17', '2024-08-17', NULL, NULL, NULL, 'athenskratom.com', 'Saikat', 'Irfan Hussain', NULL, '\"client has signed up for 300 google reviews on his google profile page paid $250 and remaining $250 will be getting paid after 150 reviews, \r\n\r\n\r\nclient\'s requirement:- \r\n\r\nI just need you to post the 5 star reviews I will provide you, and then need them put on the listing (we have 4 listings) that I specify. That\'s it and that\'s all I need done. But I need them to:\r\n\r\n1) The accounts need nicknames or American Names. I don\'t want reviews from Lo Duck Wong, or Muhammad Fazrika. I need reviews from names like Shawn, Wendy, Bill, Harry, Jason, Tina, Frank etc.....\r\n2) I do not want all the reviews going up overnight or even a couple of days. I think it\'s reasonable from SEO experience that this project should take about 30 days to complete. That\'s posting 10 reviews at the location I specify everyday\"', '', NULL, '1', '2023-08-17', 1, 500.00, 250.00, 250.00, '2', NULL, 'Active', NULL, '2023-08-28 10:34:19', '2023-08-28 10:34:19'),
 (186, 173, 'SSL Certification for 2 Years', 8, NULL, NULL, '', '', '', '2023-08-16', '2025-08-16', NULL, NULL, NULL, 'uniflexcircuits.com', 'Prodipto', 'Misc', NULL, 'Client signed up for renewing the SSL Certification for 2 years of his website. His website is uniflexcircuits.com. Please do it ASAP', '', NULL, '1', '2023-08-16', 1, 300.00, 300.00, 0.00, '2', NULL, 'Active', NULL, '2023-08-28 10:36:58', '2023-08-28 10:36:58'),
 (187, 174, 'WEBSITE', 1, '1', '1', '', '', '', NULL, NULL, NULL, NULL, NULL, 'Innoaigen.technology', 'Saikat', 'Irfan Hussain', NULL, 'client has sign up for a website designing. paid 300 remaining 450 will be getting paid after the work is done {its a partner client wants in PHP just like digital webber}', '', NULL, '1', '2023-08-16', 1, 750.00, 300.00, 450.00, '2', NULL, 'Active', NULL, '2023-08-28 10:40:11', '2023-08-28 10:40:11'),
@@ -1068,7 +1099,8 @@ INSERT INTO `sales` (`id`, `client_id`, `project_name`, `project_type`, `technol
 (192, 4, 'ggfj', 1, '3', '1', '', '', '', NULL, NULL, NULL, NULL, NULL, 'ghhjl', 'lhljkl', 'hvjlhlj', NULL, 'lhll', '', NULL, '1', '2023-12-14', 1, 544.00, 23.00, 521.00, '2', NULL, 'Active', NULL, '2023-12-07 03:35:20', '2023-12-07 03:35:20'),
 (193, 4, 'Garrison Heath', 1, '1', '1', '', '', '', NULL, NULL, NULL, NULL, NULL, 'jhjk', 'fhkjhjk', 'jkhhkfj', 'Illo quis exercitati', 'kfjh', '', NULL, '1', '2023-12-01', 2, 10.00, 10.00, 0.00, '2', NULL, 'Active', NULL, '2023-12-07 23:24:38', '2023-12-07 23:24:38'),
 (194, 1, 'Garrison Heath', 1, '3', '5', '', '', '', NULL, NULL, NULL, NULL, NULL, 'ghhjl', 'bvvb', 'ghg', 'g kjk', 'gjkg k', 'Magnam fugiat asper', 'Cupidatat in facilis', '1', '1970-01-01', 1, 100.00, 100.00, 0.00, '2', NULL, 'Active', NULL, '2023-12-13 04:14:32', '2023-12-13 04:14:32'),
-(195, 188, 'Ecommece Laravel Project', 1, '3', '4', '', '', '', NULL, NULL, NULL, NULL, NULL, 'Online Store', 'new closer', 'new agent', NULL, 'new task', '', NULL, '1', '2023-01-01', 1, 500.00, 500.00, 0.00, '2', NULL, 'Active', NULL, '2023-12-21 03:46:56', '2023-12-21 03:46:56');
+(195, 188, 'Ecommece Laravel Project', 1, '3', '4', '', '', '', NULL, NULL, NULL, NULL, NULL, 'Online Store', 'new closer', 'new agent', NULL, 'new task', '', NULL, '1', '2023-01-01', 1, 500.00, 500.00, 0.00, '2', NULL, 'Active', NULL, '2023-12-21 03:46:56', '2023-12-21 03:46:56'),
+(196, 14, 'Garrison Heath', 1, '3', '1', '', '', '', NULL, NULL, NULL, NULL, NULL, 'jhkh', 'hkhl', 'uli;', NULL, 'jgkjhkfg', '', NULL, '1', '1970-01-01', 1, 100.00, 100.00, 0.00, '2', NULL, 'Active', NULL, '2024-01-03 05:34:18', '2024-01-03 05:34:18');
 
 -- --------------------------------------------------------
 
@@ -1102,6 +1134,101 @@ INSERT INTO `tasks` (`id`, `sale_id`, `assign_to`, `assign_by`, `assign_date`, `
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `time_logs`
+--
+
+CREATE TABLE `time_logs` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `start_time` varchar(255) NOT NULL,
+  `timer_data` varchar(255) DEFAULT NULL,
+  `type` enum('work','break') DEFAULT NULL,
+  `status` enum('start','stop','end') DEFAULT NULL,
+  `reason` text DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `time_logs`
+--
+
+INSERT INTO `time_logs` (`id`, `user_id`, `start_time`, `timer_data`, `type`, `status`, `reason`, `created_at`, `updated_at`) VALUES
+(1, 15, '12:12:58', '00:00:00', 'work', 'start', NULL, '2023-12-27 06:42:58', '2023-12-27 06:42:58'),
+(2, 15, '12:13:36', '00:00:37', 'work', 'start', NULL, '2023-12-27 06:43:36', '2023-12-27 06:43:36'),
+(3, 15, '12:13:38', '00:00:39', 'work', 'start', NULL, '2023-12-27 06:43:38', '2023-12-27 06:43:38'),
+(4, 15, '12:13:38', '00:00:39', 'work', 'start', NULL, '2023-12-27 06:43:39', '2023-12-27 06:43:39'),
+(5, 15, '12:14:40', '00:01:40', 'work', 'start', NULL, '2023-12-27 06:44:40', '2023-12-27 06:44:40'),
+(6, 15, '12:26:52', '00:13:52', 'work', 'start', NULL, '2023-12-27 06:56:52', '2023-12-27 06:56:52'),
+(7, 15, '12:26:52', '00:13:52', 'work', 'start', NULL, '2023-12-27 06:56:53', '2023-12-27 06:56:53'),
+(8, 15, '12:27:08', '00:14:08', 'work', 'start', NULL, '2023-12-27 06:57:09', '2023-12-27 06:57:09'),
+(9, 15, '12:27:11', '00:14:11', 'work', 'start', NULL, '2023-12-27 06:57:11', '2023-12-27 06:57:11'),
+(10, 15, '12:27:11', '00:14:11', 'work', 'start', NULL, '2023-12-27 06:57:12', '2023-12-27 06:57:12'),
+(11, 15, '12:27:36', '00:14:35', 'work', 'start', NULL, '2023-12-27 06:57:36', '2023-12-27 06:57:36'),
+(12, 15, '12:27:38', '00:14:37', 'work', 'start', NULL, '2023-12-27 06:57:38', '2023-12-27 06:57:38'),
+(13, 15, '12:27:38', '00:14:37', 'work', 'start', NULL, '2023-12-27 06:57:39', '2023-12-27 06:57:39'),
+(14, 15, '12:32:23', '00:19:22', 'work', 'start', NULL, '2023-12-27 07:02:23', '2023-12-27 07:02:23'),
+(15, 15, '12:32:23', '00:19:22', 'work', 'start', NULL, '2023-12-27 07:02:24', '2023-12-27 07:02:24'),
+(16, 15, '12:34:29', '00:21:28', 'work', 'start', NULL, '2023-12-27 07:04:29', '2023-12-27 07:04:29'),
+(17, 15, '12:34:30', '00:21:28', 'work', 'start', NULL, '2023-12-27 07:04:31', '2023-12-27 07:04:31'),
+(18, 15, '12:37:10', '00:24:08', 'work', 'start', NULL, '2023-12-27 07:07:10', '2023-12-27 07:07:10'),
+(19, 15, '12:37:10', '00:24:08', 'work', 'start', NULL, '2023-12-27 07:07:11', '2023-12-27 07:07:11'),
+(20, 15, '12:44:21', '00:31:19', 'work', 'start', NULL, '2023-12-27 07:14:21', '2023-12-27 07:14:21'),
+(21, 15, '12:44:22', '00:31:19', 'work', 'start', NULL, '2023-12-27 07:14:23', '2023-12-27 07:14:23'),
+(22, 15, '12:51:42', '00:38:39', 'work', 'start', NULL, '2023-12-27 07:21:42', '2023-12-27 07:21:42'),
+(23, 15, '12:51:42', '00:38:39', 'work', 'start', NULL, '2023-12-27 07:21:43', '2023-12-27 07:21:43'),
+(24, 15, '12:58:34', '00:45:31', 'work', 'start', NULL, '2023-12-27 07:28:34', '2023-12-27 07:28:34'),
+(25, 15, '12:58:34', '00:45:31', 'work', 'start', NULL, '2023-12-27 07:28:35', '2023-12-27 07:28:35'),
+(26, 15, '13:09:17', '00:56:14', 'work', 'start', NULL, '2023-12-27 07:39:17', '2023-12-27 07:39:17'),
+(27, 15, '13:09:17', '00:56:14', 'work', 'start', NULL, '2023-12-27 07:39:18', '2023-12-27 07:39:18'),
+(28, 15, '13:10:34', '00:57:31', 'work', 'start', NULL, '2023-12-27 07:40:34', '2023-12-27 07:40:34'),
+(29, 15, '13:10:34', '00:57:31', 'work', 'start', NULL, '2023-12-27 07:40:35', '2023-12-27 07:40:35'),
+(30, 15, '13:13:31', '01:00:28', 'work', 'start', NULL, '2023-12-27 07:43:31', '2023-12-27 07:43:31'),
+(31, 15, '13:13:32', '01:00:28', 'work', 'start', NULL, '2023-12-27 07:43:33', '2023-12-27 07:43:33'),
+(32, 15, '13:47:40', '01:34:36', 'work', 'start', NULL, '2023-12-27 08:17:40', '2023-12-27 08:17:40'),
+(33, 15, '13:47:41', '01:34:36', 'work', 'start', NULL, '2023-12-27 08:17:41', '2023-12-27 08:17:41'),
+(34, 15, '13:48:51', '01:35:46', 'work', 'start', NULL, '2023-12-27 08:18:51', '2023-12-27 08:18:51'),
+(35, 15, '13:48:51', '01:35:46', 'work', 'start', NULL, '2023-12-27 08:18:52', '2023-12-27 08:18:52'),
+(36, 15, '13:49:31', '01:36:26', 'work', 'start', NULL, '2023-12-27 08:19:31', '2023-12-27 08:19:31'),
+(37, 15, '13:49:31', '01:35:46', 'work', 'start', NULL, '2023-12-27 08:19:32', '2023-12-27 08:19:32'),
+(38, 15, '13:52:10', '01:38:25', 'work', 'start', NULL, '2023-12-27 08:22:10', '2023-12-27 08:22:10'),
+(39, 15, '13:52:10', '01:38:25', 'work', 'start', NULL, '2023-12-27 08:22:11', '2023-12-27 08:22:11'),
+(40, 15, '13:53:42', '01:39:57', 'work', 'start', NULL, '2023-12-27 08:23:42', '2023-12-27 08:23:42'),
+(41, 15, '13:53:43', '01:39:57', 'work', 'start', NULL, '2023-12-27 08:23:44', '2023-12-27 08:23:44'),
+(42, 15, '14:09:44', '01:55:58', 'work', 'start', NULL, '2023-12-27 08:39:44', '2023-12-27 08:39:44'),
+(43, 15, '14:09:44', '01:55:58', 'work', 'start', NULL, '2023-12-27 08:39:45', '2023-12-27 08:39:45'),
+(44, 15, '14:12:28', '01:58:42', 'work', 'start', NULL, '2023-12-27 08:42:28', '2023-12-27 08:42:28'),
+(45, 15, '14:12:28', '01:58:42', 'work', 'start', NULL, '2023-12-27 08:42:29', '2023-12-27 08:42:29'),
+(46, 15, '14:14:30', '02:00:44', 'work', 'start', NULL, '2023-12-27 08:44:30', '2023-12-27 08:44:30'),
+(47, 15, '14:14:31', '02:00:44', 'work', 'start', NULL, '2023-12-27 08:44:32', '2023-12-27 08:44:32'),
+(48, 15, '14:18:35', '02:04:48', 'work', 'start', NULL, '2023-12-27 08:48:35', '2023-12-27 08:48:35'),
+(49, 15, '14:18:35', '02:04:48', 'work', 'start', NULL, '2023-12-27 08:48:37', '2023-12-27 08:48:37'),
+(50, 15, '14:19:56', '02:06:09', 'work', 'start', NULL, '2023-12-27 08:49:56', '2023-12-27 08:49:56'),
+(51, 15, '14:19:56', '02:06:09', 'work', 'start', NULL, '2023-12-27 08:49:57', '2023-12-27 08:49:57'),
+(52, 15, '14:20:46', '02:06:59', 'work', 'start', NULL, '2023-12-27 08:50:46', '2023-12-27 08:50:46'),
+(53, 15, '14:20:46', '02:06:59', 'work', 'start', NULL, '2023-12-27 08:50:47', '2023-12-27 08:50:47'),
+(54, 15, '14:23:22', '02:09:35', 'work', 'start', NULL, '2023-12-27 08:53:22', '2023-12-27 08:53:22'),
+(55, 15, '14:23:23', '02:09:35', 'work', 'start', NULL, '2023-12-27 08:53:24', '2023-12-27 08:53:24'),
+(56, 15, '14:27:52', '02:14:04', 'work', 'start', NULL, '2023-12-27 08:57:52', '2023-12-27 08:57:52'),
+(57, 15, '14:27:52', '02:14:04', 'work', 'start', NULL, '2023-12-27 08:57:53', '2023-12-27 08:57:53'),
+(58, 15, '14:38:18', '02:24:30', 'work', 'start', NULL, '2023-12-27 09:08:18', '2023-12-27 09:08:18'),
+(59, 15, '14:38:18', '02:24:30', 'work', 'start', NULL, '2023-12-27 09:08:19', '2023-12-27 09:08:19'),
+(60, 15, '14:39:10', '02:25:22', 'work', 'start', NULL, '2023-12-27 09:09:10', '2023-12-27 09:09:10'),
+(61, 15, '14:39:10', '02:25:22', 'work', 'start', NULL, '2023-12-27 09:09:11', '2023-12-27 09:09:11'),
+(62, 15, '14:40:42', '02:26:54', 'work', 'start', NULL, '2023-12-27 09:10:42', '2023-12-27 09:10:42'),
+(63, 15, '14:40:43', '02:26:54', 'work', 'start', NULL, '2023-12-27 09:10:44', '2023-12-27 09:10:44'),
+(64, 15, '15:55:32', '03:41:43', 'work', 'start', NULL, '2023-12-27 10:25:32', '2023-12-27 10:25:32'),
+(65, 15, '15:55:32', '03:41:43', 'work', 'start', NULL, '2023-12-27 10:25:33', '2023-12-27 10:25:33'),
+(66, 15, '16:02:12', '03:48:23', 'work', 'start', NULL, '2023-12-27 10:32:12', '2023-12-27 10:32:12'),
+(67, 15, '16:02:13', '03:48:23', 'work', 'start', NULL, '2023-12-27 10:32:14', '2023-12-27 10:32:14'),
+(68, 15, '16:19:11', '04:05:21', 'work', 'start', NULL, '2023-12-27 10:49:11', '2023-12-27 10:49:11'),
+(69, 15, '16:19:11', '04:05:21', 'work', 'start', NULL, '2023-12-27 10:49:12', '2023-12-27 10:49:12'),
+(70, 15, '16:19:39', '04:05:49', 'work', 'start', NULL, '2023-12-27 10:49:39', '2023-12-27 10:49:39'),
+(71, 15, '16:19:39', '04:05:49', 'work', 'start', NULL, '2023-12-27 10:49:40', '2023-12-27 10:49:40');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `upsales`
 --
 
@@ -1128,7 +1255,9 @@ CREATE TABLE `upsales` (
 --
 
 INSERT INTO `upsales` (`id`, `client_id`, `sale_id`, `upsale_type`, `start_date`, `end_date`, `others`, `gross_amount`, `net_amount`, `payment_mode`, `other_payment_mode`, `sale_date`, `deleted_at`, `created_at`, `updated_at`) VALUES
-(1, 1, 8, 4, NULL, NULL, 'Others requirement', 200.00, 100.00, 2, '', '2023-01-04', NULL, '2023-01-04 06:43:24', '2023-07-20 07:04:10');
+(1, 1, 8, 4, NULL, NULL, 'Others requirement', 200.00, 100.00, 2, '', '2023-01-04', NULL, '2023-01-04 06:43:24', '2023-07-20 07:04:10'),
+(3, 1, 4, 1, '1970-01-01', '1970-01-01', '', 100.00, 50.00, 2, '', '1970-01-01', NULL, '2024-01-03 12:30:15', '2024-01-03 07:08:41'),
+(4, 101, 114, 1, '2024-01-04', '2024-01-31', '', 100.00, 50.00, 2, '', '2024-01-03', NULL, '2024-01-03 13:02:12', '2024-01-03 07:32:12');
 
 -- --------------------------------------------------------
 
@@ -1148,10 +1277,10 @@ CREATE TABLE `users` (
   `remember_token` varchar(100) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `token` varchar(255) NOT NULL,
-  `connection_id` int(11) NOT NULL,
-  `user_status` enum('Offline','Online') NOT NULL,
-  `user_image` varchar(255) NOT NULL
+  `token` varchar(255) DEFAULT NULL,
+  `connection_id` int(11) DEFAULT NULL,
+  `user_status` enum('Offline','Online') DEFAULT NULL,
+  `user_image` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1159,18 +1288,20 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `mobile_no`, `email_verified_at`, `password`, `role_id`, `is_active`, `remember_token`, `created_at`, `updated_at`, `token`, `connection_id`, `user_status`, `user_image`) VALUES
-(1, 'Webart Technology (Owner)', 'admin@gmail.com', '9632587410', NULL, '$2y$10$5dIsrq7GWMXmseeDyOhxKu.xBqCJ209zXDvTNGAeweitc9aNjX3R2', '1', 1, 'pPLjdnE00aEpQYsZ7V1k92gMHwvhbZvFYjCtRIJkEE7V92PGjuaHtKE6W2xq', '2023-01-02 01:21:46', '2023-12-21 06:25:15', 'e69c979feac59f3d3205cf3757b40494', 751, 'Online', ''),
-(3, 'Sales', 'sales@gmail.com', NULL, NULL, '$2y$10$5dIsrq7GWMXmseeDyOhxKu.xBqCJ209zXDvTNGAeweitc9aNjX3R2', '2', 1, NULL, '2023-01-02 01:21:46', '2023-07-17 06:52:31', '', 0, 'Offline', ''),
-(6, 'Pritam sen', 'pritam@webart.technology', '9088850821', NULL, '$2y$10$FsyHj77Dy9bDFxd1YrrTQOHB2lRwTji3j57fYLTdB8zBEeuXYvrTu', '3', 1, NULL, '2023-07-17 06:08:27', '2023-12-08 04:25:24', '', 0, 'Offline', ''),
+(1, 'Webart Technology (Owner)', 'admin@gmail.com', '9632587410', NULL, '$2y$10$5dIsrq7GWMXmseeDyOhxKu.xBqCJ209zXDvTNGAeweitc9aNjX3R2', '1', 1, 'K3E6n4mnv3H8PndvCON1xuBT1PTh532RG1uNIo93PYN6lrQfTNZZfI8Glc9M', '2023-01-02 01:21:46', '2024-01-03 09:35:53', '88936944b03fbbd7581bd19fe70b6f48', 0, 'Online', ''),
+(3, 'Sales', 'sales@gmail.com', NULL, NULL, '$2y$10$5dIsrq7GWMXmseeDyOhxKu.xBqCJ209zXDvTNGAeweitc9aNjX3R2', '2', 1, NULL, '2023-01-02 01:21:46', '2024-01-03 09:17:29', '', 0, 'Offline', 'http://127.0.0.1:8000/admin/Employee/716967142_logo.png'),
+(6, 'Pritam sen', 'pritam@webart.technology', '9088850821', NULL, '$2y$10$FsyHj77Dy9bDFxd1YrrTQOHB2lRwTji3j57fYLTdB8zBEeuXYvrTu', '3', 1, NULL, '2023-07-17 06:08:27', '2023-12-27 11:40:55', '', 0, 'Offline', ''),
 (7, 'Sankar Bera', 'sankar@webart.technology', '9874300364', NULL, '$2y$10$S2cSAhmsPuiqYYyeCfoTveO2Ukg1s1HtR46AzlQjS3oMLco6sejGW', '4', 1, NULL, '2023-07-17 06:19:20', '2023-07-17 06:52:55', '', 0, 'Offline', ''),
-(8, 'Deepak Kumar', 'deepak@gmail.com', '9874300364', NULL, '$2y$10$yBON9Myfhw3Roa.Mtg9D8eWhX8gl13pRKRr7aFq9le98IrnKPM6.i', '6', 1, NULL, '2023-07-31 01:47:44', '2023-12-21 06:17:44', '0a6e12cff842175f4ec3aead2b3b12b5', 0, 'Offline', ''),
+(8, 'Deepak Kumar', 'deepak@gmail.com', '9874300364', NULL, '$2y$10$yBON9Myfhw3Roa.Mtg9D8eWhX8gl13pRKRr7aFq9le98IrnKPM6.i', '6', 1, NULL, '2023-07-31 01:47:44', '2024-01-02 11:26:40', '8504f0d3d3bfff49d127184822480a96', 0, 'Offline', ''),
 (9, 'Sudip Ghosh', 'sudip@webart.technology', '9874300364', NULL, '$2y$10$F3ZGJ/YjEyWn.487e0r.heMAbwiaja4RjsuRgEKT97xnfVL/o9lW2', '5', 1, NULL, '2023-08-01 03:43:55', '2023-08-01 03:43:55', '', 0, 'Offline', ''),
 (10, 'Sohom Bhattacharjee', 'sohom@webart.technology', '8956656897', NULL, '$2y$10$XjCUbHto/5Wi0cPQjl7ZGuLRKtpGmF6BU9gvhPiHpFkYTSFP4SYVy', '7', 1, NULL, '2023-08-07 03:41:47', '2023-08-07 03:41:47', '', 0, 'Offline', ''),
 (11, 'Sudipto Chakraborty', 'sudipto@digitalwebber.com', '7003238056', NULL, '$2y$10$SEg1c4XgkGGmu/YC/Q0sD.K1nb69Ilk.UluNJpMfGFa61zi0A7YcS', '2', 1, NULL, '2023-08-14 21:13:56', '2023-08-14 21:13:56', '', 0, 'Offline', ''),
 (12, 'Test Project Manager', 'test@yopmail.com', '1234567890', NULL, '$2y$10$nQh0.JKoOqdI9C7F6uz5IuTAeprBU.BXKLnIVVib/55w8VyvWzjGK', '6', 1, NULL, '2023-08-14 22:25:23', '2023-12-08 04:30:57', '', 0, 'Offline', ''),
 (14, 'Test user', 'test@mail.com', '0123456789', NULL, '$2y$10$nrMLwmRecT5TdYQbPXvV8.cUvn6I7LcX3cw862XRpYCc3gI2.Mlki', '6', 1, NULL, '2023-12-08 04:32:19', '2023-12-21 06:42:57', 'd313d1feee4eddab3141cbdd7befdfe8', 0, 'Offline', ''),
-(15, 'Safikul Islam', 'safikul@gmail.com', '0123456789', NULL, '$2y$10$nrMLwmRecT5TdYQbPXvV8.cUvn6I7LcX3cw862XRpYCc3gI2.Mlki', '6', 1, NULL, '2023-12-11 06:28:26', '2023-12-21 07:02:38', '1ccc4e40b51ddf39efc61d11b32fe5c9', 0, 'Offline', ''),
-(16, 'Sandy', 'sandy@yopmail.com', '0123456789', NULL, '$2y$10$/58YlEhNAK/cG4o.Gff/C.4gtYkB0hFyca2jYJtr6PdNXwVHZARKy', '2', 1, NULL, '2023-12-18 04:54:47', '2023-12-18 04:54:47', '', 0, 'Offline', '');
+(15, 'Safikul Islam', 'safikul@gmail.com', '0123456789', NULL, '$2y$10$nrMLwmRecT5TdYQbPXvV8.cUvn6I7LcX3cw862XRpYCc3gI2.Mlki', '6', 1, NULL, '2023-12-11 06:28:26', '2024-01-02 10:12:46', '42e100871e0985cb68545b8bd475fb91', 0, 'Offline', ''),
+(16, 'Sandy', 'sandy@yopmail.com', '0123456789', NULL, '$2y$10$/58YlEhNAK/cG4o.Gff/C.4gtYkB0hFyca2jYJtr6PdNXwVHZARKy', '2', 1, NULL, '2023-12-18 04:54:47', '2023-12-27 11:24:16', '', 0, 'Offline', ''),
+(17, 'Test Group', 'safikul.islam1@webart.technology', '1234567890', NULL, '$2y$10$Mv44AJ8bhdVQWww23abA/.YAuLAs.Sp5J7.b00NoYeyFuMA/IubmC', '6', 1, NULL, '2023-12-27 10:58:06', '2023-12-27 11:14:02', '611a3249fba738816fec959ebfcc6346', 0, NULL, NULL),
+(18, 'Test', 'test@gmail.com', '0123456789', NULL, '$2y$10$Gnp.QkvYpgInQkB3.WZbA.UflxgPhmKQ/wXaSY7k7mon7CIRFXtJq', '6', 1, NULL, '2024-01-03 09:18:26', '2024-01-03 09:19:41', NULL, NULL, NULL, 'http://127.0.0.1:8000/admin/Employee/1595204603_stripe-logo.png');
 
 -- --------------------------------------------------------
 
@@ -1194,13 +1325,36 @@ CREATE TABLE `workhistories` (
 --
 
 INSERT INTO `workhistories` (`id`, `developer_job_id`, `user_id`, `final_status`, `currenttime`, `delayThen`, `created_at`, `updated_at`) VALUES
-(1, 2, 15, 'stop', '00:00:00', 0, '2023-12-21 09:35:39', '2023-12-21 04:06:12'),
-(2, 2, 15, 'stop', '00:00:05', 0, '2023-12-21 09:35:47', '2023-12-21 04:06:12'),
-(3, 2, 15, 'stop', '00:00:08', 0, '2023-12-21 09:35:52', '2023-12-21 04:06:12'),
-(4, 2, 15, 'stop', '00:00:08', 0, '2023-12-21 09:36:00', '2023-12-21 04:06:12'),
-(5, 2, 15, 'stop', '00:00:16', 0, '2023-12-21 09:36:10', '2023-12-21 04:06:12'),
-(6, 17, 15, 'start', '00:00:00', 0, '2023-12-21 09:36:12', '2023-12-21 04:06:12'),
-(7, 2, 15, 'stop', '00:00:19', 0, '2023-12-21 09:36:12', '2023-12-21 04:06:12');
+(21, 2, 15, 'stop', '00:00:00', 0, '2023-12-27 11:02:44', '2023-12-27 10:32:25'),
+(22, 2, 15, 'stop', '00:00:36', 0, '2023-12-27 11:03:22', '2023-12-27 10:32:25'),
+(23, 2, 15, 'stop', '00:01:21', 0, '2023-12-27 11:04:12', '2023-12-27 10:32:25'),
+(24, 2, 15, 'stop', '00:02:13', 0, '2023-12-27 11:10:13', '2023-12-27 10:32:25'),
+(25, 2, 15, 'stop', '00:02:40', 0, '2023-12-27 11:10:45', '2023-12-27 10:32:25'),
+(26, 2, 15, 'stop', '00:02:58', 0, '2023-12-27 11:11:09', '2023-12-27 10:32:25'),
+(27, 2, 15, 'stop', '00:04:41', 0, '2023-12-27 11:12:56', '2023-12-27 10:32:25'),
+(28, 2, 15, 'stop', '00:04:48', 0, '2023-12-27 11:13:12', '2023-12-27 10:32:25'),
+(29, 2, 15, 'stop', '00:04:54', 0, '2023-12-27 11:13:18', '2023-12-27 10:32:25'),
+(30, 2, 15, 'stop', '00:04:48', 0, '2023-12-27 11:13:20', '2023-12-27 10:32:25'),
+(31, 2, 15, 'stop', '00:04:48', 0, '2023-12-27 11:36:20', '2023-12-27 10:32:25'),
+(32, 2, 15, 'stop', '00:05:23', 0, '2023-12-27 11:36:58', '2023-12-27 10:32:25'),
+(33, 2, 15, 'stop', '00:05:30', 0, '2023-12-27 11:37:05', '2023-12-27 10:32:25'),
+(34, 2, 15, 'stop', '00:05:35', 0, '2023-12-27 11:37:12', '2023-12-27 10:32:25'),
+(35, 2, 15, 'stop', '00:05:30', 0, '2023-12-27 11:37:14', '2023-12-27 10:32:25'),
+(36, 2, 15, 'stop', '00:05:35', 0, '2023-12-27 11:37:34', '2023-12-27 10:32:25'),
+(37, 2, 15, 'stop', '00:05:48', 0, '2023-12-27 11:37:49', '2023-12-27 10:32:25'),
+(38, 2, 15, 'stop', '00:05:48', 0, '2023-12-27 11:37:51', '2023-12-27 10:32:25'),
+(39, 17, 15, 'start', '00:00:00', 0, '2023-12-27 11:39:13', '2023-12-27 06:09:13'),
+(40, 17, 15, 'start', '00:00:09', 0, '2023-12-27 11:39:24', '2023-12-27 06:09:24'),
+(41, 17, 15, 'start', '00:03:33', 0, '2023-12-27 11:42:54', '2023-12-27 06:12:54'),
+(42, 17, 15, 'start', '00:03:35', 0, '2023-12-27 11:43:01', '2023-12-27 06:13:01'),
+(43, 17, 15, 'stop', '00:03:33', 0, '2023-12-27 11:43:02', '2023-12-27 06:13:02'),
+(44, 17, 15, 'start', '00:03:33', 0, '2023-12-27 15:55:38', '2023-12-27 10:25:38'),
+(45, 17, 15, 'start', '00:03:35', 0, '2023-12-27 15:55:42', '2023-12-27 10:25:42'),
+(46, 17, 15, 'stop', '00:03:36', 0, '2023-12-27 15:55:43', '2023-12-27 10:25:43'),
+(47, 17, 15, 'start', '00:03:36', 0, '2023-12-27 16:02:19', '2023-12-27 10:32:19'),
+(48, 17, 15, 'stop', '00:03:38', 0, '2023-12-27 16:02:23', '2023-12-27 10:32:23'),
+(49, 17, 15, 'start', '00:03:38', 0, '2023-12-27 16:02:25', '2023-12-27 10:32:25'),
+(50, 17, 15, 'stop', '00:03:41', 0, '2023-12-27 16:02:30', '2023-12-27 10:32:30');
 
 --
 -- Indexes for dumped tables
@@ -1325,6 +1479,12 @@ ALTER TABLE `tasks`
   ADD KEY `assign_to` (`assign_to`);
 
 --
+-- Indexes for table `time_logs`
+--
+ALTER TABLE `time_logs`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `upsales`
 --
 ALTER TABLE `upsales`
@@ -1363,13 +1523,13 @@ ALTER TABLE `assign_logs`
 -- AUTO_INCREMENT for table `chats`
 --
 ALTER TABLE `chats`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `clients`
 --
 ALTER TABLE `clients`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=189;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=197;
 
 --
 -- AUTO_INCREMENT for table `closers`
@@ -1381,25 +1541,25 @@ ALTER TABLE `closers`
 -- AUTO_INCREMENT for table `collections`
 --
 ALTER TABLE `collections`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=178;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=180;
 
 --
 -- AUTO_INCREMENT for table `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT for table `contact_details`
 --
 ALTER TABLE `contact_details`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT for table `developer_jobs`
 --
 ALTER TABLE `developer_jobs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
@@ -1411,19 +1571,19 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT for table `group_members`
 --
 ALTER TABLE `group_members`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `group_names`
 --
 ALTER TABLE `group_names`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `log_histories`
 --
 ALTER TABLE `log_histories`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `migrations`
@@ -1441,7 +1601,7 @@ ALTER TABLE `personal_access_tokens`
 -- AUTO_INCREMENT for table `sales`
 --
 ALTER TABLE `sales`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=196;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=197;
 
 --
 -- AUTO_INCREMENT for table `tasks`
@@ -1450,22 +1610,28 @@ ALTER TABLE `tasks`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
+-- AUTO_INCREMENT for table `time_logs`
+--
+ALTER TABLE `time_logs`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
+
+--
 -- AUTO_INCREMENT for table `upsales`
 --
 ALTER TABLE `upsales`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `workhistories`
 --
 ALTER TABLE `workhistories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- Constraints for dumped tables

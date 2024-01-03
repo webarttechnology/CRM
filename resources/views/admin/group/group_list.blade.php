@@ -1,7 +1,6 @@
 @section('title', 'Group list')
 @extends('admin.master.layout')
 @section('content')
-
     <div class="page-wrapper" style="min-height: 333px;">
         <!-- Page Content -->
         <div class="content container-fluid">
@@ -92,9 +91,7 @@
                                                 <tbody>
                                                     @foreach ($groupname as $val)
                                                         <tr>
-                                                            <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
-                                                                <strong>{{ $val->name }}</strong>
-                                                            </td>
+                                                            <td><strong>{{ $val->name }}</strong></td>
                                                             <td>{{ $val->status }}</td>
                                                             <td class="text-center">
                                                                 <div class="dropdown dropdown-action">
@@ -144,7 +141,4 @@
         </div>
         <!-- /Page Content -->
     </div>
-@endsection
-@section('script')
-    <script></script>
 @endsection

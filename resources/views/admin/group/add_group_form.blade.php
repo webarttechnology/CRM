@@ -7,10 +7,10 @@
         <div class="col-md-12">
 
             @if ($group_data)
-                <form method="post" action="{{ route('group.update.suceess') }}" class="form-save">
+                <form method="post" action="{{ route('group.update.suceess') }}" class="form-save save">
                     <input type="hidden" name="update_id" value="{{ $group_data->id }}" />
                 @else
-                    <form method="post" action="{{ route('group.new.insert.suceess') }}" class="form-save">
+                <form method="post" action="{{ route('group.new.insert.suceess') }}" class="form-save save">
             @endif
             @csrf
             <div class="row">

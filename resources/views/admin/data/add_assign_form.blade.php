@@ -5,7 +5,7 @@
 <div class="modal-body">
         <div class="row">
         <div class="col-md-12">
-          <form method="post" action="{{ route('sales.assign.success') }}" class="assign-form-save">
+          <form method="post" action="{{ route('sales.assign.success') }}" class="assign-form-save save">
               <input type="hidden" name="update_id" value="{{ $data->id }}"/>
               @csrf
               <div class="row">

@@ -64,6 +64,7 @@
 
 {{-- Clock Timer --}}
 <script src="{{ url('panel/assets/js/clock.js') }}"></script>
+<script src="{{ url('panel/assets/js/main.js') }}"></script>
 
 
 @if (session('successmsg'))

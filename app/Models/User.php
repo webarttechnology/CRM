@@ -38,6 +38,14 @@ class User extends Authenticatable
             ->count();
     }
 
+
+    public function group_member()
+    {
+        return $this->hasMany(GroupMember::class);
+    }
+
+
+
     /**
      * The attributes that should be hidden for serialization.
      *

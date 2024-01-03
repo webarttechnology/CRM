@@ -8,6 +8,7 @@ use App\Models\Workhistory;
 use Illuminate\Http\Request;
 use App\Models\Developertask;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class DeveloperController extends Controller
 {
@@ -27,13 +28,27 @@ class DeveloperController extends Controller
             $endDate = date('Y-m-d H:i:s', strtotime($request->input('end_date')));
             $totalTime = getTimeInterval($startDate, $endDate);
 
-            $request->validate([
-                'sale_id' => 'required',
-                'assign_to' => 'required',
-                'title' => 'required',
-                'start_date' => 'required',
-                'end_date' => 'required',
+            // $request->validate([
+            //     'sale_id' => 'required',
+            //     'assign_to' => 'required',
+            //     'title' => 'required',
+            //     'start_date' => 'required',
+            //     'end_date' => 'required',
+            // ]);
+
+            $validator   =  Validator::make($request->all(), [
+                'sale_id'       => 'required',
+                'assign_to'     => 'required',
+                'title'         => 'required',
+                'start_date'    => 'required',
+                'end_date'      => 'required',
+                'details'       => 'required',
+                'remarks'       => 'required',
             ]);
+            
+            if ($validator->fails()) {
+                return response()->json(['status' => 'errors', 'message' => $validator->errors()->all()]);
+            }
 
             $assignTo = json_encode($request->input('assign_to'));
 
@@ -88,13 +103,23 @@ class DeveloperController extends Controller
 
 
             if ($task) {
-                return response()->json(
-                    ['status' => 1, 
-                    'successmsg' => $request->input('update_id') == '' ? 'New job has been created successfully.' : 'New job has been updated successfully']
-                );
+
+                if($request->input('update_id')){
+                    return response()->json(['status' => 'success', 'type' => 'update', 'message' => 'New job has been updated successfully']);
+                }else{
+                    return response()->json(['status' => 'success', 'type' => 'store', 'message' => 'New job has been created successfully.']);
+                }
+
+                // return response()->json(
+                //     ['status' => 1, 
+                //     'successmsg' => $request->input('update_id') == '' ? 'New job has been created successfully.' : 'New job has been updated successfully']
+                // );
+
             } else {
-                return response()->json(['status' => 0, 'errmsg' => 'Job creation error. Please try again']);
+                return response()->json(['status' => 'error', 'message' => 'Job creation error. Please try again']);
+                // return response()->json(['status' => 0, 'errmsg' => 'Job creation error. Please try again']);
             }
+
         } elseif ($request->method() == 'GET') {
             $isEdit = $isDelete = $isShow = 0;
             if (in_array(Auth::user()->role_id, ['6', '7'])) {

@@ -85,8 +85,7 @@
                                                     @foreach ($user as $val)
                                                         <tr>
                                                             <td>{{ ++$loop->index }}</td>
-                                                            <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
-                                                                <strong>{{ $val->name }}</strong></td>
+                                                            <td><strong>{{ $val->name }}</strong></td>
                                                             <td>{{ $val->email }}</td>
                                                             <td>{{ $role[$val->role_id] }}</td>
                                                             <td>{!! $val->is_active == 1
@@ -129,38 +128,38 @@
 @section('script')
     <script>
         $(document).ready(function() {
-            $(document).on("click", ".form-submit", function(e) {
-		        e.preventDefault();
-                if($("#name").val() == ""){
-                    toastr.error('User name is a require field!');
-                    $("#name").focus();
-                    $("#name").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
-                    return false;
-                }else if($("#email").val() == ""){
-                    toastr.error('Email id is a require field!');
-                    $("#email").focus();
-                    $("#email").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
-                    return false;
-                }else if($("#role_id").val() == ""){
-                    toastr.error('Role id is a require field!');
-                    $("#role_id").focus();
-                    $("#role_id").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
-                    return false;
-                }else if($("#password").val() == ""){
-                    toastr.error('Password is a require field!');
-                    $("#password").focus();
-                    $("#password").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
-                    return false;
-                }else if($("#password").val() != $("#confirm_password").val()){
-                    toastr.error('Confirm Password does not match!');
-                    $("#confirm_password").focus();
-                    $("#confirm_password").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
-                    return false;
-                } else{
-                  $('.save').submit();
-             } 
+    //         $(document).on("click", ".form-submit", function(e) {
+	// 	        e.preventDefault();
+    //             if($("#name").val() == ""){
+    //                 toastr.error('User name is a require field!');
+    //                 $("#name").focus();
+    //                 $("#name").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+    //                 return false;
+    //             }else if($("#email").val() == ""){
+    //                 toastr.error('Email id is a require field!');
+    //                 $("#email").focus();
+    //                 $("#email").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+    //                 return false;
+    //             }else if($("#role_id").val() == ""){
+    //                 toastr.error('Role id is a require field!');
+    //                 $("#role_id").focus();
+    //                 $("#role_id").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+    //                 return false;
+    //             }else if($("#password").val() == ""){
+    //                 toastr.error('Password is a require field!');
+    //                 $("#password").focus();
+    //                 $("#password").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+    //                 return false;
+    //             }else if($("#password").val() != $("#confirm_password").val()){
+    //                 toastr.error('Confirm Password does not match!');
+    //                 $("#confirm_password").focus();
+    //                 $("#confirm_password").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+    //                 return false;
+    //             } else{
+    //               $('.save').submit();
+    //          } 
 
-	 });
+	//  });
 
         });
     </script>

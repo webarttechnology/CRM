@@ -120,7 +120,7 @@ class WorkhistoryController extends Controller
 
             }else if($request->type == 'stop'){
 
-                Developertask::where('id', $request->type)->update(['status'=> 3]);
+                Developertask::where('id', $request->id)->update(['status'=> 3]);
 
             }
 
@@ -220,7 +220,7 @@ class WorkhistoryController extends Controller
             $data  = [
                 'user_id'       => Auth::user()->id,
                 'start_time'    => $startTime->format('H:i:s'),
-                'timer_data'    =>  $request->last_counter_time,
+                'timer_data'    =>  $request->last_counter_times,
                 'type' =>  $work->type,
                 'status' =>   $work->status,
             ];

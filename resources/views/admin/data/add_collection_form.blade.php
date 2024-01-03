@@ -6,10 +6,10 @@
         <div class="row">
         <div class="col-md-12">
           @if ($collection_data)
-          <form method="post" action="{{ route('collection.update.success') }}" class="form-save">
+          <form method="post" action="{{ route('collection.update.success') }}" class="form-save save">
           <input type="hidden" name="update_id" id="update_id" value="{{ $collection_data->id }}"> 
           @else
-          <form method="post" action="{{ route('collection.add.success') }}" class="form-save">
+          <form method="post" action="{{ route('collection.add.success') }}" class="form-save save">
           @endif
             @csrf
             <div class="row">
@@ -76,7 +76,7 @@
                  
                   <div class="col-md-6 mb-3">
                         <label class="form-label" for="sale_date">{{ __("Sale Date") }} <span class="text-danger">*</span></label>
-                        <input  type="date" name="sale_date" id="sale_date" class="form-control" value="{{ $collection_data?->sale_date }}">  
+                        <input  type="date" name="sale_date" id="sale_date" class="form-control" min="{{ date('Y-m-d') }}" value="{{ $collection_data?->sale_date }}">  
                         @if($errors->has('sale_date'))
                         <small class="text-danger">{{ $errors->first('sale_date') }}</small>
                         @endif             

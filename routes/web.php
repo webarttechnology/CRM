@@ -184,7 +184,6 @@ Route::controller(App\Http\Controllers\DeveloperController::class)
     Route::get('task/delete', 'delete')->name("developer.task.delete");
     Route::get('task/show/{id}', 'show')->name("developer.task.show");
     Route::post('get-assign-to', 'get_assign_to')->name("developer.get-assign-to");
-
 })->middleware(['auth']);
 
 Route::controller(App\Http\Controllers\WorkhistoryController::class)

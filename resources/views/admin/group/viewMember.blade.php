@@ -10,19 +10,14 @@
                 id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
                 <thead>
                     <tr role="row">
-                        <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
-                            colspan="1" aria-label="Task Name: activate to sort column descending"
-                            aria-sort="ascending"> NAME</th>
-                      
-                        <th class="text-end sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
-                            colspan="1" aria-label="Actions: activate to sort column ascending">ACTIONS
-                        </th>
+                        <th>NAME</th>
+                        <th>ACTIONS</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($group_member as $data)
                         <tr>
-                            <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
+                            <td>
                                 <strong>{{ $data->user->name }}</strong>
                             </td>
                             <td class="text-center">
@@ -41,10 +36,6 @@
                     @endforeach
                 </tbody>
             </table>
-
-
         </div>
     </div>
 </div>
-
-<script></script>

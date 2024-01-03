@@ -71,67 +71,28 @@
                                             <table class="table table-striped table-nowrap custom-table mb-0 datatable dataTable no-footer" id="DataTables_Table_0" role="grid"  aria-describedby="DataTables_Table_0_info">
                                                 <thead>
                                                         <tr role="row">
-                                                            <th class="sorting_asc" tabindex="0"
-                                                                aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
-                                                                aria-label="Task Name: activate to sort column descending"
-                                                                aria-sort="ascending">CLIENT NAME</th>
-                                                            <th class="sorting" tabindex="0"
-                                                                aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
-                                                                aria-label="Percent Complete Indicator: activate to sort column ascending"
-                                                                >PROJECT NAME</th>
-                                                            <th class="sorting" tabindex="0"
-                                                                aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
-                                                                aria-label="Responsible User: activate to sort column ascending"
-                                                                >ASSIGN TO</th>
-                                                            <th class="sorting" tabindex="0"
-                                                                aria-controls="DataTables_Table_0" rowspan="1"
-                                                                colspan="1"
-                                                                aria-label="Due Date: activate to sort column ascending"
-                                                                >PROJECT TYPE</th>
-    
-                                                                
-                                                            <th class="sorting" tabindex="0"
-                                                                aria-controls="DataTables_Table_0" rowspan="1"
-                                                                colspan="1"
-                                                                aria-label="Task Owner: activate to sort column ascending"
-                                                                >CLOSER NAME</th>
-                                                            <th class="sorting" tabindex="0"
-                                                                aria-controls="DataTables_Table_0" rowspan="1"
-                                                                colspan="1"
-                                                                aria-label="Status: activate to sort column ascending"
-                                                                >GROSS AMOUNT</th>
-                                                            <th class="sorting" tabindex="0"
-                                                                aria-controls="DataTables_Table_0" rowspan="1"
-                                                                colspan="1"
-                                                                aria-label=": activate to sort column ascending"
-                                                                >NET AMOUNT</th>
-                                                            <th class="sorting" tabindex="0"
-                                                                aria-controls="DataTables_Table_0" rowspan="1"
-                                                                colspan="1"
-                                                                aria-label=": activate to sort column ascending"
-                                                                >SALE DATE</th>
-                                                            <th class="sorting" tabindex="0"
-                                                                aria-controls="DataTables_Table_0" rowspan="1"
-                                                                colspan="1"
-                                                                aria-label=": activate to sort column ascending"
-                                                                >STATUS</th>
-                                                            <th class="text-end sorting" tabindex="0"
-                                                                aria-controls="DataTables_Table_0" rowspan="1"
-                                                                colspan="1"
-                                                                aria-label="Actions: activate to sort column ascending"
-                                                                >ACTIONS</th>
+                                                            <th>CLIENT NAME</th>
+                                                            <th>PROJECT NAME</th>
+                                                            <th>ASSIGN TO</th>
+                                                            {{-- <th>PROJECT TYPE</th> --}}
+                                                            {{-- <th>CLOSER NAME</th>
+                                                            <th>GROSS AMOUNT</th>
+                                                            <th>NET AMOUNT</th> --}}
+                                                            <th>SALE DATE</th>
+                                                            <th>STATUS</th>
+                                                            <th>ACTIONS</th>
                                                         </tr>
                                                 </thead>
                                                 <tbody>
                                                     @foreach($data as $val)
                                                     <tr class={{ Auth::user()->id ==1?getcommentstatus($val->id)==0?'text-danger':'':'' }}>
-                                                    <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{ $val->client_name }}</strong></td>
-                                                    <td>{{ $val->project_name }}</td>
+                                                    <td><strong>{{ $val->client_name }}</strong></td>
+                                                    <td>{{ Str::limit($val->project_name, 30, '...') }}</td>
                                                     <td>{{  assignto($val->id) }}</td>
-                                                    <td>{{ $projectType[$val->project_type] }}</td>
-                                                    <td>{{ $val->closer_name }}</td>
+                                                    {{-- <td>{{ $projectType[$val->project_type] }}</td> --}}
+                                                    {{-- <td>{{ $val->closer_name }}</td>
                                                     <td>{{ number_format($val->gross_amount, 2) }}</td>
-                                                    <td>{{ number_format($val->net_amount, 2) }}</td>
+                                                    <td>{{ number_format($val->net_amount, 2) }}</td> --}}
                                                     <td>{{ date("d/m/Y", strtotime($val->sale_date)) }}</td>
                                                     <td>{{ $val->status }}</td>
                                                    
@@ -179,14 +140,14 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Client Add</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
                   <div class="card">
                      <div class="card-body">
                         <span class="text-success">{{ Session::get('successmsg') }}</span>
-                        <form method="post" action="{{ route('sales.client.insert.suceess') }}" class="client-save">
+                        <form method="post" action="{{ route('sales.client.insert.suceess') }}" class="client-save save">
                           @csrf
                           <div class="row">
                                   <div class="col-md-6 mb-3">
@@ -471,47 +432,47 @@ $(document).on("keyup", ".pendingamount", function(e) {
 
     /////// Client Add Section
     
-    $(document).on("click", ".add-client-form-submit", function(e) {
-		e.preventDefault();
+    // $(document).on("click", ".add-client-form-submit", function(e) {
+	// 	e.preventDefault();
 
-        if($("#name").val() == ""){
-            toastr.error('Client name is a require field!');
-            $("#name").focus();
-            $("#name").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
-            return false;
-        }else if($("#country_name").val() == ""){
-            toastr.error('Country name is a require field!');
-            $("#country_name").focus();
-            $("#country_name").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
-            return false;
-        }else if($("#email").val() == ""){
-            toastr.error('Email id is a require field!');
-            $("#email").focus();
-            $("#email").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
-            return false;
-        }else if($("#address").val() == ""){
-            toastr.error('Address is a require field!');
-            $("#address").focus();
-            $("#address").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
-            return false;
-        }else if($("#client_agent_name").val() == ""){
-            toastr.error('Agent name is a require field!');
-            $("#client_agent_name").focus();
-            $("#client_agent_name").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
-            return false;
-        }else if($("#client_closer_name").val() == ""){
-            toastr.error('Closer name is a require field!');
-            $("#client_closer_name").focus();
-            $("#client_closer_name").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
-            return false;
-        }else if($("#remarks").val() == ""){
-            toastr.error('Remark is a require field!');
-            $("#remarks").focus();
-            $("#remarks").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
-            return false;
-        }else{
-            $('.client-save').submit();
-        } 
+    //     if($("#name").val() == ""){
+    //         toastr.error('Client name is a require field!');
+    //         $("#name").focus();
+    //         $("#name").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+    //         return false;
+    //     }else if($("#country_name").val() == ""){
+    //         toastr.error('Country name is a require field!');
+    //         $("#country_name").focus();
+    //         $("#country_name").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+    //         return false;
+    //     }else if($("#email").val() == ""){
+    //         toastr.error('Email id is a require field!');
+    //         $("#email").focus();
+    //         $("#email").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+    //         return false;
+    //     }else if($("#address").val() == ""){
+    //         toastr.error('Address is a require field!');
+    //         $("#address").focus();
+    //         $("#address").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+    //         return false;
+    //     }else if($("#client_agent_name").val() == ""){
+    //         toastr.error('Agent name is a require field!');
+    //         $("#client_agent_name").focus();
+    //         $("#client_agent_name").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+    //         return false;
+    //     }else if($("#client_closer_name").val() == ""){
+    //         toastr.error('Closer name is a require field!');
+    //         $("#client_closer_name").focus();
+    //         $("#client_closer_name").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+    //         return false;
+    //     }else if($("#remarks").val() == ""){
+    //         toastr.error('Remark is a require field!');
+    //         $("#remarks").focus();
+    //         $("#remarks").css({"border-color": "red", "border-width":"1px", "border-style":"solid"});
+    //         return false;
+    //     }else{
+    //         $('.client-save').submit();
+    //     } 
 });
 
 

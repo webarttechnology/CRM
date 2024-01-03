@@ -872,7 +872,7 @@
 
 .groupdate {
   text-align: center;
-  background-color: yellow;
+  background-color: #57625b;
   position: sticky;
   color: #fff;
   width: 100%;
@@ -883,4 +883,8 @@
 
 .tick {
     margin-left: 5px;
+}
+
+.group_user_name {
+    color: #0086ff;
 }

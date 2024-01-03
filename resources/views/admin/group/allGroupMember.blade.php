@@ -11,7 +11,7 @@
                     <h3 class="page-title m-0">
                         <span class="page-title-icon bg-gradient-primary text-white me-2">
                             <i class="feather-check-square"></i>
-                        </span> Group list
+                        </span> Group Member list
                     </h3>
                 </div>
                 <div class="col p-0 text-end">
@@ -50,21 +50,16 @@
                                                 aria-describedby="DataTables_Table_0_info">
                                                 <thead>
                                                     <tr role="row">
-                                                        <th class="sorting_asc" tabindex="0"
-                                                            aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
-                                                            aria-label="Task Name: activate to sort column descending"
-                                                            aria-sort="ascending"> NAME</th>
+                                                        <th> NAME</th>
 
-                                                        <th class="text-end sorting" tabindex="0"
-                                                            aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
-                                                            aria-label="Actions: activate to sort column ascending">ACTIONS
+                                                        <th>ACTIONS
                                                         </th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     @foreach ($group_member as $data)
                                                         <tr>
-                                                            <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
+                                                            <td>
                                                                 <strong>{{ $data->user->name }}</strong>
                                                             </td>
                                                             <td class="text-center">

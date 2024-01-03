@@ -281,7 +281,7 @@
                 <div class="chat">
                     <div class="chat-header clearfix">
                         <div class="row">
-                            <div class="col-lg-5">
+                            {{-- <div class="col-lg-5">
                                 <div class="chat-about lstsec w-100">
                                     <ul class="p-0">
                                         @php $project_type = project_type(); @endphp
@@ -295,24 +295,33 @@
                                         </li>
                                     </ul>
                                 </div>
+                            </div> --}}
+                            <div class="col-md-12">
+                                        <div class="row justify-content-center">
+                                            <div class="col-md-12 row">
+                                                <div class="col-md-2">Project Name :</div>
+                                                <div class="col-md-4"> <span>{{ $data->project_name }}</span></div>
+                                                <div class="col-md-2">Task Title :</div>
+                                                <div class="col-md-4"> <span>{{ $data->title }}</span></div>
+                                                <div class="col-md-2">Task Details :</div>
+                                                <div class="col-md-10"> <span>{!! $data->details !!}</span></div>
+                                                <div class="col-md-2">Active Date :</div>
+                                                <div class="col-md-4">
+                                                    <span>{{ date('jS M, h:i:s a', strtotime($data->start_date)) }}</span>
+                                                </div>
+                                                <div class="col-md-2">Deadline :</div>
+                                                <div class="col-md-4">
+                                                    <span>{{ date('jS M, h:i:s a', strtotime($data->end_date)) }}</span>
+                                                </div>
+                                                <div class="col-md-2">Created By :</div>
+                                                <div class="col-md-4"> <span>{{ $data->assign_by_name }}</span></div>
+                                                <div class="col-md-2">Created Date :</div>
+                                                <div class="col-md-4">
+                                                    <span>{{ date('d/m/Y h:i:s a', strtotime($data->created_at)) }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
                             </div>
-                            <div class="col-lg-2">
-
-                            </div>
-                            <div class="col-lg-5">
-                                <div class="chat-about lstsec w-100">
-                                    <ul class="p-0">
-                                        <li><strong>Project Name :</strong></li>
-                                        <li>{{ $sales->project_name ?? null }}</li>
-                                        <li><strong>Sale Date :</strong></li>
-                                        <li>{{ date('Y-m-d', strtotime($sales?->sale_date)) }}</li>
-
-                                    </ul>
-                                </div>
-                            </div>
-
-
-
                         </div>
                     </div>
                     <div class="chat-history">

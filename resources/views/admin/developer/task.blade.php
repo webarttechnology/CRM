@@ -66,10 +66,10 @@
                                         <thead>
                                             <tr>
                                                 <th>Sales name</th>
-                                                <th>Assign By</th>
+                                                {{-- <th>Assign By</th> --}}
                                                 <th>Task title</th>
-                                                <th>Start date & time</th>
-                                                <th>End date & time</th>
+                                                {{-- <th>date & time</th> --}}
+                                                {{-- <th>End date & time</th> --}}
                                                 <th>Status</th>
                                                 <th>Created At</th>
                                                 <th>Actions</th>
@@ -79,16 +79,17 @@
                                             @foreach ($data as $val)
                                                 <tr>
                                                     <td>
-                                                        <a class="dropdown-item get-all-comments open-module-form"
-                                                            data-id="{{ $val->id }}" data-type="add_task"
-                                                            data-sale="comment"
-                                                            href="{{ route('comment.index', ['taskid' => $val->id]) }}"><i
-                                                                class="bx bx-edit-alt me-1"></i>{{ $sales[$val->sale_id] }}</a>
+                                                    <a href="#" class="mr-5 open-module-form" data-id="{{ $val->id }}" data-type="add_task" data-sale="show"><i class="feather-eye"></i> </a>
+                                                    <span>{{ $sales[$val->sale_id] }}</span>
                                                     </td>
-                                                    <td>{{ $assignBy[$val->assign_by] }}</td>
-                                                    <td>{{ $val->title }}</td>
-                                                    <td>{{ date('d/m/Y h:i:s A', strtotime($val->start_date)) }}</td>
-                                                    <td>{{ date('d/m/Y h:i:s A', strtotime($val->end_date)) }}</td>
+                                                    {{-- <td>{{ $assignBy[$val->assign_by] }}</td> --}}
+                                                    <td>{{ Str::limit($val->title, 20, '...') }}</td>
+                                                    {{-- <td>
+                                                        Start: {{ date('d/m/Y h:i:s A', strtotime($val->start_date)) }}
+                                                        <br>
+                                                        End: {{ date('d/m/Y h:i:s A', strtotime($val->start_date)) }}
+                                                    </td> --}}
+                                                    {{-- <td>{{ date('d/m/Y h:i:s A', strtotime($val->end_date)) }}</td> --}}
                                                     <td>{{ getProjectStatus($val->status) }}</td>
                                                     <td>{{ $val->created_at->format('d-M-Y') }}</td>
 
@@ -189,80 +190,78 @@
 
 
                 //  $(document).on("submit", "#taskform", function(e) {
-                $(document).on("click", ".submit-btn", function(e) {
-                    e.preventDefault();
-                    // CKEDITOR.instances.details.updateElement();
+                // $(document).on("click", ".submit-btn", function(e) {
+                //     e.preventDefault();
+                //     // CKEDITOR.instances.details.updateElement();
 
-                    $('[id*=_formerrmsg]').text('');
+                //     $('[id*=_formerrmsg]').text('');
 
-                    if ($("#sale_id").val() == "") {
-                        $('#sale_id_formerrmsg').text("Sale name is a required field");
-                        $('#sale_id').focus();
-                        return false;
-                    } else if ($("#assign_type").val() == "") {
-                        $('#assigntype_formerrmsg').text("Assign type is a required field");
-                        return false;
-                    } else if ($("#assign_to").val() == "") {
-                        $('#assignto_formerrmsg').text("Assign to is a required field");
-                        return false;
-                    } else if ($("#title").val() == "") {
-                        $('#title_formerrmsg').text("Title is a required field");
-                        return false;
-                    } else if ($("#start_date").val() == "") {
-                        $('#start_date_formerrmsg').text("Start date is a required field");
-                        return false;
-                    } else if ($("#end_date").val() == "") {
-                        $('#end_date_formerrmsg').text("End date is a required field");
-                        return false;
-                    } else {
-                        $.ajax({
-                            url: "{{ route('developer.task.success') }}",
-                            type: "POST",
-                            data: {
-                                "_token": "{{ csrf_token() }}",
-                                sale_id: $("#sale_id").val(),
-                                assign_to: $("#assign_to").val(),
-                                title: $("#title").val(),
-                                details: $("#details").val(),
-                                start_date: $("#start_date").val(),
-                                end_date: $("#end_date").val(),
-                                remarks: $("#remarks").val(),
-                                update_id: $("#update_id").val(),
-                            },
-                            success: function(response) {
-                                if (response.status == 1) {
-                                    toastr.success(response.successmsg);
-                                    $(".text-success").text(response.successmsg)
-                                    $('#exampleModal').modal('hide');
-                                    window.location.href = "/developer/task";
-                                } else {
-                                    toastr.success(response.errmsg);
-                                    $(".text-err").text(response.errmsg)
-                                }
-                            },
-                            error: function(response) {
-                                $('#sale_id_formerrmsg').text(response.responseJSON
-                                    .errors.sale_id);
-                                $('#assignto_formerrmsg').text(response.responseJSON
-                                    .errors
-                                    .assign_to);
-                                $('#title_formerrmsg').text(response.responseJSON.errors
-                                    .title);
-                                $('#details_formerrmsg').text(response.responseJSON
-                                    .errors.details);
-                                $('#start_date_formerrmsg').text(response.responseJSON
-                                    .errors
-                                    .start_date);
-                                $('#end_date_formerrmsg').text(response.responseJSON
-                                    .errors
-                                    .end_date);
-                            },
-                        })
-                    }
+                //     if ($("#sale_id").val() == "") {
+                //         $('#sale_id_formerrmsg').text("Sale name is a required field");
+                //         $('#sale_id').focus();
+                //         return false;
+                //     } else if ($("#assign_type").val() == "") {
+                //         $('#assigntype_formerrmsg').text("Assign type is a required field");
+                //         return false;
+                //     } else if ($("#assign_to").val() == "") {
+                //         $('#assignto_formerrmsg').text("Assign to is a required field");
+                //         return false;
+                //     } else if ($("#title").val() == "") {
+                //         $('#title_formerrmsg').text("Title is a required field");
+                //         return false;
+                //     } else if ($("#start_date").val() == "") {
+                //         $('#start_date_formerrmsg').text("Start date is a required field");
+                //         return false;
+                //     } else if ($("#end_date").val() == "") {
+                //         $('#end_date_formerrmsg').text("End date is a required field");
+                //         return false;
+                //     } else {
+                //         $.ajax({
+                //             url: "{{ route('developer.task.success') }}",
+                //             type: "POST",
+                //             data: {
+                //                 "_token": "{{ csrf_token() }}",
+                //                 sale_id: $("#sale_id").val(),
+                //                 assign_to: $("#assign_to").val(),
+                //                 title: $("#title").val(),
+                //                 details: $("#details").val(),
+                //                 start_date: $("#start_date").val(),
+                //                 end_date: $("#end_date").val(),
+                //                 remarks: $("#remarks").val(),
+                //                 update_id: $("#update_id").val(),
+                //             },
+                //             success: function(response) {
+                //                 if (response.status == 1) {
+                //                     toastr.success(response.successmsg);
+                //                     $(".text-success").text(response.successmsg)
+                //                     $('#exampleModal').modal('hide');
+                //                     window.location.href = "/developer/task";
+                //                 } else {
+                //                     toastr.success(response.errmsg);
+                //                     $(".text-err").text(response.errmsg)
+                //                 }
+                //             },
+                //             error: function(response) {
+                //                 $('#sale_id_formerrmsg').text(response.responseJSON
+                //                     .errors.sale_id);
+                //                 $('#assignto_formerrmsg').text(response.responseJSON
+                //                     .errors
+                //                     .assign_to);
+                //                 $('#title_formerrmsg').text(response.responseJSON.errors
+                //                     .title);
+                //                 $('#details_formerrmsg').text(response.responseJSON
+                //                     .errors.details);
+                //                 $('#start_date_formerrmsg').text(response.responseJSON
+                //                     .errors
+                //                     .start_date);
+                //                 $('#end_date_formerrmsg').text(response.responseJSON
+                //                     .errors
+                //                     .end_date);
+                //             },
+                //         })
+                //     }
 
-                });
-
-
+                // });
 
 
                 $(document).on("click", ".clickEdit", function(e) {
