@@ -70,9 +70,9 @@ class SocketController extends Controller implements MessageComponentInterface
                             $hrefValue = null;
                         if (preg_match('/href=[\'"]?([^\'" >]+)/', $row['last_message'], $matches)) {
                             $hrefValue = isset($matches[1]) ? $matches[1] : null;
-                            $last_message = Str::limit(strip_tags($hrefValue), 15, '...');
+                            $last_message = Str::limit(strip_tags($hrefValue), 10, '...');
                         }else{
-                            $last_message = Str::limit(strip_tags($row['last_message']), 15, '...');
+                            $last_message = Str::limit(strip_tags($row['last_message']), 10, '...');
                         }
                     }else{
                             $last_message = '';

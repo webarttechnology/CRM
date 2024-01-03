@@ -180,7 +180,7 @@ function LogHistoryAdd($client_id, $sale_id, $user_id , $remark) {
         ->first();
 
 
-        $unread_chat_data = Chat::where('message_status', '!=', 'Read')->where('from_user_id', $user->id)->whereNotNull('group_id',)->count();
+        $unread_chat_data = Chat::where('message_status', '!=', 'Read')->where('from_user_id', $user->id)->count();
 
         $recentMessagesUser->push([
             'id'            => $user->id,
