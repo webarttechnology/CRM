@@ -28,8 +28,8 @@
                                 <div class="profile-img-wrap">
                                     <div class="profile-img">
                                         <a href="#">
-                                              @if (Auth::user()->img)
-                                              <img alt="" src="{{ url(Auth::user()->img) }}">
+                                              @if (Auth::user()->user_image)
+                                              <img alt="" src="{{ url(Auth::user()->user_image) }}">
                                               @else
                                               <img alt="" src="{{ url('panel/assets/img/profiles/user-profile.png') }}">
                                               @endif
@@ -103,68 +103,68 @@
 <script>
     $(document).ready(function(){
 
-        $(document).on("submit", "#editprofile", function(event) {
+        // $(document).on("submit", "#editprofile", function(event) {
 
-                event.preventDefault();
+        //         event.preventDefault();
                 
-                $('[id*=_errmsg]').text('');
+        //         $('[id*=_errmsg]').text('');
 
-                if($("#name").val() == ""){
-                    $('#name_errmsg').text("Name is a required field");
-                    $('#name_errmsg').focus();
-                    return false;
-                }else if($("#email").val() == ""){
-                    $('#email_errmsg').text("Email is a required field");
-                    return false;
-                }else if($("#mobile_no").val() == ""){
-                    $('#mobile_no_errmsg').text("Moile no is a required field");
-                    return false;
-                }else if($("#bio").val() == ""){
-                    $('#bio_errmsg').text("Personal details is a required field");
-                    return false;
-                }else{               
-                    const xCsrfToken = "{{ csrf_token() }}";
-                    $.ajaxSetup({
-                        headers: {
-                            'X-CSRF-TOKEN': xCsrfToken
-                        }
-                    });
+        //         if($("#name").val() == ""){
+        //             $('#name_errmsg').text("Name is a required field");
+        //             $('#name_errmsg').focus();
+        //             return false;
+        //         }else if($("#email").val() == ""){
+        //             $('#email_errmsg').text("Email is a required field");
+        //             return false;
+        //         }else if($("#mobile_no").val() == ""){
+        //             $('#mobile_no_errmsg').text("Moile no is a required field");
+        //             return false;
+        //         }else if($("#bio").val() == ""){
+        //             $('#bio_errmsg').text("Personal details is a required field");
+        //             return false;
+        //         }else{               
+        //             const xCsrfToken = "{{ csrf_token() }}";
+        //             $.ajaxSetup({
+        //                 headers: {
+        //                     'X-CSRF-TOKEN': xCsrfToken
+        //                 }
+        //             });
     
-                    var myformData = new FormData();
-                    var photo = $('#image').prop('files')[0];
-                    myformData.append('name', $("#name").val());
-                    myformData.append('email', $("#email").val());
-                    myformData.append('mobile_no', $("#mobile_no").val());
-                    myformData.append('bio', $("#bio").val());
-                    myformData.append('image', photo);
+        //             var myformData = new FormData();
+        //             var photo = $('#image').prop('files')[0];
+        //             myformData.append('name', $("#name").val());
+        //             myformData.append('email', $("#email").val());
+        //             myformData.append('mobile_no', $("#mobile_no").val());
+        //             myformData.append('bio', $("#bio").val());
+        //             myformData.append('image', photo);
 
-                    console.log(photo);
+        //             console.log(photo);
     
-                    $.ajax({
-                      url: "{{ route('user.profile.success') }}",
-                      type:"POST",
-                      enctype: 'multipart/form-data',
-                      processData: false, // tell jQuery not to process the data
-                      contentType: false, // tell jQuery not to set contentType
-                      data:myformData,
-                        success:function(response){
-                            if(response.status == 1){
-                                $(".text-success").text(response.successmsg)
-                                setTimeout(function(){ // wait for 1 secs(1000)
-                                    location.reload(); // then reload the page
-                                }, 1000);                  
-                            }else{
-                                $(".text-err").text(response.errmsg)
-                            }
-                        },
-                        error: function(response) {  
-                            $('#name_errmsg').text(response.responseJSON.errors.name);
-                            $('#email_errmsg').text(response.responseJSON.errors.email);
-                            $('#mobile_no_errmsg').text(response.responseJSON.errors.mobile_no);
-                        },
-                    })
-                }
-        });
+        //             $.ajax({
+        //               url: "{{ route('user.profile.success') }}",
+        //               type:"POST",
+        //               enctype: 'multipart/form-data',
+        //               processData: false, // tell jQuery not to process the data
+        //               contentType: false, // tell jQuery not to set contentType
+        //               data:myformData,
+        //                 success:function(response){
+        //                     if(response.status == 1){
+        //                         $(".text-success").text(response.successmsg)
+        //                         setTimeout(function(){ // wait for 1 secs(1000)
+        //                             location.reload(); // then reload the page
+        //                         }, 1000);                  
+        //                     }else{
+        //                         $(".text-err").text(response.errmsg)
+        //                     }
+        //                 },
+        //                 error: function(response) {  
+        //                     $('#name_errmsg').text(response.responseJSON.errors.name);
+        //                     $('#email_errmsg').text(response.responseJSON.errors.email);
+        //                     $('#mobile_no_errmsg').text(response.responseJSON.errors.mobile_no);
+        //                 },
+        //             })
+        //         }
+        // });
     });
 </script>  
 @endsection

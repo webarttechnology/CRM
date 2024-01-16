@@ -5,7 +5,7 @@
 <div class="modal-body">
         <div class="row">
         <div class="col-md-12">
-          <form method="post" action="{{ route('user.add.success') }}"  autocomplete="off" id="editprofile" enctype="multipart/form-data">
+          <form method="post" action="{{ route('user.profile.success') }}"  class="save" autocomplete="off"  enctype="multipart/form-data">
               @csrf
             <div class="row">
                     <div class="col-md-6 mb-3">
@@ -28,15 +28,25 @@
                     
                     <div class="col-md-6 mb-3">
                         <label class="form-label" for="image">{{ __('Image') }}</label>
-                        <input type="file" class="form-control" id="image" name="image"/>
+                        <input type="file" class="form-control" id="image" name="profile_image"/>
+                        @if ($userDetails?->user_image)
+                        <input type="hidden" name="old_image" value="{{ $userDetails->user_image }}">
+                        <div class="my-3">
+                            <img src="{{ url($userDetails->user_image) }}" width="100" alt="image">
+                        </div>
+                        @endif
                     </div> 
 
-                    <div class="col-md-12 mb-3">
-                        <label class="form-label" for="bio">{{ __('Personal Details') }}</label>
-                        <textarea class="form-control" id="bio" name="bio" placeholder="Personal Details">{{ $userDetails->bio }}</textarea>
-                        <small class="text-danger" id="bio_errmsg">{{ $errors->first('bio') }}</small>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label" for="password">{{ __('New Password') }}</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Password" />
                     </div> 
 
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label" for="confirm_password">{{ __('Confirm New Password') }}</label>
+                        <input type="password" class="form-control" id="confirm_password" name="password_confirmation" placeholder="Confirm Password" />
+                    </div> 
+                    
             </div>                        
              <div class="row">
                 <div class="col-md-12 text-center">

@@ -41,8 +41,16 @@ class WebSocketServer extends Command
                     new SocketController()
                 )
             ),
-            8090
+            9090
         );
+
+        // Set a high timeout value for the WebSocket server (e.g., 1 day)
+        $server->loop->addPeriodicTimer(86400, function () use ($server) {
+            foreach ($server->getConnections() as $conn) {
+                // Keep the connection alive by sending a ping frame
+                $conn->send('ping');
+            }
+        });
 
         $server->run();
     }

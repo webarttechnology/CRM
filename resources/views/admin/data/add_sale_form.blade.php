@@ -339,10 +339,14 @@
                         placeholder="$" value="{{ $sales_data?->gross_amount - $sales_data?->net_amount }}">
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label" for="sale_date">{{ __('Sale Date') }} <span
-                            class="text-danger">*</span></label>
-                    <input type="date" name="sale_date" id="sale_date" class="form-control"
-                        value="{{ date('Y-m-d', strtotime($sales_data?->sale_date)) }}">
+                    <label class="form-label" for="sale_date">{{ __('Sale Date') }} <span  class="text-danger">*</span></label>
+                       
+                    @if ($sales_data)
+                    <input type="date" name="sale_date" id="sale_date" class="form-control" value="{{ date('Y-m-d', strtotime($sales_data?->sale_date)) }}">
+                    @else
+                    <input type="date" name="sale_date" id="sale_date" class="form-control" min="{{ date('Y-m-d') }}" value="">
+                    @endif
+
                     @if ($errors->has('sale_date'))
                         <small class="text-danger">{{ $errors->first('sale_date') }}</small>
                     @endif

@@ -56,6 +56,8 @@
 <!-- theme JS -->
 <script src="{{ url('panel/assets/js/theme-settings.js') }}"></script>
 
+<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+
 <!-- Toastr JS -->
 <script src="{{ url('panel/assets/plugins/toastr/toastr.min.js') }}"></script>
 
@@ -299,6 +301,8 @@
             });  
         }
 
+     
+        console.log($(`.show-task-timer`).html());
 
         function CurrentTimeStore(){
             var last_counter_time = formatTime(currentTime);
@@ -348,8 +352,10 @@
 
         });
 
-        $(".times_track").click(function() {
-        $("#popUp").slideToggle();
+       
+        $(".times_track").click(function(e) {
+            e.preventDefault();
+            $("#popUp").slideToggle();
         });
 
 
@@ -368,7 +374,53 @@
             });
         });
 
+         var auth_id = '{{ Auth::id() }}';
+
+        Pusher.logToConsole = true;
+
+        var pusher = new Pusher('d2ece4d16be20aa65ad6', {
+        cluster: 'ap2'
+        });
+
+        var channel = pusher.subscribe('notify-user');
+        channel.bind('chat-notify-user', function(data) {
+            // console.log(JSON.stringify(data.message));
+             if(data.message.to_user_id == auth_id){
+                 if(data.message.message_status ==  'Not Send'){
+                    //  alert(JSON.stringify(data.message.chat_message));
+                    if(data.message.user_image){
+                        $userImg = data.message.user_image;
+                    }else{
+                        $userImg = "{{ url('panel/assets/img/profiles/user-profile.png') }}";
+                    }
+                     showNotification(data.message.name, $userImg, data.message.chat_message)
+                 }
+             }
+        });
+
+
+        function showNotification(name, image, msg) {
+
+            var html =` <div class="my-toast-container" id="toast">
+                <div style="display: flex;">
+                    <div><img src="`+image+`" width="40px" height="40px" style="border-radius: 100%;" alt="photo"></div>
+                    <div style="margin-left: 10px;">
+                    <div style="font-weight: 600; font-size: 15px;">`+name+`</div>
+                    <div style="font-size: 13px; font-weight: 400;  margin-top: 5px;">`+msg+`</div>
+                    </div>
+                </div>
+            </div>`;
+
+            $("body").append(html);
+            $('#toast').show();
+
+            setTimeout(function () {
+              $('#toast').fadeOut(1000).remove();
+            }, 3000); 
+        }
+
     });
+
 </script>
 </body>
 

@@ -223,7 +223,7 @@ $(function () {
 			contentType: 'application/json',
 			data: JSON.stringify(data),
 			success: function (response) {
-				console.log('Time data sent to backend:', response);
+				// console.log('Time data sent to backend:', response);
 			},
 			error: function (error) {
 				console.error('Error sending time data:', error);
@@ -236,12 +236,16 @@ $(function () {
 			type: 'POST',
 			url: '/workhistory/previous-work-timer-get',
 			success: function (data) {
-				if (data.works.status !== "end") {
-					// Open your modal here
-					openModalWithData(data);
-				} else {
-					$('#myModal').modal('hide'); // Close the modal
-				}
+				  
+				 if(data){
+					if (data.prevworks.status !== "end") {
+						// Open your modal here
+						openModalWithData(data);
+					} else {
+						$('#myModal').modal('hide'); // Close the modal
+					}
+				 }
+				
 			},
 		});
 	}
@@ -269,7 +273,7 @@ $(function () {
 			},
 			success: function (response) {
 				// Handle the response if needed
-				console.log(response);
+				// console.log(response);
 			},
 		});
 	}
@@ -351,12 +355,16 @@ $(function () {
 			type: 'POST',
 			url: '/workhistory/last-work-timer-get',
 			success: function (data) {
-				if (data.works.status !== "end") {
-					// Open your modal here
-					openModalWithData(data);
-				} else {
-					$('#myModal').modal('hide'); // Close the modal
-				}
+				 
+				  if(data.works){
+					if (data.works.status !== "end") {
+						// Open your modal here
+						openModalWithData(data);
+					} else {
+						$('#myModal').modal('hide'); // Close the modal
+					}
+				  }
+				
 			},
 		});
 	}
@@ -367,7 +375,7 @@ $(function () {
 		$('#myModal').modal('show');
 		// Display specific fields in the input fields
 
-		var timestamp = data.works.created_at;
+		var timestamp = data.prevworks.created_at;
 
 		// Creating a Date object from the timestamp
 		var date = new Date(timestamp);
@@ -378,10 +386,11 @@ $(function () {
 			month: '2-digit',
 			year: 'numeric'
 		});
-		$('#typeInput').val(data.works.type);
-		$('#statusInput').val(data.works.status);
-		$('#createdAtInput').val(data.works.created_at);
-		$('#updatedAtInput').val(data.works.updated_at);
+
+		$('#typeInput').val(data.prevworks.type);
+		$('#statusInput').val(data.prevworks.status);
+		$('#createdAtInput').val(data.prevworks.created_at);
+		$('#updatedAtInput').val(data.prevworks.updated_at);
 		$('#date').val(formattedDates);
 	}
 
@@ -399,7 +408,7 @@ $(function () {
 				data: formData,
 				success: function (response) {
 					// Handle success response, if needed	
-					console.log('Data saved successfully!');
+					// console.log('Data saved successfully!');
 					$('#myModal').modal('hide'); // Close the modal
 					// Reload the page after closing the modal
 					setTimeout(function () {

@@ -8,23 +8,25 @@ use App\Models\User;
 use App\Models\Agent;
 use App\Models\Client;
 use App\Models\Closer;
-use Illuminate\Support\Str;
-use App\Mail\ResetPassword;
-use Illuminate\Support\Facades\Mail;
 use App\Models\Upsale;
 use App\Models\Comment;
 use App\Models\GroupName;
 use App\Models\Collection;
 use App\Traits\SalesTrait;
+use App\Mail\ResetPassword;
 use App\Models\Workhistory;
 use App\Traits\ClientTrait;
 use App\Traits\UpsaleTrait;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\Developertask;
+use App\Events\ChatNotifyUser;
 use App\Traits\CollectionTrait;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
 {
@@ -97,7 +99,6 @@ class AdminController extends Controller
 
 
             // dd($work);
-            
 
             return view("home", ['sales' => $salesdata, 
                                  'upsales' => $upsalesdata, 
@@ -120,9 +121,10 @@ class AdminController extends Controller
 
     public function logout(Request $request){
         if($request ->method() == "GET"){
+            User::where('id', Auth::id())->update(['user_status' => 'Offline']);
             Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
             return redirect() -> route('login');
         }
     }
@@ -136,21 +138,69 @@ class AdminController extends Controller
                 'name'      => 'required|string',
                 'email'     => 'required|email|unique:users,id,'.$request->input('update_id'),
                 'mobile_no' => 'required',
-                'bio'       =>'required'
             ]); 
+
+            $validator   =  Validator::make($request->all(), [
+                'name'      => 'required|string',
+                'email'     => 'required|email|unique:users,id,'.$request->input('update_id'),
+                'mobile_no' => 'required',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['status' => 'errors', 'message' => $validator->errors()->all()]);
+            }
+
+
+            if(isset($request->profile_image)){
+
+                $validator   =  Validator::make($request->all(), [
+                    'profile_image' => 'required|file|mimes:jpeg,png,jpg,webp|max:2048',
+                ]);
+                
+                if ($validator->fails()) {
+                    return response()->json(['status' => 'errors', 'message' => $validator->errors()->all()]);
+                }
+
+                $file = $request->file('profile_image');
+                $new_file = rand().'_'.$file->getClientOriginalName();
+                $destinationPath = public_path('admin/Employee');
+                $file->move($destinationPath, $new_file);
+                $image = url('/').'/admin/Employee/'.$new_file;
+            }else{
+                $image = $request->old_image;
+            }
+
+            if($request->password){
+
+                $validator   =  Validator::make($request->all(), [
+                    'password'      => 'required|min:8|confirmed',
+                ]);
+                
+                if ($validator->fails()) {
+                    return response()->json(['status' => 'errors', 'message' => $validator->errors()->all()]);
+                }
+
+                $password = Hash::make($request->password);
+                
+            }else{
+                $user_pass = User::find(Auth::id());
+                $password = $user_pass->password;
+            }
 
             $data = [
                 'name'          => $request->name,
                 'email'         => $request->email,
                 'mobile_no'     => $request->mobile_no,
+                'user_image'    => $image,
+                'password'      => $password
             ];
 
             $save = User::where('id',  Auth::id())->update($data);
 
             if($save){
-                return response()->json(['status' => 1, 'successmsg'=> 'Profile updated successfully']);
+            return response()->json(['status' => 'success', 'type' => 'update', 'message' => 'Profile updated successfully']);
             }else{
-                return response()->json(['status' => 0, 'errmsg'=>' Server error Please try again']);
+                return response()->json(['status' => 'error', 'message'=>' Server error Please try again']);
             }
 
         }else{
@@ -424,7 +474,7 @@ class AdminController extends Controller
 
     public function forgotPassword()
     {
-        return view('admin.forgotpassword');
+        return view('forgotpassword');
     }
 
     public function sendResetLinkEmail(Request $request)
@@ -437,7 +487,7 @@ class AdminController extends Controller
         $link = '/password/resetdata/' . '?token=' . $user->remember_token . '&id=' . $user->id;
         try {
             Mail::to($request->email)->send(new ResetPassword($link));
-            return redirect(url('/forgot-password'))->with('successmsg', 'Link send successfully.');
+            return redirect(url('/forgot-password'))->with('successmsg', 'Link sent successfully.');
         } catch (\Exception $e) {
             dd($e->getMessage());
             return false;
@@ -450,7 +500,7 @@ class AdminController extends Controller
         // $hashedProvidedToken = hash('sha256', $providedToken);
         $user = User::where('id', $request->id)->where('remember_token', $request->token)->first();
         if ($user) {
-            return view('admin.resetpassword', compact('user'));
+            return view('resetpassword', compact('user'));
         } else {
             return response()->json(['message' => 'Token is invalid'], 401);
         }
@@ -459,10 +509,11 @@ class AdminController extends Controller
     public function resetPassword(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|string|min:8|confirmed',
+            'email'                 => 'required|email',
+            'password'              => 'required|string|min:8|confirmed',
             'password_confirmation' => 'required'
         ]);
+
         $updatePassword = User::where([
             'email' => $request->email,
         ])
@@ -478,7 +529,7 @@ class AdminController extends Controller
                 'remember_token' => NULL
             ]);
 
-        return redirect('/')->with('message', 'Your password has been changed!');
+        return redirect()->route('login')->with('successmsg', 'Your password has been changed!');
     }
 
 }

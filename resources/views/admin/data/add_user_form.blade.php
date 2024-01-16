@@ -50,7 +50,7 @@
                     </div> 
 
                     @if ($user_data == null)
-                      <div class="col-md-6 mb-3">
+                    <div class="col-md-6 mb-3">
                         <label class="form-label" for="password">{{ __('Password') }}</label>
                         <input type="password" class="form-control" id="password" name="password" placeholder="Password" />
                     </div> 
@@ -81,7 +81,7 @@
                     <div class="my-3">
                         <img src="{{ url($user_data->user_image) }}" width="100" alt="image">
                     </div>
-                 @endif
+                    @endif
                     @if ($errors->has('profile_image'))
                         <small class="text-danger" id="profile_image">{{ $errors->first('profile_image') }}</small>
                     @endif

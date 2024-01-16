@@ -4,10 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-    <meta name="description" content="CRMS - Bootstrap Admin Template">
-    <meta name="keywords"
-        content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern, accounts, invoice, html5, responsive, CRM, Projects">
-    <meta name="author" content="Dreamguys - Bootstrap Admin Template">
+    <meta name="description" content="CRMS">
     <meta name="robots" content="noindex, nofollow">
     <title>Login - CRMS admin template</title>
 
@@ -28,6 +25,8 @@
 
     <!-- Main CSS -->
     <link rel="stylesheet" href="{{ asset('panel/assets/css/style.css') }}" class="themecls">
+    <link rel="stylesheet" href="{{ asset('panel/assets/plugins/toastr/toatr.css') }}">
+
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -71,7 +70,7 @@
                                         <label class="form-label" for="password">Password</label>
                                     </div>
                                     <div class="col-auto">
-                                        <a class="text-muted" href="{{ route('password.request') }}">
+                                        <a class="text-muted" href="{{ url('forgot-password') }}">
                                             Forgot password?
                                         </a>
                                     </div>
@@ -108,7 +107,18 @@
 
     <!-- Custom JS -->
     <script src="{{ asset('panel/assets/js/app.js') }}"></script>
+    <script src="{{ url('panel/assets/plugins/toastr/toastr.min.js') }}"></script>
+    @if (session('successmsg'))
+        <script>
+            toastr.success("{{ session('successmsg') }}");
+        </script>
+    @endif
 
+    @if (session('errmsg'))
+        <script>
+            toastr.error("{{ Session::get('errmsg') }}");
+        </script>
+    @endif
 </body>
 
 </html>

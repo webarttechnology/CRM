@@ -39,11 +39,11 @@ class UserController extends Controller
 
         
             $validator   =  Validator::make($request->all(), [
-                'name'      => 'required|string',
-                'email'     => 'required|email|unique:users',
-                'role_id'   => 'required|in:2,3,4,5,6,7',
+                'name'          => 'required|string',
+                'email'         => 'required|email|unique:users',
+                'role_id'       => 'required|in:2,3,4,5,6,7,8',
                 'profile_image' => 'required|file|mimes:jpeg,png,jpg,webp|max:2048',
-                'password'  => 'required'
+                'password'      => 'required'
             ]);
             
             if ($validator->fails()) {
@@ -91,7 +91,7 @@ class UserController extends Controller
             $validator   =  Validator::make($request->all(), [
                 'name'      => 'required|string',
                 'email'     => 'required|email|unique:users,id,'.$request->input('update_id'),
-                'role_id'   => 'required|in:2,3,4,5,6,7',
+                'role_id'   => 'required|in:1,2,3,4,5,6,7,8',
                 'is_active' => 'required|in:0,1',
             ]);
             
@@ -117,6 +117,7 @@ class UserController extends Controller
             }else{
                 $image = $request->old_image;
             }
+
 
             $data = [
                 'name'      => $request->name,

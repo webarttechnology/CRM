@@ -2,6 +2,7 @@
 @extends('admin.master.layout')
 
 @section('content')
+
     <div class="page-wrapper" style="min-height: 333px;">
         <!-- Page Content -->
         <div class="content container-fluid">
@@ -40,10 +41,9 @@
                     </div>
                     <div class="col text-end">
                         <ul class="list-inline-item ps-0">
-                            @if (in_array(Auth::user()->id, [1, 2, 3]))
+                            @if (in_array(Auth::user()->role_id, [1, 2, 3, 5, 8]))
                                 <li class="list-inline-item">
-                                    <button
-                                        class="add btn btn-gradient-primary font-weight-bold text-white todo-list-add-btn btn-rounded open-module-form"
+                                    <button class="add btn btn-gradient-primary font-weight-bold text-white todo-list-add-btn btn-rounded open-module-form"
                                         data-type="add_task" id="add-task">New Task</button>
                                 </li>
                             @endif
@@ -141,11 +141,12 @@
         </div>
         <!-- /Page Content -->
     </div>
+     <a href="http://" target="_blank" rel="noopener noreferrer"></a>
 @endsection
 @section('script')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
     <script>
-        $(function() {
+       
             $(document).ready(function() {
                 // var mySelect = $(".js-example-basic-multiple").select2({
                 //     dropdownParent: $("#add_module_form"),
@@ -311,24 +312,34 @@
 
 
                 $(document).on("click", '.sendmessage', function(e) {
+
+                    SendmessageData();
                     
-                    $.ajax({
-                        type: 'GET',
-                        url: '{{ route('comment.add.success') }}',
-                        data: 'message=' + $(".textmessage").val() + '&task_id=' + $(
-                            "#task_id").val(),
-                        success: function(data) {
-                            getMessage();
-                            $(".textmessage").val('');
-                        }
-                    });
+                    // $.ajax({
+                    //     type: 'GET',
+                    //     url: '{{ route('comment.add.success') }}',
+                    //     data: 'message=' + $(".textmessage").val() + '&task_id=' + $(
+                    //         "#task_id").val(),
+                    //     success: function(data) {
+                    //         getMessage();
+                    //         $(".textmessage").val('');
+                    //     }
+                    // });
+
+                });
+
+                $(document).on("keydown", '#myInputMessage', function(event) {
+                    // Check if the key pressed is Enter (key code 13)
+                    if (event.which === 13) {
+                        SendmessageData();
+                    }
                 });
 
 
                 const getMessage = () => {
                     $.ajax({
                         type: 'GET',
-                        url: '{{ route('comment.list') }}',
+                        url: '{{ route("comment.list") }}',
                         data: 'task_id=' + $("#task_id").val(),
                         success: function(data) {
                             $("#message").html(data);
@@ -336,8 +347,216 @@
                     });
                 }
 
-            });
+                function SendmessageData(){
 
+                     if($(".textmessage").val()){
+                            $.ajax({
+                            type: 'GET',
+                            url: '{{ route('comment.add.success') }}',
+                            data: 'message=' + $(".textmessage").val() + '&task_id=' + $(
+                                "#task_id").val(),
+                            success: function(data) {
+                                getMessage();
+                                $(".textmessage").val('');
+                            }
+                        });
+                     }else{
+                        toastr.error('Input field is required');
+                     }
+
+                   
+                }
+
+        function printErrorMsg(msg) {
+            $.each( msg, function( key, value ) {
+                toastr.error(value);
+            });
+        }
+
+        $(document).on("click", '#uploadButton', function(e) {
+            $('#fileInput').click();
         });
-    </script>
+
+        // Handle file selection and upload
+        $(document).on("change", '#fileInput', function(e) {
+            var file = this.files[0];
+
+            // Perform your file upload logic here
+            if (file) {
+                var allowedExtensions = ['jpg', 'jpeg', 'png', 'zip', 'pdf'];
+                var fileExtension = file.name.split('.').pop().toLowerCase();
+
+                if (allowedExtensions.indexOf(fileExtension) === -1) {
+                    alert('Invalid file type. Please select a file with a valid extension: jpg, jpeg, png, or zip.');
+                    // Clear the file input
+                    $(this).val('');
+                    return;
+                }
+
+                // displayFilePreview(file);
+
+                var task_id = $("#task_id").val();
+
+                var formData = new FormData();
+                formData.append('file', file);
+                formData.append('task_id', task_id);
+
+                $.ajax({
+                    url: '{{ route("upload-file-comment") }}',
+                    type: 'POST',
+                    data: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function() {
+                        $('.fa-sync').removeClass('d-none');
+                        $('.fa-paperclip').addClass('d-none');
+                        $(".file-send").removeAttr("id");
+                    },
+                    success: function (response) {
+                        $(".file-send").attr("id", "uploadButton");
+                        $('.fa-sync').addClass('d-none');
+                        $('.fa-paperclip').removeClass('d-none');
+                         if(response.status == 'success'){
+                            console.log(response);
+                            getMessage();
+                            toastr.success(response.message);
+                         }else if(response.status == 'errors'){
+                            printErrorMsg(response.message);
+                         }
+                    },
+                    error: function (error) {
+                        $('.fa-sync').addClass('d-none');
+                        $('.fa-paperclip').removeClass('d-none');
+                        $(".file-send").attr("id", "uploadButton");
+                        toastr.error('Error uploading file');
+                    }
+                });
+            
+            } else {
+                alert('Please select a file to upload.');
+            }
+        });
+
+
+        // function displayFilePreview(file) {
+        //     var reader = new FileReader();
+
+        //     console.log(file);
+
+        //     reader.onload = function (e) {
+        //         // Display preview image for image files
+        //         if (file.type.startsWith('image/')) {
+
+        //              var html = '';
+        //              html +='<div class="upload-img">';
+        //              html +='<img src="' + e.target.result + '" alt="File Preview" style="max-width: 100%;">';
+        //              html +='</div>';
+        //              html +='<div>';
+        //              html +='<span>{{ Auth::user()->name }}</span>';
+        //              html +='<span class="d-block">{{ date("Y-m-d h:i:s") }}</span>';
+        //              html +='</div>';
+
+        //             $('#filePreview').html(html);
+
+        //         } else {
+        //             // Display file name for non-image files
+        //              if(file.type == 'application/pdf'){
+
+        //                   var html = '';
+
+        //                   var fileName = truncateString(removeFileExtension(file.name));
+        //                   fileName = fileName +'.pdf';
+
+        //                   html +='<div class="zip-pdf-file d-table">';
+        //                   html +='<div class="d-flex bg-white p-3 border rounded">';
+        //                   html +='<div><i class="fas fa-file-pdf"></i></div>';
+        //                   html +='<div class="px-3">'+fileName+'</div>';
+        //                   html +='<div><i class="fas fa-download"></i></div>';
+        //                   html +='</div>';
+        //                   html +='</div>';
+        //                   html +='<div>';
+        //                   html +='<span>{{ Auth::user()->name }}</span>';
+        //                   html +='<span class="d-block">{{ date("Y-m-d h:i:s") }}</span>';
+        //                   html +='</div>';
+
+
+        //              }else if(file.type == 'application/x-zip-compressed'){
+
+        //                   var html = '';
+
+        //                   var fileName = truncateString(removeFileExtension(file.name));
+        //                   fileName = fileName +'.zip';
+
+        //                   html +='<div class="zip-pdf-file d-table">';
+        //                   html +='<div class="d-flex bg-white p-3 border rounded">';
+        //                   html +='<div><i class="fas fa-file-archive"></i></div>';
+        //                   html +='<div class="px-3">'+fileName+'</div>';
+        //                   html +='<div><i class="fas fa-download"></i></div>';
+        //                   html +='</div>';
+        //                   html +='</div>';
+        //                   html +='<div>';
+        //                   html +='<span>{{ Auth::user()->name }}</span>';
+        //                   html +='<span class="d-block">{{ date("Y-m-d h:i:s") }}</span>';
+        //                   html +='</div>';
+
+        //             }
+
+        //             $('#filePreview').html(html);
+        //         }
+        //     };
+
+        //     reader.readAsDataURL(file);
+        // }
+
+        $(document).on("click", '.file-download', function(e) {
+            e.preventDefault();
+
+            $.ajax({
+            url: '/comment/download-file',
+            type: 'POST', 
+            data: {id: $(this).data('id')},
+            headers: {
+               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (response) {
+                var link = document.createElement('a');
+                link.href = response.data.url;
+                link.download = response.data.name;
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            },
+            error: function () {
+                toastr.error('Failed to download the file.');
+            }
+        });
+
+      });
+
+        function truncateString(str) {
+            if (str.length > 10) {
+                return str.substring(0, 10) + '...';
+            } else {
+                return str;
+            }
+        }
+
+        function removeFileExtension(fileName) {
+            const lastDotIndex = fileName.lastIndexOf('.');
+            if (lastDotIndex !== -1) {
+                return fileName.substring(0, lastDotIndex);
+            } else {
+                // No dot found, or the dot is the first character (hidden file)
+                return fileName;
+            }
+        }
+
+
+
+    });
+</script>
 @endsection

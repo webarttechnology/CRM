@@ -93,7 +93,7 @@ if(!function_exists('country')){
 
 if(!function_exists('role')){
     function role(){
-        $role = collect(['1'=> "Admin", "2"=> "Accounts", "3" => "Project Manager", "4"=> "Sales", "5"=>"Devlopment Maneger", "6"=>"Developer", "7"=>"Designer"]);
+        $role = collect(['1'=> "Admin", "2"=> "Accounts", "3" => "Project Manager", "4"=> "Sales", "5"=>"Devlopment Maneger", "6"=>"Developer", "7"=>"Designer", "8"=>"Senior Developer"]);
         return $role;
     }
 }
@@ -179,8 +179,9 @@ function LogHistoryAdd($client_id, $sale_id, $user_id , $remark) {
         ->orderBy('created_at', 'desc')
         ->first();
 
-
-        $unread_chat_data = Chat::where('message_status', '!=', 'Read')->where('from_user_id', $user->id)->count();
+        $unread_chat_data = Chat::where('message_status', '!=', 'Read')
+        ->where('from_user_id', $user->id)
+        ->where('group_id', '=', null)->count();
 
         $recentMessagesUser->push([
             'id'            => $user->id,
@@ -190,6 +191,7 @@ function LogHistoryAdd($client_id, $sale_id, $user_id , $remark) {
             'timestamp'     => $message->created_at ?? '',
             'status'        => $user->user_status,
             'user_image'    => $user->user_image,
+            'user_status'   => $user->user_status,
             'unread_chat'   => $unread_chat_data,
             'message_status'=> $message->message_status ?? '',
             'from_user_id'  => $from_user_id,
@@ -202,19 +204,29 @@ function LogHistoryAdd($client_id, $sale_id, $user_id , $remark) {
 
     foreach ($group as $item) {
 
-        $message = $item->group_name?->chat()?->orderBy('created_at', 'desc')
+        $messageGroup = $item->group_name?->chat()?->orderBy('created_at', 'desc')
         ->first();
-       
+
+        $groupChat = $item->group_name?->chat();
+
+
+        // Calculate unread messages count for the group
+        $unreadGroupChatData = $groupChat
+            ->where('message_status', '!=', 'Read')
+            ->where('from_user_id', '<>', $from_user_id)
+            ->where('to_user_id', '=', null)->count();
+    
         $recentMessagesUser->push([
             'id'    => $item->group_id,
             'name'  => $item->group_name?->name,
             'type'  => 'group',
-            'last_message'  => $message->chat_message ?? '',
-            'timestamp'     => $message->created_at ?? '',
+            'last_message'  => $messageGroup->chat_message ?? '',
+            'timestamp'     => $messageGroup->created_at ?? '',
             'status'        => '',
             'user_image'    => '',
-            'unread_chat'   => '',
-            'message_status'=> $message->message_status ?? '',
+            'user_status'   => '',
+            'unread_chat'   => $unreadGroupChatData,
+            'message_status'=> $messageGroup->message_status ?? '',
             'from_user_id'  => $from_user_id,
         ]);
 

@@ -3,9 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-        <meta name="description" content="CRMS - Bootstrap Admin Template">
-		<meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern, accounts, invoice, html5, responsive, CRM, Projects">
-        <meta name="author" content="Dreamguys - Bootstrap Admin Template">
+        <meta name="description" content="CRMS">
         <meta name="robots" content="noindex, nofollow">
 		<meta name="csrf-token" content="{{ csrf_token() }}" />
         <title>@yield('title')</title>
@@ -14,7 +12,7 @@
 
 		
 		<!-- Favicon -->
-        <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.png">
+        {{-- <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.png"> --}}
 		
 		<!-- Bootstrap CSS -->
         <link rel="stylesheet" href="{{ url('panel/assets/css/bootstrap.min.css') }}">
@@ -129,7 +127,7 @@
         }
 
         .times_track a {
-            color: #fff;
+            /* color: #fff; */
         }
 
         header h1 {
@@ -265,6 +263,31 @@
 					padding: 0px !important;
 				}
 
+
+		.my-toast-container {
+		    z-index: 99999;
+			max-width: 300px;
+            position: fixed;
+            top: 90px;
+            right: 20px;
+            background-color: #020202;
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            display: none;
+            animation: slideInUp 0.5s ease-in-out forwards;
+        }
+
+        @keyframes slideInUp {
+            from {
+                transform: translateY(-100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
 		</style>
     </head>
     <body>
@@ -301,9 +324,28 @@
 							<button class="btn" type="submit"><i class="fa fa-search"></i></button>
 						</form>
 					</div>
+					
 					@if (Auth::user()->id !== 1)
+						@php
+						$today = date('Y-m-d');
+						$starttime = App\Models\TimeLog::where('user_id', Auth::user()->id)->whereDate('created_at', $today)->where('type','work')->orderBy('id', 'desc')->first();
+						$breaktime = App\Models\TimeLog::where('user_id', Auth::user()->id)->whereDate('created_at', $today)->where('type','break')->orderBy('id', 'desc')->first();
+					
+						$timerCurrentStatus = App\Models\TimeLog::where('user_id', Auth::user()->id)->whereDate('created_at', $today)->orderBy('id', 'desc')->first();
+						
+						if($timerCurrentStatus){
+							  if($timerCurrentStatus->type == 'work'){
+									$addClass = '#2dec2d';
+							  }elseif($timerCurrentStatus->type == 'break'){
+								   $addClass = '#db0a26';
+							 }
+						}else{
+								$addClass = '#fff';
+						}
+
+						@endphp
+
 						{{-- <div class="clock-section mt-2">
-	
 							<button id="startButton" class="btn btn-sm btn-success">Clock In</button>
 							<button id="breakButton" class="btn btn-sm btn-info" style="display: none;">Take a
 								Break</button>
@@ -314,44 +356,46 @@
 								{{ @$starttime->timer_data ? $starttime->timer_data : '00:00:00' }}</div>
 							<div id="break_timer" style="display: none; background-color: white; color:rgb(12, 207, 29);">
 								{{ @$breaktime->timer_data ? $breaktime->timer_data : '00:00:00' }}</div>
-						</div> --}}
-	
+						</div>--}}
+
+
 						<div class="times_track">
-							<small><a class="text-white"
-									style="
-								margin-right: 38px;
-							"><span
-										class="timer show-task-timer d-none">30:55:42</span></a></small>
-							<h1 class="clock"><a href="#" class="time"></a><sup class="am-pm"
-									style="color: #fff"></sup></h1>
+							<small>
+								<a class="text-white" style="margin-right: 38px;">
+									<span class="timer show-task-timer d-none">00:00:00</span>
+								</a>
+							</small>
+							<h1 class="clock" style="color: {{  $addClass  }}">
+								<a href="#" class="time" style="color: {{  $addClass  }}"></a>
+								<sup class="am-pm" style="color: {{  $addClass  }}"></sup>
+							</h1>
+						</div>
 							<div class="time_popups" id="popUp">
 								<div class="pop_head">
 									<span class="dots"></span>
 									<span class="dots right"></span>
 									<h4 id="startduration">Working Day Duration</h4>
 									<h4 id="breakduration" style="diplay:none;">Break Duration</h4>
-									<h2 id="start_timer"
-										style="display: block; background-color: white; color:rgb(45, 236, 45);">
+									<h2 id="start_timer" style="display: block; background-color: white; color:rgb(45, 236, 45);">
 										{{ @$starttime->timer_data ? $starttime->timer_data : '00:00:00' }}</h2>
-									<h2 id="break_timer"
-										style="display: none; background-color: white; color:rgb(219, 10, 38);">
+									<h2 id="break_timer" style="display: none; background-color: white; color:rgb(219, 10, 38);">
 										{{ @$breaktime->timer_data ? $breaktime->timer_data : '00:00:00' }}</h2>
-									<small><button id="startButton" class="custom_btn break"><i
-												class="fa-solid fa-play"></i>
+									<small><button id="startButton" class="custom_btn break">
+										<i class="fa-solid fa-play"></i>
 											&nbsp;Clock In</button></small>
-									<small><button id="continueButton" class="custom_btn break" style="display: none;"><i
-												class="fa-solid fa-play"></i>
+									<small><button id="continueButton" class="custom_btn break" style="display: none;">
+										<i	class="fa-solid fa-play"></i>
 											&nbsp;Continue</button></small>
-									<small><button id="breakButton" style="display: none;" class="custom_btn break"><i
-												class="fa-solid fa-play"></i>
+									<small><button id="breakButton" style="display: none;" class="custom_btn break">
+										<i	class="fa-solid fa-play"></i>
 											&nbsp;Break</button></small>
-									<small><button id="stopButton" class="custom_btn clockout" style="display: none;"><i
-												class="fa-solid fa-play"></i>
+									<small><button id="stopButton" class="custom_btn clockout" style="display: none;">
+										<i	class="fa-solid fa-play"></i>
 											&nbsp;Clock
 											Out</button></small>
 								</div>
 							</div>
-						</div>
+						
 					@endif
 	
 					{{-- <div class="timer-section">
@@ -364,10 +408,10 @@
 								<span class="text-white timer show-task-timer d-none">00:00:00</span>
 							</div>
 							<div class="dropdown-menu mt-1 task-list-section">
-	
 							</div>
 						</div>
 					</div> --}}
+					
 				</div>
 				<!-- /Header Title -->
 				
@@ -375,13 +419,10 @@
 				
 				<!-- Header Menu -->
 				<ul class="nav user-menu">
-				
 					<!-- Search -->
 					<li class="nav-item">
-						
 					</li>
 					<!-- /Search -->
-				
 					<!-- Flag -->
 					<li class="nav-item dropdown has-arrow flag-nav">
 						<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button">
@@ -390,15 +431,6 @@
 						<div class="dropdown-menu dropdown-menu-right">
 							<a href="javascript:void(0);" class="dropdown-item">
 								<img src="{{ url('panel/assets/img/flags/us.png') }}" alt="" height="16"> English
-							</a>
-							<a href="javascript:void(0);" class="dropdown-item">
-								<img src="{{ url('panel/assets/img/flags/fr.png') }}" alt="" height="16"> French
-							</a>
-							<a href="javascript:void(0);" class="dropdown-item">
-								<img src="{{ url('panel/assets/img/flags/es.png') }}" alt="" height="16"> Spanish
-							</a>
-							<a href="javascript:void(0);" class="dropdown-item">
-								<img src="{{ url('panel/assets/img/flags/de.png') }}" alt="" height="16"> German
 							</a>
 						</div>
 					</li>
@@ -491,7 +523,7 @@
 					<!-- /Notifications -->
 					
 					<!-- Message Notifications -->
-					<li class="nav-item dropdown">
+					{{-- <li class="nav-item dropdown">
 						<a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
 							<i class="fa fa-comment-o"></i> <span class="badge rounded-pill">8</span>
 						</a>
@@ -593,18 +625,18 @@
 								<a href="#">View all Messages</a>
 							</div>
 						</div>
-					</li>
+					</li> --}}
 					<!-- /Message Notifications -->
 
 					<li class="nav-item dropdown has-arrow main-drop">
 						<a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
 							<span class="user-img">
-							@if (Auth::user()->img)
-							<img alt="" src="{{ url(Auth::user()->img) }}">
+							@if (Auth::user()->user_image)
+							<img alt="" src="{{ url(Auth::user()->user_image) }}">
 							@else
 							<img alt="" src="{{ url('panel/assets/img/profiles/user-profile.png') }}">
 							@endif
-							<span class="status online"></span></span>
+							<span class="status {{ Auth::user()->user_status == 'Online' ? 'online' : ''}}"></span></span>
 							<span>{{ Str::limit(Auth::user()->name, 10, '...') }}</span>
 						</a>
 						<div class="dropdown-menu">

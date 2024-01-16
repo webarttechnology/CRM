@@ -269,6 +269,20 @@
       display: grid;
       grid-template-columns: auto auto;
   }
+  .zip-pdf-file {
+     cursor: pointer;
+  }
+  .upload-img {
+     padding: 8px;
+     border-radius: 4px;
+     border: 1px solid #dee2e6;
+     width: 33%;
+     cursor: pointer;
+  }
+
+ .file-download {
+    cursor: pointer;
+ }
 </style>
 <div class="modal-header">
   <h4 class="modal-title text-center">Task details</h4>
@@ -340,6 +354,7 @@
           </div>
       </div>
 
+     
       {{-- <div class="chat">
 
           <div class="chat-history">
@@ -373,14 +388,23 @@
                   <div class="chat">
 
                       <div class="chat-history">
-                          <ul class="m-b-0" id="message">
+                          <div id="message"></div>
+                          {{-- <ul class="m-b-0" id="message">
 
-                          </ul>
+                          </ul> --}}
+                          <div id="filePreview"></div>
                       </div>
                       <div class="chat-message clearfix">
                           <div class="input-group mb-0">
+                            <div class="input-group-prepend">
+                                <input type="file" id="fileInput" style="display: none;">
+                                <span class="input-group-text py-3 file-send" id="uploadButton">
+                                    <i class="fas fa-sync fa-spin d-none"></i>
+                                    <i class="fas fa-paperclip"></i>
+                                </span>
+                            </div>
                               <input type="hidden" value="{{ $taskid }}" id="task_id">
-                              <input type="text" class="form-control textmessage" placeholder="Enter text here...">
+                              <input type="text" class="form-control textmessage" id="myInputMessage" placeholder="Enter text here...">
                               <div class="input-group-prepend">
                                   <span class="input-group-text py-3"><i class="fa fa-send sendmessage"></i></span>
                               </div>

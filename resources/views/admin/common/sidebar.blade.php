@@ -13,8 +13,8 @@
 							<li class="nav-item nav-profile">
 				              <a href="#" class="nav-link">
 				                <div class="nav-profile-image">
-									@if (Auth::user()->img)
-									<img alt="" src="{{ url(Auth::user()->img) }}">
+									@if (Auth::user()->user_image)
+									<img alt="" src="{{ url(Auth::user()->user_image) }}">
 									@else
 									<img alt="" src="{{ url('panel/assets/img/profiles/user-profile.png') }}">
 									@endif
@@ -142,7 +142,7 @@
 							@endif
 
 
-							@if(Auth::user()->role_id == 5 || Auth::user()->role_id == 6 || Auth::user()->role_id == 7)
+							@if(Auth::user()->role_id == 5 || Auth::user()->role_id == 6 || Auth::user()->role_id == 7 || Auth::user()->role_id == 8)
 								<li class="submenu">
 									<a href="#" class=" {{ Request::segment(2) == 'task' ? 'active' : '' }} "><i class="feather-check-square"></i><span>Task</span>
 										<span class="menu-arrow"></span>

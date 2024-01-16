@@ -263,7 +263,7 @@ class SalesController extends Controller
                 'technology' => $request->input('technology'),
                 'type' => $request->input('type'),
                 'others' => $others,
-                'customer_requerment' => $request->input('type') == 5 ? $request->input('customer_requerment') : '',
+                'customer_requerment' => $request->input('type') == 5 ? $request->customer_requirement : '',
                 'marketing_plan' =>  $request->input('project_type') == 2 ? $request->input('digital_marketing') : '',
                 'smo_on' =>  $request->input('project_type') == 2 ? json_encode($request->input('smo_platfrom')) : '',
                 'start_date' => $request->input('start_date') != "1970-01-01" ? $request->input('start_date') : null,
@@ -528,9 +528,12 @@ class SalesController extends Controller
 
                 LogHistoryAdd($request->client_id, $request->id, Auth::id(), $remark);
 
-                return redirect()->route('sales.new.list')->with('successmsg', 'Task assign successfully.');
+                 return response()->json(['status' => 'success', 'type' => 'update', 'message' => 'Task assign successfully.']);
+
+                // return redirect()->route('sales.new.list')->with('successmsg', 'Task assign successfully.');
             } else {
-                return redirect()->route('sales.new.list')->with('errmsg', 'Task assign error. Please try again.');
+                return response()->json(['status' => 'error', 'type' => 'update', 'message' => 'Please try again']);
+                // return redirect()->route('sales.new.list')->with('errmsg', 'Task assign error. Please try again.');
             }
         } else {
             $projectmanager = User::where('role_id', 3)->pluck('name', 'id');

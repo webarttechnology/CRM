@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\TimerController;
 use App\Http\Controllers\TimeLogController;
+use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\LogHistoryController;
 
 /*
@@ -20,11 +21,9 @@ use App\Http\Controllers\LogHistoryController;
 */
 
 Route::get('/demo', function () {
-    // return view('welcome');
     // $exitCode = Artisan::call('route:cache');
-    $exitCode = Artisan::call('optimize');
+    Artisan::call('optimize');
     dd('clear');
-    dd("digital webber");
 });
 
 Route::get('/', function () {
@@ -84,6 +83,7 @@ Route::group(['prefix' => 'sales'], function(){
     Route::get('/update/{updateid}', [App\Http\Controllers\SalesController::class, 'updatenewsaleslist'])->middleware(['auth'])->name('sales.update');
     Route::post('/update', [App\Http\Controllers\SalesController::class, 'updatenewsaleslist'])->middleware(['auth'])->name('sales.update.suceess');
     Route::get('/delete/{deleteid}', [App\Http\Controllers\SalesController::class, 'deletesales'])->middleware(['auth'])->name('sales.delete');
+
 });
 
 Route::group(['prefix' => 'group'], function () {
@@ -167,16 +167,23 @@ Route::controller(App\Http\Controllers\TaskController::class)
 Route::controller(App\Http\Controllers\CommentController::class)
     ->prefix('comment')
     ->group(function () {
+
         Route::get('/list/{taskid}', 'index')->name('comment.index');
         Route::get('/message', 'getMessage')->name('comment.list');
         Route::get('/add', 'index')->name('comment.add.success');
+        Route::post('upload-file-comment', 'upload_file_comment')->name('upload-file-comment');
+        Route::post('download-file', 'download_file');
+
 })->middleware(['auth']);
+
+
 
 
 Route::resource('timelogs', TimeLogController::class);
 
-Route::controller(App\Http\Controllers\DeveloperController::class)
+Route::controller(DeveloperController::class)
  ->prefix('developer')
+ ->middleware('auth')
  ->group(function () {
     Route::get('task','task' )->name("developer.task");
     Route::post('task', 'task')->name("developer.task.success");
@@ -184,7 +191,7 @@ Route::controller(App\Http\Controllers\DeveloperController::class)
     Route::get('task/delete', 'delete')->name("developer.task.delete");
     Route::get('task/show/{id}', 'show')->name("developer.task.show");
     Route::post('get-assign-to', 'get_assign_to')->name("developer.get-assign-to");
-})->middleware(['auth']);
+});
 
 Route::controller(App\Http\Controllers\WorkhistoryController::class)
  ->prefix('workhistory')
@@ -218,6 +225,7 @@ Route::controller(LogHistoryController::class)
 
 
 Route::post("/show-chat-module", [AdminController::class, 'show_chat_module'])->name('show-chat-module');
+
 
 
 

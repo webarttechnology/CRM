@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Chat;
 use App\Models\User;
+use App\Models\GroupMember;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Events\ChatNotifyUser;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
+use Illuminate\Support\Facades\Storage;
 
 class SocketController extends Controller implements MessageComponentInterface
 {
@@ -77,12 +80,13 @@ class SocketController extends Controller implements MessageComponentInterface
                     }else{
                             $last_message = '';
                     }
-
+                    
                     $sub_data[] = array(
                         'name'          =>  $row['name'],
                         'id'            =>  $row['id'],
                         'status'        =>  $row['status'],
                         'user_image'    =>  $row['user_image'],
+                        'user_status'   =>  $row['user_status'],
                         'unread_chat'   =>  $row['unread_chat'],
                         'last_message'  =>  $last_message,
                         'last_time'     =>  Carbon::parse($row['timestamp'])->diffForHumans(),
@@ -91,7 +95,7 @@ class SocketController extends Controller implements MessageComponentInterface
                         'from_user_id'  => $row['from_user_id'],
                     );
                 }
-
+                
                 
 
                 $sender_connection_id = User::select('connection_id')->where('id', $data->from_user_id)->get();
@@ -179,14 +183,13 @@ class SocketController extends Controller implements MessageComponentInterface
                     'from_user_id'  => $data->from_user_id,
                     'to_user_id'    => $to_user_id,
                     'group_id'      => $to_group_id, 
-                    'chat_message'  => $data->message,
+                    'chat_message'  => convertUrlsToLinks($data->message),
                     'message_status'=> 'Not Send'
                 ];
 
                 // dd($data_message);
 
                 $chat =  Chat::create($data_message);
-
 
                 $chat_message_id = $chat->id;
 
@@ -196,49 +199,105 @@ class SocketController extends Controller implements MessageComponentInterface
                     $receiver_connection = [];
                 }
 
-                $sender_connection = User::select('connection_id')->where('id', $data->from_user_id)->get();
+                // $sender_connection = User::select('connection_id')->where('id', $data->from_user_id)->get();
 
                 foreach ($this->clients as $client) {
 
-                        if(count($receiver_connection) > 0){
+                        $send_data = [];
+
+                        if(count($receiver_connection)){
                             $receiver_connection_id = $receiver_connection[0]->connection_id;
                         }else{
-                            $receiver_connection_id = null; 
+                            $receiver_connection_id = null;
                         }
-
-                        if(count($sender_connection) > 0){
-                            $sender_connection_id = $sender_connection[0]->connection_id;
-                        }else{
-                            $sender_connection_id = null; 
-                        }
-
-
-                    if ($client->resourceId == $receiver_connection_id || $client->resourceId == $sender_connection_id) {
-                        $send_data['chat_message_id'] = $chat_message_id;
+                    
+                       
+                        // $sender_connection_id   = $sender_connection[0]->connection_id;
+                        // if ($client->resourceId == $receiver_connection_id || $client->resourceId == $sender_connection_id) {
+                     
+                     if ($client->resourceId) {
+                       
+                        $from_user_img = User::where('id', $data->from_user_id)->first();
+                        $to_user_img = User::where('id', $to_user_id)->first();
+                       
+                        $send_data['chat_message_id'] = $chat->id;
 
                         $send_data['message'] = convertUrlsToLinks($data->message);
                         $send_data['time']    = $chat->created_at->format('h:i A');
-
                         $send_data['from_user_id'] = $data->from_user_id;
-
-                        $send_data['to_user_id']  = $to_user_id;
+                        $send_data['from_user_photo'] = $from_user_img->user_image ?? null;
+                        $send_data['to_user_photo'] =  $to_user_img->user_image ?? null;
+                        $send_data['to_user_id']  = $to_user_id ?? null;
                         $send_data['to_group_id'] = $to_group_id;
 
                         if ($client->resourceId == $receiver_connection_id) {
                             Chat::where('id', $chat_message_id)->update(['message_status' => 'Send']);
                             $send_data['message_status'] = 'Send';
                         } else {
-                            $send_data['message_status'] = $chat->message_status;
+                            $chat_message = Chat::find($chat->id);
+                            $send_data['message_status'] = $chat_message->message_status;
                         }
+
+                        $chatNotify = Chat::find($chat->id);
+
+                        if($chatNotify->group_id){
+
+                        $group_member = GroupMember::where('group_id', $chatNotify->group_id)
+                                        ->whereNot('user_id', $data->from_user_id)->get();
+
+                        foreach($group_member as $member){
+
+                            if($member->user?->user_image){
+                                $userImg = $member->user->user_image;
+                            }else{
+                                $userImg = '';
+                            }
+
+                            $chatNotifyData = [
+                                'id'               => $chatNotify->id, 
+                                'to_user_id'       => $member->user_id, 
+                                'from_user_id'     => $chatNotify->from_user_id, 
+                                'message_status'   => $chatNotify->message_status, 
+                                'name'             => $member->user->name, 
+                                'user_image'       => $userImg, 
+                                'chat_message'     => $chatNotify->chat_message
+                            ];
+
+                            event(new ChatNotifyUser($chatNotifyData));
+
+                        }
+
+                         }else{
+
+                            if($chatNotify->user?->user_image){
+                                $userImg = $chatNotify->user->user_image;
+                            }else{
+                                $userImg = '';
+                            }
+
+                            $chatNotifyData = [
+                                'id'               => $chatNotify->id, 
+                                'to_user_id'       => $chatNotify->to_user_id, 
+                                'from_user_id'     => $chatNotify->from_user_id, 
+                                'message_status'   => $chatNotify->message_status, 
+                                'name'             => $chatNotify->user->name, 
+                                'user_image'       => $userImg, 
+                                'chat_message'     => $chatNotify->chat_message,
+                            ];
+
+                            event(new ChatNotifyUser($chatNotifyData));
+
+                         }
 
                         $client->send(json_encode($send_data));
                     }
+                    
+                    
+
                 }
             }
 
             if ($data->type == 'request_chat_history') {
-
-                // dd($data);
 
                 if($data->to_type == 'user'){
 
@@ -273,7 +332,6 @@ class SocketController extends Controller implements MessageComponentInterface
                         return Carbon::parse($date->created_at)->format('Y-m-d');
                     });
 
-
                 }
 
 
@@ -283,16 +341,23 @@ class SocketController extends Controller implements MessageComponentInterface
                     return [
                         'date' => $this->formatDateForDisplay($date),
                         'messages' => $groupedMessages->map(function ($message) {
+                            
+                            $from_user_img = User::where('id', $message->from_user_id)->first();
+                            $to_user_img = User::where('id', $message->to_user_id)->first();
+
                             return [
                                 'id'                => $message->id,
                                 'from_user_id'      => $message->from_user_id,
                                 'to_user_id'        => $message->to_user_id ?? null,
                                 'to_group_id'       => $message->group_id ?? null,
                                 'user_name'         => $message->user->name,
+                                'from_user_photo'     => $from_user_img->user_image ?? null,
+                                'to_user_photo'       => $to_user_img->user_image ?? null,
                                 'chat_message'      => $message->chat_message,
                                 'message_status'    => $message->message_status,
                                 'time'              => $message->created_at->format('h:i A'),
                             ];
+
                         }),
                     ];
                 })->values();
@@ -310,9 +375,7 @@ class SocketController extends Controller implements MessageComponentInterface
             }
 
             if ($data->type == 'update_chat_status') {
-                //update chat status
-
-
+               
                 Chat::where('id', $data->chat_message_id)->update(['message_status' => $data->chat_message_status]);
 
                 $sender_connection_id = User::select('connection_id')->where('id', $data->from_user_id)->get();
@@ -327,9 +390,36 @@ class SocketController extends Controller implements MessageComponentInterface
                     }
                 }
             }
+
+            if ($data->type == 'request_group_member') {
+                
+                $group_member = GroupMember::where('group_id', $data->to_group_id)->whereNot('user_id', $data->from_user_id)->get();
+
+                $group_member_data = [];
+
+                foreach($group_member as $member){
+                    $group_member_data[] = [
+                        'id'      => $member->user_id,
+                        'name'    => $member->user->name,
+                        'img'     => $member->user->user_image,
+                    ];
+                }
+
+                $sender_connection_id = User::select('connection_id')->where('id', $data->from_user_id)->get();
+
+                foreach ($this->clients as $client) {
+                    if ($client->resourceId == $sender_connection_id[0]->connection_id) {
+                         $send_data['group_member_history'] = $group_member_data;
+                        $client->send(json_encode($send_data));
+                    }
+                }
+            }
+
             
         }
     }
+
+
 
     public function onClose(ConnectionInterface $conn)
     {
@@ -350,4 +440,29 @@ class SocketController extends Controller implements MessageComponentInterface
 
         $conn->close();
     }
+
+    protected function handleFileUpload($file)
+    {
+        // Implement your file handling logic here, such as storing the file
+        // and returning relevant file information.
+        // You might want to use Laravel's Storage facade to store the file.
+
+        // Example:
+        // $path = $file->store('uploads', 'public');
+
+        if(isset($file)){
+            $new_file = rand().'_'.$file->getClientOriginalName();
+            $destinationPath = public_path('admin/comment');
+            $file->move($destinationPath, $new_file);
+            $path = url('/').'/admin/comment/'.$new_file;
+        }else{
+            $path = null;
+        }
+
+        return [
+            'file_path' => $path
+        ];
+
+    }
+
 }

@@ -28,6 +28,6 @@ class UpdateUserToken
     {
         $token = md5(uniqid());
 
-        $event->user->update(['token' =>  $token ]);
+        $event->user->update(['token' =>  $token, 'user_status' => 'Online' ]);
     }
 }

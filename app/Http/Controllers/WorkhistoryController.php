@@ -157,6 +157,7 @@ class WorkhistoryController extends Controller
         
         $work =  Workhistory::where('user_id', Auth::user()->id)->orderBy('id', 'desc')->first();
 
+
         if($work){
              if($work->final_status == 'start'){
                 $data  = [
@@ -200,11 +201,20 @@ class WorkhistoryController extends Controller
     public function get_task_list(Request $request)
     {
 
-       $work =  Workhistory::where('user_id', Auth::user()->id)
-       ->distinct('user_id')->latest()
-       ->where('final_status', 'stop')
-       ->orwhere('final_status', 'start')
-       ->select('user_id', 'developer_job_id', 'final_status')->get();
+    //    $work =  Workhistory::where('user_id', Auth::user()->id)
+    //    ->distinct('user_id')->latest()
+    //    ->where('final_status', 'stop')
+    //    ->orwhere('final_status', 'start')
+    //    ->select('user_id', 'developer_job_id', 'final_status')->get();
+
+       $finalStatusArray = ['stop', 'start'];
+
+       $work =  Workhistory::select('user_id', 'developer_job_id', 'final_status', 'created_at')
+            ->distinct()
+            ->where('user_id', Auth::user()->id)
+            ->whereIn('final_status', $finalStatusArray)
+            ->orderBy('created_at', 'desc')
+            ->get();
 
        return view('admin.data.working-task', compact('work'))->render();
     }
@@ -290,16 +300,22 @@ class WorkhistoryController extends Controller
         $prevWork =  TimeLog::where('user_id', Auth::user()->id)->whereDate('created_at', $today->toDateString())->orderBy('id', 'desc')->first();
         // dd($prevWork);
 
-        // Calculate current time and duration
-        $currentTime = Carbon::now();
-        $startTime = Carbon::parse($prevWork->start_time);
-        $startTime->setTimezone('Asia/Kolkata');
-        $elapsedTime = $currentTime->diffInSeconds($startTime);
-
-        // Add the elapsed time to the previous timer_data
-        $newTimerData = Carbon::parse($prevWork->timer_data)->addSeconds($elapsedTime)->format('H:i:s');
+       
+       
 
         if($prevWork){
+
+             // Calculate current time and duration
+
+            $currentTime = Carbon::now();
+            $startTime = Carbon::parse($prevWork->start_time);
+            $startTime->setTimezone('Asia/Kolkata');
+            $elapsedTime = $currentTime->diffInSeconds($startTime);
+    
+            // Add the elapsed time to the previous timer_data
+            $newTimerData = Carbon::parse($prevWork->timer_data)->addSeconds($elapsedTime)->format('H:i:s');
+
+
             $newtime = new TimeLog();
             $newtime->user_id = Auth::user()->id;
             $newtime->start_time = $currentTime->format('H:i:s');
@@ -307,8 +323,9 @@ class WorkhistoryController extends Controller
             $newtime->type = $prevWork->type;
             $newtime->status = $prevWork->status;
             $newtime->save();
+            
+            return response()->json(['prevworks' => $prevWork]);
         }
-        return response()->json(['prevworks' => $prevWork]);
     }
     
     

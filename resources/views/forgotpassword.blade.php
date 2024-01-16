@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,7 +16,6 @@
         }
     </style>
 </head>
-
 <body>
     <div class="form-gap"></div>
     <div class="container">
@@ -30,27 +28,21 @@
                             <h2 class="text-center">Forgot Password?</h2>
                             <p>You can reset your password here.</p>
                             <div class="panel-body">
-
-
-                                <form class="form" role="form" method="POST"
-                                    action="{{ url('/password/email') }}">
+                                <form class="form" role="form" method="POST"  action="{{ url('/password/email') }}">
                                     @csrf
                                     <div class="form-group">
                                         <div class="input-group">
-                                            <span class="input-group-addon"><i
-                                                    class="glyphicon glyphicon-envelope color-blue"></i></span>
-                                            <input id="email" name="email" placeholder="email address"
-                                                class="form-control" type="email">
+                                            <span class="input-group-addon"><i  class="glyphicon glyphicon-envelope color-blue"></i></span>
+                                            <input id="email" name="email" required placeholder="email address" class="form-control @error('email') is-invalid @enderror" type="email">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <button type="submit" class="btn btn-lg btn-primary btn-block">Send Password
                                             Reset Link</button>
                                     </div>
-
                                     <input type="hidden" class="hide" name="token" id="token" value="">
                                 </form>
-
+                                <a href="{{ route('login') }}" class="text-left">Login</a>
                             </div>
                         </div>
                     </div>
@@ -58,10 +50,12 @@
             </div>
         </div>
     </div>
+<script src="{{ url('panel/assets/js/jquery-3.6.0.min.js') }}"></script>
+
     <script src="{{ url('panel/assets/plugins/toastr/toastr.min.js') }}"></script>
     @if (session('successmsg'))
         <script>
-            toastr.success("{{ Session::get('successmsg') }}");
+            toastr.success("{{ session('successmsg') }}");
         </script>
     @endif
 
