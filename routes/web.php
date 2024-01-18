@@ -181,6 +181,9 @@ Route::controller(App\Http\Controllers\CommentController::class)
 
 Route::resource('timelogs', TimeLogController::class);
 
+Route::post("/clockin-break-clockout", [TimeLogController::class, 'clockin_break_clockout']);
+
+
 Route::controller(DeveloperController::class)
  ->prefix('developer')
  ->middleware('auth')

@@ -4,10 +4,11 @@
 @section('content')
 
 @php
-  //  $user_data = App\Models\User::where('id', '!=', 15)
+  //  $user_data = App\Models\User::where('id', '!=', 8)
   //                   ->orderBy('name', 'ASC')
   //                   ->get();
-  //   dd(getRecentMessages($user_data, 15));
+
+  //   dd(getRecentMessages($user_data, 8));
 @endphp
 
 <!-- Page Wrapper -->
@@ -109,4 +110,14 @@
 </div>
 </div>			
 </div>
+@endsection
+
+@section('script')
+<!-- Chart JS -->
+<script src="{{ url('panel/assets/js/morris.js') }}"></script>
+<script src="{{ url('panel/assets/plugins/raphael/raphael.min.js') }}"></script>
+<script src="{{ url('panel/assets/js/chart.js') }}"></script>
+<script src="{{ url('panel/assets/js/linebar.min.js') }}"></script>
+<script src="{{ url('panel/assets/js/piechart.js') }}"></script>
+<script src="{{ url('panel/assets/js/apex.min.js') }}"></script>
 @endsection

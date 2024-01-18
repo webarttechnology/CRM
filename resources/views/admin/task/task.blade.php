@@ -19,9 +19,6 @@
                     </ul>
                 </div>
             </div>
-
-             
-
             <!-- Content Starts -->
             <div class="row">
                 <div class="col-md-12">

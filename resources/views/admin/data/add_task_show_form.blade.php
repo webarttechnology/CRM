@@ -303,7 +303,7 @@
                                       </div>
                                       <div class="btn btn-info">
                                           <time id="timer"
-                                              class="text-white countdown{{ $data->id }}">{{ $jobStatus?->currenttime ?? '0:00:00' }}</time>
+                                              class="text-white countdown{{ $data->id }}">{{ taskTime($taskid)['timeformat'] }}</time>
                                       </div>
                                   </div>
 

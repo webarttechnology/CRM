@@ -1,153 +1,176 @@
 <?php
 
+use Carbon\Carbon;
 use App\Models\Chat;
-use App\Models\GroupMember;
+use App\Models\TimeLog;
 use App\Models\LogHistory;
+use App\Models\GroupMember;
+use App\Models\Workhistory;
+use Illuminate\Support\Facades\Auth;
 
-if(!function_exists('currency')){
-    function currency(){
-        $p = [1=> "USD", 2=> "AUD", 3 => "GBP", 4 => "INR"];
+if (!function_exists('currency')) {
+    function currency()
+    {
+        $p = [1 => "USD", 2 => "AUD", 3 => "GBP", 4 => "INR"];
         return $p;
     }
 }
 
-if(!function_exists('instalment')){
-    function instalment(){
-        $p = [1=> "1st Installment", 2=> "2nd Installment", 3 => "3rd Installment", 4 => "4th Installment", 5=> "5th Installment", 6 => "Final Peyment"];
+if (!function_exists('instalment')) {
+    function instalment()
+    {
+        $p = [1 => "1st Installment", 2 => "2nd Installment", 3 => "3rd Installment", 4 => "4th Installment", 5 => "5th Installment", 6 => "Final Peyment"];
         return $p;
     }
 }
 
-if(!function_exists('project_type')){
-    function project_type(){
-        $p_type = array ("1" => "Websites", "2" => "Digital Marketing", "3" => "Mobile Applications", "4" => "Customised Platforms",
-                         "5" => "Videos and Graphics", "6" => "UI/UX (psd and figma screens)", "7" => "Hosting",
-                         "8" => "SSL", "9" => "Website Maintenance"
-          );
-          return $p_type;
+if (!function_exists('project_type')) {
+    function project_type()
+    {
+        $p_type = array(
+            "1" => "Websites", "2" => "Digital Marketing", "3" => "Mobile Applications", "4" => "Customised Platforms",
+            "5" => "Videos and Graphics", "6" => "UI/UX (psd and figma screens)", "7" => "Hosting",
+            "8" => "SSL", "9" => "Website Maintenance"
+        );
+        return $p_type;
     }
 }
 
-if(!function_exists('upsale_type')){
-    function upsale_type(){
-        $p_type = array ("1" => "Hosting", "2" => "SSL", "3" => "Website Maintenance", "4" => "Others");
-          return $p_type;
+if (!function_exists('upsale_type')) {
+    function upsale_type()
+    {
+        $p_type = array("1" => "Hosting", "2" => "SSL", "3" => "Website Maintenance", "4" => "Others");
+        return $p_type;
     }
 }
 
 
-if(!function_exists('website_technology')){
-    function website_technology(){
-        $web_technology = array ( "1" => "Wordpress", "2"=>"Custom Php","3"=>"Laravel","4"=>"React / Node");
-          return $web_technology;
+if (!function_exists('website_technology')) {
+    function website_technology()
+    {
+        $web_technology = array("1" => "Wordpress", "2" => "Custom Php", "3" => "Laravel", "4" => "React / Node");
+        return $web_technology;
     }
 }
 
-if(!function_exists('website_technology_type')){
-    function website_technology_type(){
-        $technology_type = array ( "1" => "Basic informative (5/6 pages, Contact form)", "2"=>"Advanced Informative ( 15+ pages, appointment, enquiry)","3"=>"Basic ECommerce ( guest checkout, 5/6 category, 1 payment gateway)","4"=>"Advanced E-commerce ( buyer account, order history, wish list, coupon codes)","5"=>"Custom Requirements");
-          return $technology_type;
+if (!function_exists('website_technology_type')) {
+    function website_technology_type()
+    {
+        $technology_type = array("1" => "Basic informative (5/6 pages, Contact form)", "2" => "Advanced Informative ( 15+ pages, appointment, enquiry)", "3" => "Basic ECommerce ( guest checkout, 5/6 category, 1 payment gateway)", "4" => "Advanced E-commerce ( buyer account, order history, wish list, coupon codes)", "5" => "Custom Requirements");
+        return $technology_type;
     }
 }
 
-if(!function_exists('mobile_application')){
-    function mobile_application(){
-        $mobile = array ( "1" => "Andriod", "2"=>"iOS","3"=>"Andriod + iOS");
-          return $mobile;
+if (!function_exists('mobile_application')) {
+    function mobile_application()
+    {
+        $mobile = array("1" => "Andriod", "2" => "iOS", "3" => "Andriod + iOS");
+        return $mobile;
     }
 }
 
-if(!function_exists('mobile_application_preferred')){
-    function mobile_application_preferred(){
-        $mobile_preferred = array ( "1" => "React Native", "2"=>"Flutter");
-          return $mobile_preferred;
+if (!function_exists('mobile_application_preferred')) {
+    function mobile_application_preferred()
+    {
+        $mobile_preferred = array("1" => "React Native", "2" => "Flutter");
+        return $mobile_preferred;
     }
 }
 
-if(!function_exists('ui_reference_site')){
-    function ui_reference_site(){
-        $reference_site = array ( "1" => "multiple", "2"=>"separate by comma");
-          return $reference_site;
+if (!function_exists('ui_reference_site')) {
+    function ui_reference_site()
+    {
+        $reference_site = array("1" => "multiple", "2" => "separate by comma");
+        return $reference_site;
     }
 }
 
-if(!function_exists('payment_mode')){ 
-    function payment_mode(){
-        $payment = array ( "1" => "Payoneer", "2"=>"Stripe","3"=>"Wise","4"=>"RazorPay","5"=>"Google Pay","6"=>"Other");
-          return $payment;
+if (!function_exists('payment_mode')) {
+    function payment_mode()
+    {
+        $payment = array("1" => "Payoneer", "2" => "Stripe", "3" => "Wise", "4" => "RazorPay", "5" => "Google Pay", "6" => "Other");
+        return $payment;
     }
 }
 
-if(!function_exists('country')){
-    function country(){
-        $cars = array (
-            array("name"=>"AUS", "image"=>"assets/uploads/australia.png", "id"=>"AUS", 'code' => "+61"),
-            array("name"=>"Canada", "image"=>"assets/uploads/India.png", "id"=>"Canada", 'code' => "+1"), 
-            array("name"=>"INDIA", "image"=>"assets/uploads/India.png", "id"=>"INDIA", 'code' => "+91"),
-            array("name"=>"UK", "image"=>"assets/uploads/uk.png", "id"=>"UK", 'code' => "+44"),
-            array("name"=>"USA", "image"=>"assets/uploads/usa.jpg", "id"=>"USA", 'code' => "+1"),
-          );
-          return $cars;
+if (!function_exists('country')) {
+    function country()
+    {
+        $cars = array(
+            array("name" => "AUS", "image" => "assets/uploads/australia.png", "id" => "AUS", 'code' => "+61"),
+            array("name" => "Canada", "image" => "assets/uploads/India.png", "id" => "Canada", 'code' => "+1"),
+            array("name" => "INDIA", "image" => "assets/uploads/India.png", "id" => "INDIA", 'code' => "+91"),
+            array("name" => "UK", "image" => "assets/uploads/uk.png", "id" => "UK", 'code' => "+44"),
+            array("name" => "USA", "image" => "assets/uploads/usa.jpg", "id" => "USA", 'code' => "+1"),
+        );
+        return $cars;
     }
 }
 
-if(!function_exists('role')){
-    function role(){
-        $role = collect(['1'=> "Admin", "2"=> "Accounts", "3" => "Project Manager", "4"=> "Sales", "5"=>"Devlopment Maneger", "6"=>"Developer", "7"=>"Designer", "8"=>"Senior Developer"]);
+if (!function_exists('role')) {
+    function role()
+    {
+        $role = collect(['1' => "Admin", "2" => "Accounts", "3" => "Project Manager", "4" => "Sales", "5" => "Devlopment Maneger", "6" => "Developer", "7" => "Designer", "8" => "Senior Developer"]);
         return $role;
     }
 }
 
-if(!function_exists('assignto')){
-    function assignto($taskid){
+if (!function_exists('assignto')) {
+    function assignto($taskid)
+    {
         $projectManager = \App\Models\Assign::select('users.name')
-                                            ->join('users', 'users.id', '=', 'tasks.assign_to')
-                                            ->where('tasks.sale_id', $taskid)
-                                            ->first();
+            ->join('users', 'users.id', '=', 'tasks.assign_to')
+            ->where('tasks.sale_id', $taskid)
+            ->first();
         return $projectManager?->name;
     }
 }
 
-if(!function_exists('getcommentstatus')){
-    function getcommentstatus($id){
+if (!function_exists('getcommentstatus')) {
+    function getcommentstatus($id)
+    {
         $date = date('Y-m-d',  strtotime('-7 days'));
-        $dateTime = $date.' 23:59:59';       
+        $dateTime = $date . ' 23:59:59';
         $status = \App\Models\Comment::where('sale_id', $id)->where('date', '>', $dateTime);
         return $status->count();
     }
 }
 
-if(!function_exists('projectstatus')){
-    function projectstatus(){
+if (!function_exists('projectstatus')) {
+    function projectstatus()
+    {
         $status = ['Active', 'Inactive', 'Hold', 'Delivery'];
         return $status;
     }
 }
 
 
-if(!function_exists('saleDueamountCalculation')){
-    function saleDueamountCalculation($sales_id){
-        $dueAmount = \App\Models\Collection::where(['sale_id'=> $sales_id])->sum('collections.net_amount');
+if (!function_exists('saleDueamountCalculation')) {
+    function saleDueamountCalculation($sales_id)
+    {
+        $dueAmount = \App\Models\Collection::where(['sale_id' => $sales_id])->sum('collections.net_amount');
         return $dueAmount;
     }
 }
 
-if(!function_exists('getTimeInterval')){
-    function getTimeInterval(){
+if (!function_exists('getTimeInterval')) {
+    function getTimeInterval()
+    {
         $date1 = strtotime("2023-08-01 10:00:00");
         $date2 = strtotime("2023-08-02 10:00:00");
         $diff = abs($date2 - $date1);
-        $years = floor($diff / (365*60*60*24));
-        $months = floor(($diff - $years * 365*60*60*24)/(30*60*60*24));
-        $days = floor(($diff - $years * 365*60*60*24 -  $months*30*60*60*24)/ (60*60*24));
-        $hours = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24)/(60*60));
-        $minutes = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24 - $hours*60*60)/ 60);
-        return collect(['year'=> $years, 'months'=> $months, 'days'=> $days, 'hours' => $hours, 'minutes'=> $minutes]);
+        $years = floor($diff / (365 * 60 * 60 * 24));
+        $months = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
+        $days = floor(($diff - $years * 365 * 60 * 60 * 24 -  $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
+        $hours = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24 - $days * 60 * 60 * 24) / (60 * 60));
+        $minutes = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24 - $days * 60 * 60 * 24 - $hours * 60 * 60) / 60);
+        return collect(['year' => $years, 'months' => $months, 'days' => $days, 'hours' => $hours, 'minutes' => $minutes]);
     }
 }
 
-if(!function_exists('getProjectStatus')){
-    function getProjectStatus($status){
+if (!function_exists('getProjectStatus')) {
+    function getProjectStatus($status)
+    {
         $statusArray = collect(['New', 'Inprogress', 'Deactive', 'Hold']);
         return $statusArray[$status];
     }
@@ -155,14 +178,15 @@ if(!function_exists('getProjectStatus')){
 
 
 
-function LogHistoryAdd($client_id, $sale_id, $user_id , $remark) {
-    LogHistory::create(['client_id' => $client_id, 'sale_id' => $sale_id, 'user_id' => $user_id, 'remark' => $remark ]);
+function LogHistoryAdd($client_id, $sale_id, $user_id, $remark)
+{
+    LogHistory::create(['client_id' => $client_id, 'sale_id' => $sale_id, 'user_id' => $user_id, 'remark' => $remark]);
     return true;
 }
 
 
 
- function getRecentMessages($users, $from_user_id, $search = null)
+function getRecentMessages($users, $from_user_id, $search = null)
 {
     $recentMessagesUser = collect();
 
@@ -172,16 +196,16 @@ function LogHistoryAdd($client_id, $sale_id, $user_id , $remark) {
             $query->where('from_user_id', $from_user_id)
                 ->where('to_user_id', $user->id);
         })
-        ->orWhere(function ($query) use ($user, $from_user_id) {
-            $query->where('from_user_id', $user->id)
-                ->where('to_user_id', $from_user_id);
-        })
-        ->orderBy('created_at', 'desc')
-        ->first();
+            ->orWhere(function ($query) use ($user, $from_user_id) {
+                $query->where('from_user_id', $user->id)
+                    ->where('to_user_id', $from_user_id);
+            })
+            ->orderBy('created_at', 'desc')
+            ->first();
 
-        $unread_chat_data = Chat::where('message_status', '!=', 'Read')
-        ->where('from_user_id', $user->id)
-        ->where('group_id', '=', null)->count();
+        $unread_chat_data = Chat::whereNot('message_status', 'Read')
+            ->where('from_user_id', $user->id)
+            ->whereNot('group_id', null)->count();
 
         $recentMessagesUser->push([
             'id'            => $user->id,
@@ -193,10 +217,9 @@ function LogHistoryAdd($client_id, $sale_id, $user_id , $remark) {
             'user_image'    => $user->user_image,
             'user_status'   => $user->user_status,
             'unread_chat'   => $unread_chat_data,
-            'message_status'=> $message->message_status ?? '',
+            'message_status' => $message->message_status ?? '',
             'from_user_id'  => $from_user_id,
         ]);
-
     }
 
 
@@ -205,7 +228,7 @@ function LogHistoryAdd($client_id, $sale_id, $user_id , $remark) {
     foreach ($group as $item) {
 
         $messageGroup = $item->group_name?->chat()?->orderBy('created_at', 'desc')
-        ->first();
+            ->first();
 
         $groupChat = $item->group_name?->chat();
 
@@ -215,7 +238,7 @@ function LogHistoryAdd($client_id, $sale_id, $user_id , $remark) {
             ->where('message_status', '!=', 'Read')
             ->where('from_user_id', '<>', $from_user_id)
             ->where('to_user_id', '=', null)->count();
-    
+
         $recentMessagesUser->push([
             'id'    => $item->group_id,
             'name'  => $item->group_name?->name,
@@ -226,13 +249,12 @@ function LogHistoryAdd($client_id, $sale_id, $user_id , $remark) {
             'user_image'    => '',
             'user_status'   => '',
             'unread_chat'   => $unreadGroupChatData,
-            'message_status'=> $messageGroup->message_status ?? '',
+            'message_status' => $messageGroup->message_status ?? '',
             'from_user_id'  => $from_user_id,
         ]);
-
     }
 
-     // Filter the results based on the search term
+    // Filter the results based on the search term
 
     if ($search) {
         $recentMessagesUser = $recentMessagesUser->filter(function ($item) use ($search) {
@@ -241,17 +263,17 @@ function LogHistoryAdd($client_id, $sale_id, $user_id , $remark) {
     }
 
     return $recentMessagesUser->sortByDesc('timestamp');
-
 }
 
 
 
-function convertUrlsToLinks($text) {
+function convertUrlsToLinks($text)
+{
     // Define a regular expression pattern to match URLs
     $pattern = '/(https?:\/\/[^\s]+)/';
 
     // Use preg_replace_callback to replace URLs with HTML <a> tags
-    $text = preg_replace_callback($pattern, function($matches) {
+    $text = preg_replace_callback($pattern, function ($matches) {
         $url = $matches[0];
         return "<a href='$url' target='_blank'>$url</a>";
     }, $text);
@@ -259,4 +281,166 @@ function convertUrlsToLinks($text) {
     return $text;
 }
 
-?>
+
+function formatTime($hours, $minutes, $seconds)
+{
+    // Use sprintf to format each component with leading zeros
+    $formattedHours = sprintf('%02d', $hours);
+    $formattedMinutes = sprintf('%02d', $minutes);
+    $formattedSeconds = sprintf('%02d', $seconds);
+
+    return "{$formattedHours}:{$formattedMinutes}:{$formattedSeconds}";
+}
+
+function taskTime($jodId)
+{
+
+    $records = Workhistory::where('developer_job_id', $jodId)->where('user_id', Auth::user()->id)->get();
+
+    if (count($records) > 0) {
+
+        $totalWorkingTime = Carbon::now()->diffInSeconds(Carbon::now());
+
+        $stTime = null;
+        $ptTime = null;
+        $lastKey = count($records) - 1;
+
+        // Iterate through each record
+        foreach ($records as $key => $record) {
+
+            if (count($records) > 1) {
+
+                if ($key == $lastKey && $record->final_status == 'start') {
+                    $ptTime = Carbon::now();
+                }
+
+                if ($record->final_status == 'start') {
+                    $stTime = Carbon::parse($record->created_at);
+                }
+
+                if ($record->final_status == 'stop') {
+                    $ptTime = Carbon::parse($record->created_at);
+                }
+            } else {
+
+                if ($record->final_status == 'start') {
+                    $stTime = Carbon::parse($record->created_at);
+                }
+
+                $ptTime = Carbon::now();
+            }
+
+            if (!empty($stTime) && !empty($ptTime)) {
+                $workingTime = $ptTime->diffInSeconds($stTime);
+                $totalWorkingTime += $workingTime;
+
+                $stTime = null;
+                $ptTime = null;
+            }
+        }
+
+        // Convert total working time to hours, minutes, and seconds
+        $totalWorkingHours = intdiv($totalWorkingTime, 3600);
+        $totalWorkingMinutes = intdiv($totalWorkingTime % 3600, 60);
+        $totalWorkingSeconds = $totalWorkingTime % 60;
+
+        $timeformat =  formatTime($totalWorkingHours, $totalWorkingMinutes, $totalWorkingSeconds);
+    } else {
+        ///// Empty records
+        $totalWorkingTime = 0;
+        $timeformat  = '00:00:00';
+    }
+
+
+    return [
+        'totalSecond' => $totalWorkingTime,
+        'timeformat'  => $timeformat,
+    ];
+}
+
+
+function ClockBreakTime()
+{
+
+    $totalWorkingTime = 0;
+    $timeformat  = '00:00:00';
+    $type        = '';
+    $status      = '';
+
+    $lastrecord = TimeLog::whereDate('created_at', date('Y-m-d'))->orderBy('id', 'desc')->first();
+
+    if ($lastrecord) {
+
+        $type        = $lastrecord->type;
+        $status      = $lastrecord->status;
+
+        $records = TimeLog::whereDate('created_at', date('Y-m-d'))->where('user_id', Auth::id())->where('type', $lastrecord->type)->get();
+
+        if (count($records) > 0) {
+
+            $totalWorkingTime = Carbon::now()->diffInSeconds(Carbon::now());
+
+            $stTime = null;
+            $ptTime = null;
+
+            $lastKey = count($records) - 1;
+
+            // Iterate through each record
+            foreach ($records as $key => $record) {
+
+                if (count($records) > 1) {
+
+                    if ($key == $lastKey && $record->status == 'start') {
+                        $ptTime = Carbon::now();
+                    }
+
+                    if ($record->status == 'start') {
+                        $stTime = Carbon::parse($record->created_at);
+                    }
+
+                    if ($record->status == 'stop') {
+                        $ptTime = Carbon::parse($record->created_at);
+                    }
+
+                    if ($record->status == 'end') {
+                        $ptTime = Carbon::parse($record->created_at);
+                    }
+                } else {
+
+                    if ($record->status == 'start') {
+                        $stTime = Carbon::parse($record->created_at);
+                    }
+
+                    if ($record->status == 'end') {
+                        $ptTime = Carbon::parse($record->created_at);
+                    }
+
+                    $ptTime = Carbon::now();
+                }
+
+                if (!empty($stTime) && !empty($ptTime)) {
+
+                    $workingTime = $ptTime->diffInSeconds($stTime);
+                    $totalWorkingTime += $workingTime;
+
+                    $stTime = null;
+                    $ptTime = null;
+                }
+            }
+
+            // Convert total working time to hours, minutes, and seconds
+            $totalWorkingHours = intdiv($totalWorkingTime, 3600);
+            $totalWorkingMinutes = intdiv($totalWorkingTime % 3600, 60);
+            $totalWorkingSeconds = $totalWorkingTime % 60;
+
+            $timeformat =  formatTime($totalWorkingHours, $totalWorkingMinutes, $totalWorkingSeconds);
+        }
+    }
+
+    return [
+        'totalSecond'   => $totalWorkingTime,
+        'timeformat'    => $timeformat,
+        'type'          => $type,
+        'status'        => $status,
+    ];
+}

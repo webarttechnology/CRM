@@ -134,4 +134,143 @@ class TimeLogController extends Controller
     {
         //
     }
+
+
+    public function clockin_break_clockout(Request $request)
+    {
+
+        // dd($request->all());
+
+        $lastrecord = TimeLog::whereDate('created_at', date('Y-m-d'))->orderBy('id', 'desc')->first();
+
+        if($lastrecord){
+
+            if($lastrecord->type == 'work'){
+
+            
+                if($request->type != 'continue' && $request->type != 'clockout'){
+
+                    TimeLog::create([
+                        'user_id'       => Auth::id(),
+                        'start_time'    => null,
+                        'timer_data'    => null,
+                        'type'          => 'work',
+                        'status'        => "stop",
+                    ]);
+    
+                    TimeLog::create([
+                        'user_id'       => Auth::id(),
+                        'start_time'    => null,
+                        'timer_data'    => null,
+                        'type'          => 'break',
+                        'status'        => "start",
+                    ]);
+
+                }
+
+
+                if($request->type == 'continue'){
+
+                    TimeLog::create([
+                        'user_id'       => Auth::id(),
+                        'start_time'    => null,
+                        'timer_data'    => null,
+                        'type'          => 'work',
+                        'status'        => "start",
+                    ]);
+
+                }
+
+                if($request->type == 'clockout'){
+
+                    TimeLog::create([
+                        'user_id'       => Auth::id(),
+                        'start_time'    => null,
+                        'timer_data'    => null,
+                        'type'          => 'work',
+                        'status'        => "end",
+                    ]);
+
+                }
+
+            }elseif($lastrecord->type == 'break'){
+
+                if($request->type != 'continue' && $request->type != 'clockout'){
+
+                    TimeLog::create([
+                        'user_id'       => Auth::id(),
+                        'start_time'    => null,
+                        'timer_data'    => null,
+                        'type'          => 'work',
+                        'status'        => "start",
+                    ]);
+    
+                    TimeLog::create([
+                        'user_id'       => Auth::id(),
+                        'start_time'    => null,
+                        'timer_data'    => null,
+                        'type'          => 'break',
+                        'status'        => "stop",
+                    ]);
+
+                }
+
+                if($request->type == 'continue'){
+
+                    TimeLog::create([
+                        'user_id'       => Auth::id(),
+                        'start_time'    => null,
+                        'timer_data'    => null,
+                        'type'          => 'break',
+                        'status'        => "stop",
+                    ]);
+
+                    TimeLog::create([
+                        'user_id'       => Auth::id(),
+                        'start_time'    => null,
+                        'timer_data'    => null,
+                        'type'          => 'work',
+                        'status'        => "start",
+                    ]);
+
+                }
+
+                if($request->type == 'clockout'){
+
+                    TimeLog::create([
+                        'user_id'       => Auth::id(),
+                        'start_time'    => null,
+                        'timer_data'    => null,
+                        'type'          => 'break',
+                        'status'        => "stop",
+                    ]);
+
+                    TimeLog::create([
+                        'user_id'       => Auth::id(),
+                        'start_time'    => null,
+                        'timer_data'    => null,
+                        'type'          => 'work',
+                        'status'        => "end",
+                    ]);
+                    
+                }
+
+            }
+
+        }else{
+
+             TimeLog::create([
+                'user_id'       => Auth::id(),
+                'start_time'    => null,
+                'timer_data'    => null,
+                'type'          => 'work',
+                'status'        => "start",
+            ]);
+        }
+
+
+        return ClockBreakTime();
+
+    }
+
 }

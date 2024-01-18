@@ -14,15 +14,16 @@
 
 
 <!-- Full Width Modal -->
-<div class="modal right" id="fullWidthModal" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true">
+<div class="modal right" id="fullWidthModal" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-full" role="document">
-      <div class="modal-content">
-        <div class="chat-box">
-          <!-- Modal content goes here -->
+        <div class="modal-content">
+            <div class="chat-box">
+                <!-- Modal content goes here -->
+            </div>
         </div>
-      </div>
     </div>
-  </div>
+</div>
 
 <!-- jQuery -->
 <script src="{{ url('panel/assets/js/jquery-3.6.0.min.js') }}"></script>
@@ -45,14 +46,7 @@
 <script src="{{ url('panel/assets/js/moment.min.js') }}"></script>
 <script src="{{ url('panel/assets/js/bootstrap-datetimepicker.min.js') }}"></script>
 
-<!-- Chart JS -->
-<script src="{{ url('panel/assets/js/morris.js') }}"></script>
 
-<script src="{{ url('panel/assets/plugins/raphael/raphael.min.js') }}"></script>
-<script src="{{ url('panel/assets/js/chart.js') }}"></script>
-<script src="{{ url('panel/assets/js/linebar.min.js') }}"></script>
-<script src="{{ url('panel/assets/js/piechart.js') }}"></script>
-<script src="{{ url('panel/assets/js/apex.min.js') }}"></script>
 <!-- theme JS -->
 <script src="{{ url('panel/assets/js/theme-settings.js') }}"></script>
 
@@ -66,9 +60,9 @@
 
 {{-- Clock Timer --}}
 <script src="{{ url('panel/assets/js/clock.js') }}"></script>
+<script src="{{ url('panel/assets/js/clockin-break.js') }}"></script>
 <script src="{{ url('panel/assets/js/main.js') }}"></script>
-
-
+@yield('script')
 @if (session('successmsg'))
     <script>
         toastr.success("{{ Session::get('successmsg') }}");
@@ -81,7 +75,7 @@
     </script>
 @endif
 
-@yield('script')
+
 <script>
     $(function() {
 
@@ -100,17 +94,15 @@
             });
         };
 
-        
 
-       
 
         $(document).on("click", ".open-module-form", function(e) {
             e.preventDefault();
 
-            var id      = $(this).data('id');
-            var type    = $(this).data('type');
-            var sale    = $(this).data('sale');
-            var taskId  = $(this).data('id'); 
+            var id = $(this).data('id');
+            var type = $(this).data('type');
+            var sale = $(this).data('sale');
+            var taskId = $(this).data('id');
 
             $.ajax({
                 type: 'POST',
@@ -121,10 +113,6 @@
                     sale: sale,
                 },
                 success: function(data) {
-
-                    if(type == 'add_task' && sale == 'show'){
-                        CurrentTimeStore();
-                    }
 
                     GetStatusWorkHistory(id);
 
@@ -141,16 +129,18 @@
         });
 
         const getMessage = (taskId) => {
-             $.ajax({
-                 type: 'GET',
-                 url: '{{ route("comment.list") }}',
-                 data: { task_id: taskId },
-                 success: function(data) {
-                     $("#message").html(data);
-                 }
-             });
-         }
-         
+            $.ajax({
+                type: 'GET',
+                url: '{{ route('comment.list') }}',
+                data: {
+                    task_id: taskId
+                },
+                success: function(data) {
+                    $("#message").html(data);
+                }
+            });
+        }
+
         function GetStatusWorkHistory(id) {
 
             $.ajax({
@@ -164,8 +154,7 @@
                         $(`.show-task-timer`).removeClass('d-none');
                         stopCountdown();
                         startCountdown(id);
-                        getTaskList();
-                    } 
+                    }
                 },
             });
 
@@ -208,7 +197,6 @@
             $(`.show-task-timer`).html(timer);
 
             currentTime++;
-
         }
 
 
@@ -237,14 +225,14 @@
                     time: currentTimeGet,
                     last_counter_time: formatTime(currentTime)
                 },
-                beforeSend: function() { 
-                  $clickBtn.prop('disabled', true); // disable button
+                beforeSend: function() {
+                    $clickBtn.prop('disabled', true); // disable button
                 },
                 success: function(data) {
                     $clickBtn.prop('disabled', false); // disable button
                     if (data.status == 0) {
                         toastr.error(data.msg);
-                    }else{
+                    } else {
                         if ($clickBtn.data('type') == 'start') {
 
                             $clickBtn.removeClass('btn-warning');
@@ -258,9 +246,7 @@
 
                             startCountdown($clickBtn.data('id'));
 
-                            getTaskList();
-
-                            } else if ($clickBtn.data('type') == 'stop') {
+                        } else if ($clickBtn.data('type') == 'stop') {
 
                             $clickBtn.removeClass('btn-danger');
                             $clickBtn.addClass('btn-warning');
@@ -271,8 +257,6 @@
 
                             stopCountdown();
 
-                            getTaskList();
-
                         }
                     }
                 },
@@ -282,8 +266,7 @@
 
         currentTaskTimerGet();
 
-        function currentTaskTimerGet()
-        {
+        function currentTaskTimerGet() {
             $.ajax({
                 type: 'POST',
                 url: "{{ route('current-task-timer-get') }}",
@@ -298,61 +281,37 @@
                         stopCountdown();
                     }
                 },
-            });  
-        }
-
-     
-        console.log($(`.show-task-timer`).html());
-
-        function CurrentTimeStore(){
-            var last_counter_time = formatTime(currentTime);
-            $.ajax({
-                type: 'POST',
-                url: "{{ route('store-status-page-refresh') }}",
-                data: {
-                    last_counter_time: $(`.show-task-timer`).html(),
-                },
-                success: function(response) {
-                    // Handle the response if needed
-                    console.log(response);
-                },
             });
         }
 
 
-        $(window).on('beforeunload', function() {
-            // Make an AJAX call before unloading the page
-            CurrentTimeStore();
-            // return "You have unsaved changes. Are you sure you want to leave?";
-        });
         //// End Timer Section 
 
-        getTaskList();
 
         function getTaskList() {
             $.ajax({
                 type: 'POST',
                 url: '/workhistory/get-task-list',
-                success:function(data){
-                    $('.task-list-section').html(data); 
+                success: function(data) {
+                    $('.task-list-section').html(data);
                 },
             });
         }
 
         $(document).on('click', '#breakButton, #stopButton', function() {
 
-        setTimeout(function() {
-            var stopButton = $(".timer-btn[data-type='stop']")[0];
-            // alert(stopButton);
-            if (stopButton) {
-                stopButton.click();
-            }
-            // console.log("5 seconds have passed!");
-        }, 5000);
+            setTimeout(function() {
+                var stopButton = $(".timer-btn[data-type='stop']")[0];
+                // alert(stopButton);
+                if (stopButton) {
+                    stopButton.click();
+                }
+                // console.log("5 seconds have passed!");
+            }, 5000);
 
         });
 
-       
+
         $(".times_track").click(function(e) {
             e.preventDefault();
             $("#popUp").slideToggle();
@@ -374,39 +333,42 @@
             });
         });
 
-         var auth_id = '{{ Auth::id() }}';
+
+        ////// Pusher Notification
+
+        var auth_id = '{{ Auth::id() }}';
 
         Pusher.logToConsole = true;
 
         var pusher = new Pusher('d2ece4d16be20aa65ad6', {
-        cluster: 'ap2'
+            cluster: 'ap2'
         });
 
         var channel = pusher.subscribe('notify-user');
         channel.bind('chat-notify-user', function(data) {
             // console.log(JSON.stringify(data.message));
-             if(data.message.to_user_id == auth_id){
-                 if(data.message.message_status ==  'Not Send'){
+            if (data.message.to_user_id == auth_id) {
+                if (data.message.message_status == 'Not Send') {
                     //  alert(JSON.stringify(data.message.chat_message));
-                    if(data.message.user_image){
+                    if (data.message.user_image) {
                         $userImg = data.message.user_image;
-                    }else{
+                    } else {
                         $userImg = "{{ url('panel/assets/img/profiles/user-profile.png') }}";
                     }
-                     showNotification(data.message.name, $userImg, data.message.chat_message)
-                 }
-             }
+                    showNotification(data.message.name, $userImg, data.message.chat_message)
+                }
+            }
         });
 
 
         function showNotification(name, image, msg) {
 
-            var html =` <div class="my-toast-container" id="toast">
+            var html = ` <div class="my-toast-container" id="toast">
                 <div style="display: flex;">
-                    <div><img src="`+image+`" width="40px" height="40px" style="border-radius: 100%;" alt="photo"></div>
+                    <div><img src="` + image + `" width="40px" height="40px" style="border-radius: 100%;" alt="photo"></div>
                     <div style="margin-left: 10px;">
-                    <div style="font-weight: 600; font-size: 15px;">`+name+`</div>
-                    <div style="font-size: 13px; font-weight: 400;  margin-top: 5px;">`+msg+`</div>
+                    <div style="font-weight: 600; font-size: 15px;">` + name + `</div>
+                    <div style="font-size: 13px; font-weight: 400;  margin-top: 5px;">` + msg + `</div>
                     </div>
                 </div>
             </div>`;
@@ -414,14 +376,12 @@
             $("body").append(html);
             $('#toast').show();
 
-            setTimeout(function () {
-              $('#toast').fadeOut(1000).remove();
-            }, 3000); 
+            setTimeout(function() {
+                $('#toast').fadeOut(1000).remove();
+            }, 3000);
         }
 
     });
-
 </script>
 </body>
-
 </html>
