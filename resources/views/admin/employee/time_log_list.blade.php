@@ -1,4 +1,4 @@
-@section('title', 'User List')
+@section('title', 'Time log List')
 @extends('admin.master.layout')
 @section('content')
     <div class="page-wrapper" style="min-height: 333px;">
@@ -10,13 +10,13 @@
                     <h3 class="page-title m-0">
                         <span class="page-title-icon bg-gradient-primary text-white me-2">
                             <i class="feather-check-square"></i>
-                        </span>User List
+                        </span>Time log
                     </h3>
                 </div>
                 <div class="col p-0 text-end">
                     <ul class="breadcrumb bg-white float-end m-0 ps-0 pe-0">
                         <li class="breadcrumb-item"><a href="{{ url('/') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item active">User List</li>
+                        <li class="breadcrumb-item active">Time Log</li>
                     </ul>
                 </div>
             </div>
@@ -28,9 +28,8 @@
 
                     </div>
                     <div class="col text-end">
-                        <a href="#"
-                            class="add btn btn-gradient-primary font-weight-bold text-white todo-list-add-btn btn-rounded open-module-form"
-                            data-type="add_user">Add User</a>
+                        {{-- <a href="#" class="add btn btn-gradient-primary font-weight-bold text-white todo-list-add-btn btn-rounded open-module-form"
+                            data-type="add_user">Add User</a> --}}
                     </div>
                 </div>
             </div>
@@ -44,19 +43,31 @@
                             <div class="table-responsive">
                                 <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
                                     <div class="row">
-                                        <div class="col-md-6"></div>
+                                        <div class="col-md-6">
+                                              @php
+                                                $user =  App\Models\User::find(request()->id);
+                                              @endphp
+                                            <h3>{{ $user->name }}</h3>
+                                        </div>
                                         <div class="col-md-6">
                                             <div>
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="d-flex justify-content-end mb-3">
-                                                            <form action="{{ route('user.search') }}" method="post" class="align-items-center d-flex justify-content-center">
-                                                                @csrf
-                                                                <div class="input-group input-group-merge">
-                                                                <span class="input-group-text" id="basic-addon-search31"><i class="ion-ios7-search" data-bs-toggle="tooltip" title="" data-bs-original-title="ion-ios7-search" aria-label="ion-ios7-search"></i></span>
-                                                                <input type="text" class="form-control" name="search" placeholder="Search..." aria-label="Search..." aria-describedby="basic-addon-search31">
-                                                                </div>
-                                                                <input type="submit" value="Search" class="btn ms-2 btn-primary">
+                                                            <form  class="align-items-center d-flex justify-content-center">
+                                                              
+                                                                 <div class="row">
+                                                                     <div class="col-md-6">
+                                                                           <label for="">From Date</label>
+                                                                          <input type="date" name="from" class="form-control" required value="{{ request()->from }}">
+                                                                     </div>
+                                                                     <div class="col-md-6">
+                                                                       <label for="">To Date</label>
+                                                                       <input type="date" name="to" class="form-control" value="{{ request()->to }}">
+                                                                  </div>
+                                                                 </div>
+                                                              
+                                                                <input type="submit" value="Search" class="btn ms-2 mt-3 btn-primary">
                                                             </form>    
                                                         </div>
                                                     </div>
@@ -73,40 +84,39 @@
                                                 <thead>
                                                     <tr>
                                                         <th>ID</th>
-                                                        <th>User name</th>
-                                                        <th>Email ID</th>
-                                                        <th>Role</th>
-                                                        <th>Status</th>
-                                                        <th>Created at</th>
-                                                        <th>Actions</th>
+                                                        <th>Date</th>
+                                                        <th>ClockIn</th>
+                                                        <th>ClockOut</th>
+                                                        <th>Total Working time</th>
+                                                        <th>Total Break time</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @foreach ($user as $val)
+                                                    @foreach ($timelog as $key => $val)
+                                                           @php
+
+                                                            $firstClockIn = $val->first();
+
+                                                             if($val->last()->status == 'end'){
+
+                                                                 $lastClockOut = $val->last();
+
+                                                             }else{
+
+                                                                $lastClockOut = null;
+
+                                                             }
+
+                                                            //  dd(ClockBreakTimePerUser( $val, 'break'));
+                                                        
+                                                           @endphp
                                                         <tr>
                                                             <td>{{ ++$loop->index }}</td>
-                                                            <td><strong>{{ $val->name }}</strong></td>
-                                                            <td>{{ $val->email }}</td>
-                                                            <td>{{ $role[$val->role_id] }}</td>
-                                                            <td>{!! $val->is_active == 1
-                                                                ? '<span class="text-success">Active</span>'
-                                                                : '<span class="text-danger">Inactive</span>' !!}</td>
-                                                            <td>{{ date('d/m/Y', strtotime($val->created_at)) }}</td>
-
-                                                            <td class="text-center">
-                                                                <div class="dropdown dropdown-action">
-                                                                    <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
-                                                                    <div class="dropdown-menu dropdown-menu-right">
-                                                                    <a class="dropdown-item open-module-form" data-type="add_user" data-id="{{ $val->id }}" href="{{ route('user.update', ['updateid' => $val->id]) }}"><i
-                                                                            class="bx bx-edit-alt me-1"></i>Edit</a>
-                                                                    <a class="dropdown-item" href="{{ url('employee/time-log', $val->id) }}"><i class="bx bx-edit-alt me-1"></i>Time Log</a>
-                                                                    @if (Auth::user()->role_id == 1)
-                                                                        <a class="dropdown-item"  onclick="return confirm('Do you really want to delete this data?')"
-                                                                            href="{{ route('user.delete', ['deleteid' => $val->id]) }}"><i class="bx bx-trash me-1"></i> Delete</a>
-                                                                    @endif
-                                                                    </div>
-                                                                </div>
-                                                            </td>
+                                                            <td>{{ $key }}</td>
+                                                            <td>{{ $firstClockIn->created_at->format('H:i A') }}</td>
+                                                            <td>{{ $lastClockOut?->created_at->format('H:i A') ?? 'NAN' }}</td>
+                                                            <td>{{ ClockBreakTimePerUser( $val, 'work')['timeformat'] }}</td>
+                                                            <td>{{ ClockBreakTimePerUser( $val, 'break')['timeformat'] }}</td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>

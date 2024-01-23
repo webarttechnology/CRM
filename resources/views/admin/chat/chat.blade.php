@@ -338,7 +338,7 @@
             scroll_top();
         }
 
-        if (data.group_member_history) {
+        if (data.group_member_history) { 
 
             if (to_type == 'group') {
 

@@ -367,31 +367,34 @@ function ClockBreakTime()
     $type        = '';
     $status      = '';
 
-    $lastrecord = TimeLog::whereDate('created_at', date('Y-m-d'))->orderBy('id', 'desc')->first();
+    $lastrecord = TimeLog::whereDate('created_at', date('Y-m-d'))->where('user_id', Auth::id())->orderBy('id', 'desc')->first();
 
     if ($lastrecord) {
 
         $type        = $lastrecord->type;
         $status      = $lastrecord->status;
-
+        
         $records = TimeLog::whereDate('created_at', date('Y-m-d'))->where('user_id', Auth::id())->where('type', $lastrecord->type)->get();
-
+        
         if (count($records) > 0) {
-
+            
             $totalWorkingTime = Carbon::now()->diffInSeconds(Carbon::now());
-
+            
             $stTime = null;
             $ptTime = null;
-
+            
+            $str = '';
             $lastKey = count($records) - 1;
+            // dd($lastKey);
 
             // Iterate through each record
+
             foreach ($records as $key => $record) {
 
                 if (count($records) > 1) {
 
                     if ($key == $lastKey && $record->status == 'start') {
-                        $ptTime = Carbon::now();
+                        $ptTime = Carbon::now();    
                     }
 
                     if ($record->status == 'start') {
@@ -405,26 +408,25 @@ function ClockBreakTime()
                     if ($record->status == 'end') {
                         $ptTime = Carbon::parse($record->created_at);
                     }
-                } else {
 
+                } else {
+                    
                     if ($record->status == 'start') {
                         $stTime = Carbon::parse($record->created_at);
-                    }
-
-                    if ($record->status == 'end') {
-                        $ptTime = Carbon::parse($record->created_at);
                     }
 
                     $ptTime = Carbon::now();
                 }
 
                 if (!empty($stTime) && !empty($ptTime)) {
-
+                    
                     $workingTime = $ptTime->diffInSeconds($stTime);
                     $totalWorkingTime += $workingTime;
-
+                    
+                    $str .= $record->created_at . $record->status . ' ,';
                     $stTime = null;
                     $ptTime = null;
+
                 }
             }
 
@@ -438,9 +440,124 @@ function ClockBreakTime()
     }
 
     return [
-        'totalSecond'   => $totalWorkingTime,
+        'totalSecond'   => $totalWorkingTime, 
         'timeformat'    => $timeformat,
         'type'          => $type,
         'status'        => $status,
     ];
 }
+
+
+function ClockBreakTimePerUser( $records , $type)
+{
+
+        $totalWorkingTime = 0;
+        $timeformat  = '00:00:00';
+        
+        if (count($records) > 0) {
+            
+            $totalWorkingTime = Carbon::now()->diffInSeconds(Carbon::now());
+            
+            $stTime = null;
+            $ptTime = null;
+            
+            $str = '';
+            $lastKey = count($records) - 1;
+          
+          
+
+            foreach ($records as $key => $record) {
+
+                 if($type == 'work'){
+                    if($record->type == 'work'){
+
+                        if ($key == $lastKey && $record->status == 'start') {
+                            $ptTime = Carbon::now();    
+                        }
+    
+                        if ($record->status == 'start') {
+                            $stTime = Carbon::parse($record->created_at);
+                        }
+    
+                        if ($record->status == 'stop') {
+                            $ptTime = Carbon::parse($record->created_at);
+                        }
+    
+                        if ($record->status == 'end') {
+                            $ptTime = Carbon::parse($record->created_at);
+                        }
+    
+                     }
+                 }
+
+                 
+                 if($type == 'break'){
+
+                    if($record->type == 'break'){
+
+                        if ($key == $lastKey && $record->status == 'start') {
+                            $ptTime = Carbon::now();    
+                        }
+    
+                         if($record->status == 'start'){
+                             $stTime = Carbon::parse($record->created_at);
+                         }
+    
+                         if($record->status == 'stop'){
+                            $ptTime = Carbon::parse($record->created_at);
+                        }
+                      
+                     }
+                 }
+                 
+                 
+
+                
+                if (!empty($stTime) && !empty($ptTime)) {
+                    
+                    $workingTime = $ptTime->diffInSeconds($stTime);
+                    $totalWorkingTime += $workingTime;
+                
+                    $stTime = null;
+                    $ptTime = null;
+                }
+
+            }
+
+
+            // Convert total working time to hours, minutes, and seconds
+            $totalWorkingHours = intdiv($totalWorkingTime, 3600);
+            $totalWorkingMinutes = intdiv($totalWorkingTime % 3600, 60);
+            $totalWorkingSeconds = $totalWorkingTime % 60;
+
+            $timeformat =  formatTime($totalWorkingHours, $totalWorkingMinutes, $totalWorkingSeconds);
+        }
+
+    return [
+        'totalSecond'   => $totalWorkingTime, 
+        'timeformat'    => $timeformat
+    ];
+
+}
+
+function TaskTimeTotal($start, $stop){
+
+    $totalWorkingTime = Carbon::now()->diffInSeconds(Carbon::now());
+
+    $workingTime = $stop->diffInSeconds($start);
+    $totalWorkingTime += $workingTime;
+
+    $totalWorkingHours = intdiv($totalWorkingTime, 3600);
+    $totalWorkingMinutes = intdiv($totalWorkingTime % 3600, 60);
+    $totalWorkingSeconds = $totalWorkingTime % 60;
+
+    $timeformat =  formatTime($totalWorkingHours, $totalWorkingMinutes, $totalWorkingSeconds);
+
+    return [
+        'totalSecond'   => $totalWorkingTime, 
+        'timeformat'    => $timeformat
+    ];
+
+}
+
+

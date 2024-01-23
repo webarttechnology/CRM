@@ -132,14 +132,6 @@ class AdminController extends Controller
     public function profile(Request $request){
         if($request->method() == "POST"){
 
-            // dd($request->all());
-
-            $request -> validate([
-                'name'      => 'required|string',
-                'email'     => 'required|email|unique:users,id,'.$request->input('update_id'),
-                'mobile_no' => 'required',
-            ]); 
-
             $validator   =  Validator::make($request->all(), [
                 'name'      => 'required|string',
                 'email'     => 'required|email|unique:users,id,'.$request->input('update_id'),
@@ -331,24 +323,13 @@ class AdminController extends Controller
 
             $assignToIds = json_decode($data->assign_to);
             $sales = \App\Models\Sale::where('id', $data->sale_id)->first();
-            $workhistory = Workhistory::with('users')->whereIn('user_id', $assignToIds)->where('final_status', 'start')->get();
 
+            if(Auth::user()->role_id == 1){
+                $workhistory = Workhistory::with('users')->whereIn('user_id', $assignToIds)->get();
+            }else{
+                $workhistory = Workhistory::where('user_id', Auth::id())->get();
+            }
 
-            // $timeIntervals = Workhistory::where('developer_job_id', $request->id)->where('user_id', Auth::user()->id)->pluck('currenttime');
-
-            // // Initialize a Carbon instance with zero time
-            // $totalTime = Carbon::createFromFormat('H:i:s', '00:00:00');
-
-            // // dd($timeIntervals);
-
-            // // Loop through each time interval and add it to the total time
-            // foreach ($timeIntervals as $timeInterval) {
-            //     $time = Carbon::createFromFormat('H:i:s', $timeInterval);
-            //     $totalTime->add($time->diff($totalTime));
-            // }
-
-            // // Format the total time as desired
-            // $totalTimeFormatted = $totalTime->format('H:i:s');
 
             return view('admin.data.add_task_show_form', compact('data', 'jobStatus', 'paused', 'running', 'delayThen', 'sales', 'comment', 'taskid','workhistory'));
         } elseif ($request->sale == 'comment') {

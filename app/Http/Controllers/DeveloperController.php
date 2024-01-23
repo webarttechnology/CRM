@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Sale;
 use App\Models\User;
+use App\Models\TimeLog;
 use App\Models\Workhistory;
 use Illuminate\Http\Request;
 use App\Models\Developertask;
@@ -212,4 +214,56 @@ class DeveloperController extends Controller
 
         return view('admin.data.assign_to', compact('developer'))->render();
     }
+
+    public function time_log(Request $request)
+    {
+
+
+       $form = $request->from;
+       $to = $request->to;
+
+       $id  = Auth::id();
+
+       if($form && $to){
+
+            $timelog = TimeLog::select(['id', 'type', 'status', 'created_at'])
+            ->where('user_id', $id)
+            ->orderBy('id', 'asc')
+            ->orderBy('created_at', 'asc')
+            ->whereBetween('created_at', [$form, $to])
+            ->get()
+            ->groupBy(function ($date) {
+                return Carbon::parse($date->created_at)->format('Y-m-d');
+            });
+
+       }elseif($form){
+
+            $timelog = TimeLog::select(['id', 'type', 'status', 'created_at'])
+            ->where('user_id', $id)
+            ->orderBy('id', 'asc')
+            ->orderBy('created_at', 'asc')
+            ->whereBetween('created_at', [$form, date('Y-m-d')])
+            ->get()
+            ->groupBy(function ($date) {
+                return Carbon::parse($date->created_at)->format('Y-m-d');
+            });
+
+       }else{
+
+        $timelog = TimeLog::select(['id', 'type', 'status', 'created_at'])
+        ->where('user_id', $id)
+        ->orderBy('id', 'asc')
+        ->orderBy('created_at', 'asc')
+        ->get()
+        ->groupBy(function ($date) {
+            return Carbon::parse($date->created_at)->format('Y-m-d');
+        });
+
+       }
+
+
+        return view('admin.developer.time_log_list', compact('timelog'));
+
+    }
+
 }

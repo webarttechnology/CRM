@@ -143,7 +143,9 @@ Route::group(['prefix' => 'renewal'], function(){
 
 Route::controller(App\Http\Controllers\UserController::class)
     ->prefix('employee')
+    ->middleware('auth')
     ->group(function () {
+
         Route::get('', 'index')->name('user.index');
         Route::post('', 'index')->name('user.search');
         Route::get('/add', 'add')->name('user.add');
@@ -151,7 +153,9 @@ Route::controller(App\Http\Controllers\UserController::class)
         Route::get('/update/{updateid}', 'update')->name('user.update');
         Route::post('/update', 'update')->name('user.update.success');
         Route::get('/delete/{deleteid}', 'delete')->name('user.delete');
-})->middleware(['auth']);
+        Route::get('/time-log/{id}', 'time_log');
+        
+});
 
 Route::controller(App\Http\Controllers\TaskController::class)
     ->prefix('task')
@@ -178,10 +182,11 @@ Route::controller(App\Http\Controllers\CommentController::class)
 
 
 
-
-Route::resource('timelogs', TimeLogController::class);
-
-Route::post("/clockin-break-clockout", [TimeLogController::class, 'clockin_break_clockout']);
+Route::post("/clockin-break-clockout", [TimeLogController::class, 'clockin_break_clockout'])->middleware(['auth']);
+Route::post("/clockin-break-clockout-time", [TimeLogController::class, 'clockin_break_clockout_time'])->middleware(['auth']);
+Route::post("/check-previous-clockout", [TimeLogController::class, 'check_previous_clockout'])->middleware(['auth']);
+Route::post("/previous-clockout-time-submit", [TimeLogController::class, 'previous_clockout_time_submit'])->name('previous-clockout-time-submit')->middleware(['auth']);
+Route::get("/check-user-auth", [TimeLogController::class, 'check_user_auth']);
 
 
 Route::controller(DeveloperController::class)
@@ -194,6 +199,7 @@ Route::controller(DeveloperController::class)
     Route::get('task/delete', 'delete')->name("developer.task.delete");
     Route::get('task/show/{id}', 'show')->name("developer.task.show");
     Route::post('get-assign-to', 'get_assign_to')->name("developer.get-assign-to");
+    Route::get('time-log', 'time_log');
 });
 
 Route::controller(App\Http\Controllers\WorkhistoryController::class)
@@ -207,14 +213,6 @@ Route::controller(App\Http\Controllers\WorkhistoryController::class)
         Route::post('store-status-page-refresh', 'store_status_page_refresh' )->name("store-status-page-refresh");
         Route::post('current-task-timer-get', 'current_task_timer_get' )->name("current-task-timer-get");
         Route::post('get-task-list', 'get_task_list' );
-
-        Route::post('store-workstatus-page-refresh', 'store_workstatus_page_refresh' )->name("store-workstatus-page-refresh");
-        Route::post('current-work-timer-get', 'current_work_timer_get' )->name("current-work-timer-get");
-        Route::post('last-work-timer-get', 'last_work_timer_get' )->name("last-work-timer-get");
-        Route::post('save-reason', 'saveReason' )->name("save-reason");
-        Route::post('previous-work-timer-get', 'previous_work_timer_get' )->name("previous-work-timer-get");
-
-
 
 })->middleware(['auth']);
 

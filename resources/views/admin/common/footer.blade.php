@@ -25,6 +25,44 @@
     </div>
 </div>
 
+
+
+  <!-- Previous Time Modal -->
+  <div class="modal fade" id="PreviousTimeModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Previous day work time</h5>
+        </div>
+        <div class="modal-body">
+            <form method="post" action="{{ route('previous-clockout-time-submit') }}" class="save">
+                  @csrf
+                  <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label" for="end_date">{{ __('Reason') }} <span class="text-danger">*</span></label>
+                        <textarea class="form-control" name="reason" placeholder="Enter Reason"></textarea>
+                    </div> 
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label" for="end_date">{{ __('Start Time') }} <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control clockin"  value=""  readonly  name="start" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label" for="end_date">{{ __('End Time') }} <span class="text-danger">*</span></label>
+                        <input type="time" class="form-control"  name="end_time" />
+                    </div>
+                  </div>
+
+                  <div class="text-center mt-4">
+                      <button type="sunmit" class="btn btn-primary">Submit</button>
+                  </div>
+
+             </form>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
 <!-- jQuery -->
 <script src="{{ url('panel/assets/js/jquery-3.6.0.min.js') }}"></script>
 
@@ -77,6 +115,9 @@
 
 
 <script>
+
+
+
     $(function() {
 
         $.ajaxSetup({
@@ -283,6 +324,21 @@
                 },
             });
         }
+
+
+        document.addEventListener('visibilitychange', function() {
+			if (document.visibilityState === 'hidden') {
+
+			   // If tab becomes inactive, clear the interval
+				//  clearInterval(timerInterval);
+				// alert("In active")
+
+			} else {
+			   // If tab becomes active, restart the interval
+               stopCountdown();
+               currentTaskTimerGet();
+			}
+		});
 
 
         //// End Timer Section 

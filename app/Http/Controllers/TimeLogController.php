@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\TimeLog;
-use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use App\Models\User;
+use App\Models\TimeLog;
+use App\Models\Workhistory;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class TimeLogController extends Controller
 {
@@ -37,57 +40,7 @@ class TimeLogController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
-        // $timeLog = TimeLog::create($request->all());
-        $userId = Auth::id();
-
-        $startTime =  Carbon::parse($request->input('start_time'));
-        $startTime->setTimezone('Asia/Kolkata');
-        $stopTime = date('Y-m-d H:i:s', strtotime($request->input('stop_time')));
-        $date = Carbon::now();
-
-        if ($request->input('type') === "break" && $request->input('work_status') === "start") {
-            $timeLog = TimeLog::create([
-                'user_id' => $userId,
-                'start_time' =>  $startTime->format('H:i:s'),
-                'timer_data' =>   $request->input('start_timer_data'),
-                'type' => "work",
-                'status' => "stop",
-            ]);
-        }
-
-        if ($request->input('type') === "break" && $request->input('work_status') === "stop") {
-            $timeLog = TimeLog::create([
-                'user_id' => $userId,
-                'start_time' =>  $startTime->format('H:i:s'),
-                'timer_data' =>   $request->input('break_timer_data'),
-                'type' =>  $request->input('type'),
-                'status' =>  $request->input('work_status'),
-            ]);
-        }
-
-        if ($request->input('type') === "break" && $request->input('work_status') === "start") {
-            $timeLog = TimeLog::create([
-                'user_id' => $userId,
-                'start_time' =>  $startTime->format('H:i:s'),
-                'timer_data' =>   $request->input('break_timer_data'),
-                'type' =>  $request->input('type'),
-                'status' =>  $request->input('work_status'),
-            ]);
-        } elseif($request->input('type') !== "break" || $request->input('work_status') !== "stop") {
-            $timeLog = TimeLog::create([
-                'user_id' => $userId,
-                'start_time' =>  $startTime->format('H:i:s'),
-                'timer_data' =>   $request->input('start_timer_data'),
-                'type' => $request->input('type'),
-                'status' => $request->input('work_status'),
-                // 'stop_time' => $stopTime,
-                // 'break_hours' => $request->input('break_hours'),
-                // 'current_date' =>  Carbon::parse($date)->toDateString(),
-            ]);
-        }
-
-        return response()->json($timeLog, 201);
+ 
     }
 
     /**
@@ -141,13 +94,17 @@ class TimeLogController extends Controller
 
         // dd($request->all());
 
-        $lastrecord = TimeLog::whereDate('created_at', date('Y-m-d'))->orderBy('id', 'desc')->first();
+        $lastrecord  = TimeLog::whereDate('created_at', date('Y-m-d'))->where('user_id', Auth::user()->id)->orderBy('id', 'desc')->first();
 
+        $workHistory = Workhistory::where('user_id', Auth::user()->id)->orderBy('id', 'desc')->first();
+
+       
         if($lastrecord){
+
 
             if($lastrecord->type == 'work'){
 
-            
+                // PERFECT AS HELL
                 if($request->type != 'continue' && $request->type != 'clockout'){
 
                     TimeLog::create([
@@ -168,8 +125,19 @@ class TimeLogController extends Controller
 
                 }
 
-
+                // PERFECT AS HELL
                 if($request->type == 'continue'){
+
+                    if( $lastrecord->status != 'end' )
+                    {
+                        TimeLog::create([
+                            'user_id'       => Auth::id(),
+                            'start_time'    => null,
+                            'timer_data'    => null,
+                            'type'          => 'break',
+                            'status'        => "stop",
+                        ]);
+                    }
 
                     TimeLog::create([
                         'user_id'       => Auth::id(),
@@ -179,8 +147,11 @@ class TimeLogController extends Controller
                         'status'        => "start",
                     ]);
 
+                    User::where('id', Auth::id())->update(['user_status' => 'Online']);
+
                 }
 
+                // PERFECT BUT NOT AS HELL
                 if($request->type == 'clockout'){
 
                     TimeLog::create([
@@ -191,29 +162,52 @@ class TimeLogController extends Controller
                         'status'        => "end",
                     ]);
 
+                    User::where('id', Auth::id())->update(['user_status' => 'Offline']);
+
+                }
+
+
+                if($request->type == 'break' || $request->type == 'clockout'){
+
+                    if($workHistory){
+                        if($workHistory->final_status == 'start'){
+                            Workhistory::create(
+                                [
+                                    'developer_job_id' => $workHistory->developer_job_id,
+                                    'user_id'          => Auth::user()->id,
+                                    'final_status'     => 'stop',
+                                    'currenttime'      => null, 
+                                    'delayThen'        => 0
+                                ]
+                            );
+                        }
+                    }
                 }
 
             }elseif($lastrecord->type == 'break'){
 
-                if($request->type != 'continue' && $request->type != 'clockout'){
+                // dd($request->type);
 
-                    TimeLog::create([
-                        'user_id'       => Auth::id(),
-                        'start_time'    => null,
-                        'timer_data'    => null,
-                        'type'          => 'work',
-                        'status'        => "start",
-                    ]);
+                // if($request->type != 'continue' && $request->type != 'clockout'){
+
+                //     TimeLog::create([
+                //         'user_id'       => Auth::id(),
+                //         'start_time'    => null,
+                //         'timer_data'    => null,
+                //         'type'          => 'break',
+                //         'status'        => "stop",
+                //     ]);
+
+                //     TimeLog::create([
+                //         'user_id'       => Auth::id(),
+                //         'start_time'    => null,
+                //         'timer_data'    => null,
+                //         'type'          => 'work',
+                //         'status'        => "start",
+                //     ]);
     
-                    TimeLog::create([
-                        'user_id'       => Auth::id(),
-                        'start_time'    => null,
-                        'timer_data'    => null,
-                        'type'          => 'break',
-                        'status'        => "stop",
-                    ]);
 
-                }
+                // }
 
                 if($request->type == 'continue'){
 
@@ -233,6 +227,8 @@ class TimeLogController extends Controller
                         'status'        => "start",
                     ]);
 
+                    User::where('id', Auth::id())->update(['user_status' => 'Online']);
+                    
                 }
 
                 if($request->type == 'clockout'){
@@ -250,8 +246,32 @@ class TimeLogController extends Controller
                         'start_time'    => null,
                         'timer_data'    => null,
                         'type'          => 'work',
+                        'status'        => "start",
+                    ]);
+
+                    TimeLog::create([
+                        'user_id'       => Auth::id(),
+                        'start_time'    => null,
+                        'timer_data'    => null,
+                        'type'          => 'work',
                         'status'        => "end",
                     ]);
+
+                    User::where('id', Auth::id())->update(['user_status' => 'Offline']);
+
+                    if($workHistory){
+                        if($workHistory->final_status == 'start'){
+                            Workhistory::create(
+                                [
+                                    'developer_job_id' => $workHistory->developer_job_id,
+                                    'user_id'          => Auth::user()->id,
+                                    'final_status'     => 'stop',
+                                    'currenttime'      => null, 
+                                    'delayThen'        => 0
+                                ]
+                            );
+                        }
+                    }
                     
                 }
 
@@ -266,11 +286,92 @@ class TimeLogController extends Controller
                 'type'          => 'work',
                 'status'        => "start",
             ]);
+
+            User::where('id', Auth::id())->update(['user_status' => 'Online']);
+
         }
 
 
         return ClockBreakTime();
 
     }
+
+    public function clockin_break_clockout_time(Request $request)
+    {
+        return ClockBreakTime();
+    }
+
+    public function check_previous_clockout(Request $request)
+    {
+
+        if(date("l") == 'Monday'){
+            $date = date('Y-m-d', strtotime('-3 day'));
+        }else{
+            $date = date('Y-m-d', strtotime('-1 day'));
+        }
+       
+        $previousclockin = TimeLog::where('user_id', Auth::id())->whereDate('created_at', $date)
+        ->where('type', 'work')->where('status', 'start')->first();
+
+        if($previousclockin){
+
+            $previousclockout = TimeLog::where('user_id', Auth::id())->whereDate('created_at', $date)
+            ->where('type', 'work')->orderBy('id', 'desc')->first();
+
+
+            if($previousclockout->status != 'end'){
+                 
+                $clockin = $previousclockin->created_at->format('Y-m-d h:i:s');
+
+                return response()->json(['status' => 'error', 'clockin' => $clockin, 'msg' => 'Please ClockOut Time Submit']);
+            }
+        }
+
+        return response()->json(['status' => 'success', 'msg' => 'ok']);
+
+    }
+
+
+    public function previous_clockout_time_submit(Request $request)
+    {
+
+        $validator   =  Validator::make($request->all(), [
+            'reason'            => 'required',
+            'end_time'          => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => 'errors', 'message' => $validator->errors()->all()]);
+        }
+
+        $convertedTime = date('h:i:s A', strtotime($request->end_time));
+
+        if(date("l") == 'Monday'){
+            $end_time = date('Y-m-d', strtotime('-3 day')).' '.$convertedTime;
+        }else{
+            $end_time = date('Y-m-d', strtotime('-1 day')).' '.$convertedTime;
+        }
+
+        $workHistory = new TimeLog();
+        $workHistory->user_id = Auth::user()->id;
+        $workHistory->type = "work";
+        $workHistory->status = "end";
+        $workHistory->reason = $request->reason;
+        $workHistory->created_at = date('Y-m-d H:i:s', strtotime($end_time));
+        $workHistory->updated_at = date('Y-m-d H:i:s');
+        $workHistory->save();
+
+        return response()->json(['status' => 'success', 'type' => 'clockout', 'message' => 'Your previous time submit successfully']);
+
+    }
+
+
+    public function check_user_auth()
+    {
+
+       return  Auth::check();
+
+    }
+    
 
 }
