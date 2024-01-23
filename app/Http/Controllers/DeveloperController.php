@@ -95,7 +95,7 @@ class DeveloperController extends Controller
                 ]);
 
                 $remark = 'Task '.'('.$task->sale->project_name.')'.' has been assigned';
-    
+                sendNotification($task);
                 LogHistoryAdd($task->sale->client_id, $task->sale->id, Auth::id(), $remark);
             }
 

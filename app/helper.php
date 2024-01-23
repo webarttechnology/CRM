@@ -6,6 +6,7 @@ use App\Models\TimeLog;
 use App\Models\LogHistory;
 use App\Models\GroupMember;
 use App\Models\Workhistory;
+use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 
 if (!function_exists('currency')) {
@@ -443,4 +444,25 @@ function ClockBreakTime()
         'type'          => $type,
         'status'        => $status,
     ];
+}
+
+
+
+function sendNotification($any)
+{
+    // dd($task);
+    $assignTo = json_decode($any->assign_to, true);
+    foreach ($assignTo  as $receiverId) {
+        $notification = new Notification([
+            'sender_id' => Auth::user()->id,
+            'receiver_id' => $receiverId,
+            'message' => 'A new task has been assigned to you.',
+            'url' => '/task', 
+            'status' => 'unread',
+        ]);
+    
+        $notification->save();
+    }
+    return true;
+
 }
