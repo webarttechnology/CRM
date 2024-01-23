@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use \App\Models\User;
+use App\Models\TimeLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -154,4 +156,56 @@ class UserController extends Controller
             return redirect() -> route('user.index')->with('errmsg', "Permission denied. Can't remove the client details.");  
         } 
     }
+
+
+    public function time_log(Request $request, $id)
+    {
+
+
+       $form = $request->from;
+       $to = $request->to;
+
+
+       if($form && $to){
+
+            $timelog = TimeLog::select(['id', 'type', 'status', 'created_at'])
+            ->where('user_id', $id)
+            ->orderBy('id', 'asc')
+            ->orderBy('created_at', 'asc')
+            ->whereBetween('created_at', [$form, $to])
+            ->get()
+            ->groupBy(function ($date) {
+                return Carbon::parse($date->created_at)->format('Y-m-d');
+            });
+
+       }elseif($form){
+
+            $timelog = TimeLog::select(['id', 'type', 'status', 'created_at'])
+            ->where('user_id', $id)
+            ->orderBy('id', 'asc')
+            ->orderBy('created_at', 'asc')
+            ->whereBetween('created_at', [$form, date('Y-m-d')])
+            ->get()
+            ->groupBy(function ($date) {
+                return Carbon::parse($date->created_at)->format('Y-m-d');
+            });
+
+       }else{
+
+        $timelog = TimeLog::select(['id', 'type', 'status', 'created_at'])
+        ->where('user_id', $id)
+        ->orderBy('id', 'asc')
+        ->orderBy('created_at', 'asc')
+        ->get()
+        ->groupBy(function ($date) {
+            return Carbon::parse($date->created_at)->format('Y-m-d');
+        });
+
+       }
+
+
+        return view('admin.employee.time_log_list', compact('timelog'));
+
+    }
+
 }

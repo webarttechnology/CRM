@@ -1,8 +1,10 @@
 <style>
-  body{
+
+  /* body{
   background-color: #f4f7f6;
   margin-top:20px;
 }
+
 .card {
   background: #fff;
   transition: .5s;
@@ -23,7 +25,6 @@
 }
 
 .chat-app .chat {
-  /* margin-left: 280px; */
   border-left: 1px solid #eaeaea
 }
 
@@ -260,7 +261,7 @@
    list-style: none;
    display: grid;
     grid-template-columns: auto auto;
-}
+} */
 </style>
 <div class="modal-header">
         <h4 class="modal-title text-center">Comment</h4>

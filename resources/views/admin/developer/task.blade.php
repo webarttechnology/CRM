@@ -2,71 +2,6 @@
 @extends('admin.master.layout')
 
 @section('content')
-
-    @php
-
-            // dd(taskTime(1));
-
-        // use Carbon\Carbon;
-
-        // // Retrieve records from the database
-        // $records = App\Models\Workhistory::all();
-
-        // // dd($records);
-        // // Initialize total working time
-        // $totalWorkingTime = Carbon::now()->diffInSeconds(Carbon::now());
-
-        // $stTime = null;
-        // $ptTime = null;
-        // $lastKey = count($records) - 1;
-
-        // // Iterate through each record
-        // foreach ($records as $key => $record) {
-
-        //     if (count($records) > 1) {
-
-        //         if( $key == $lastKey && $record->final_status == 'start' )
-        //         {
-        //             $ptTime = Carbon::now();
-        //         }
-
-        //         if ($record->final_status == 'start') {
-        //             $stTime = Carbon::parse($record->created_at);
-        //         }
-
-        //         if ($record->final_status == 'stop') {
-        //             $ptTime = Carbon::parse($record->created_at);
-        //         }
-
-        //     } else {
-        //         if ($record->final_status == 'start') {
-        //             $stTime = Carbon::parse($record->created_at);
-        //         }
-
-        //         $ptTime = Carbon::now();
-        //     }
-
-        //     if (!empty($stTime) && !empty($ptTime)) {
-        //         $workingTime = $ptTime->diffInSeconds($stTime);
-        //         $totalWorkingTime += $workingTime;
-
-        //         $stTime = null;
-        //         $ptTime = null;
-        //     }
-        // }
-
-        // // Convert total working time to hours, minutes, and seconds
-        // $totalWorkingHours = intdiv($totalWorkingTime, 3600);
-        // $totalWorkingMinutes = intdiv($totalWorkingTime % 3600, 60);
-        // $totalWorkingSeconds = $totalWorkingTime % 60;
-
-        // // Output the result
-        // echo "Total Working Time: $totalWorkingHours hours, $totalWorkingMinutes minutes, and $totalWorkingSeconds seconds";
-
-        //  die;
-
-    @endphp
-
     <div class="page-wrapper" style="min-height: 333px;">
         <!-- Page Content -->
         <div class="content container-fluid">
@@ -179,11 +114,11 @@
                                                                         href="{{ route('developer.task.delete', ['deleteid' => $val->id]) }}"><i
                                                                             class="bx bx-trash me-1"></i> Delete</a>
                                                                 @endif
-                                                                <a class="dropdown-item get-all-comments open-module-form"
+                                                                {{-- <a class="dropdown-item get-all-comments open-module-form"
                                                                     data-id="{{ $val->id }}" data-type="add_task"
                                                                     data-sale="comment"
                                                                     href="{{ route('comment.index', ['taskid' => $val->id]) }}"><i
-                                                                        class="bx bx-edit-alt me-1"></i>Comment</a>
+                                                                        class="bx bx-edit-alt me-1"></i>Comment</a> --}}
                                                                 @if ($isShow == 1)
                                                                     <a class="dropdown-item open-module-form"
                                                                         data-id="{{ $val->id }}" data-type="add_task"
