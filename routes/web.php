@@ -226,7 +226,7 @@ Route::post("/show-chat-module", [AdminController::class, 'show_chat_module'])->
 Route::post("/notifications/mark-all-as-read", [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead')->middleware(['auth']);
 Route::get('/get-notification',[NotificationController::class, 'getNotification'])->middleware(['auth']);
 Route::get('/getUnreadNotificationCount',[NotificationController::class, 'getUnreadNotificationCount'])->middleware(['auth']);
-
+Route::get('/get-allnotification',[NotificationController::class, 'getAllNotification'])->middleware(['auth']);
 
 
 

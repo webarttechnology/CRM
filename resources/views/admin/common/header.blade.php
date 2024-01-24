@@ -62,7 +62,7 @@
 <body>
     <!-- Main Wrapper -->
     <div class="main-wrapper">
-        <audio id="beepSound" src="{{asset('panel/assets/beep.mp3')}}"></audio>
+        <audio id="beepSound" src="{{ asset('panel/assets/beep.mp3') }}"></audio>
 
         <!-- Header -->
         <div class="header" id="heading">
@@ -201,9 +201,11 @@
                         <div class="noti-content">
 
                         </div>
-                        <div class="topnav-dropdown-footer">
-                            <a href="#">View all Notifications</a>
-                        </div>
+                        @if (count($notify) > 0)
+                            <div class="topnav-dropdown-footer">
+                                <a href="{{ url('/get-allnotification') }}">View all Notifications</a>
+                            </div>
+                        @endif
                     </div>
                 </li>
                 <!-- /Notifications -->

@@ -34,4 +34,14 @@ class NotificationController extends Controller
 
         return response()->json(['unreadCount' => $unreadCount]);
     }
+
+    public function getAllNotification()
+    {
+        $role = role(); 
+        $notify = Notification::with('user')
+        ->where('receiver_id', Auth::user()->id)
+        ->orderBy('created_at', 'desc')
+        ->get();
+        return view('admin.allnotify',compact('notify', 'role'));
+    }
 }
