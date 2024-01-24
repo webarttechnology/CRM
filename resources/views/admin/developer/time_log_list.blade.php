@@ -75,7 +75,7 @@
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <table
-                                                class="table table-striped table-nowrap custom-table mb-0 datatable dataTable no-footer"
+                                                class="table table-striped table-nowrap custom-table mb-0 datatable  dataTable no-footer"
                                                 id="DataTables_Table_0" role="grid"
                                                 aria-describedby="DataTables_Table_0_info">
                                                 <thead>
@@ -89,6 +89,9 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+
+                                                   
+                                                      
                                                     @foreach ($timelog as $key => $val)
                                                            @php
 
@@ -106,8 +109,8 @@
                                                         <tr>
                                                             <td>{{ ++$loop->index }}</td>
                                                             <td>{{ $key }}</td>
-                                                            <td>{{ $firstClockIn->created_at->format('H:i A') }}</td>
-                                                            <td>{{ $lastClockOut?->created_at->format('H:i A') ?? 'NAN' }}</td>
+                                                            <td>{{ $firstClockIn->created_at->format('h:i A') }}</td>
+                                                            <td>{{ $lastClockOut?->created_at->format('h:i A') ?? 'NAN' }}</td>
                                                             <td>{{ ClockBreakTimePerUser( $val, 'work')['timeformat'] }}</td>
                                                             <td>{{ ClockBreakTimePerUser( $val, 'break')['timeformat'] }}</td>
                                                         </tr>

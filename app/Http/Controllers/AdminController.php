@@ -121,7 +121,9 @@ class AdminController extends Controller
 
     public function logout(Request $request){
         if($request ->method() == "GET"){
-            User::where('id', Auth::id())->update(['user_status' => 'Offline']);
+
+            User::where('id', Auth::id())->update(['connection_id'=> 0, 'user_status' => 'Offline']);
+
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
@@ -325,13 +327,14 @@ class AdminController extends Controller
             $sales = \App\Models\Sale::where('id', $data->sale_id)->first();
 
             if(Auth::user()->role_id == 1){
-                $workhistory = Workhistory::with('users')->whereIn('user_id', $assignToIds)->get();
+                $workhistory = Workhistory::with('users')->whereIn('user_id', $assignToIds)->where('developer_job_id', $request->id)->get();
             }else{
-                $workhistory = Workhistory::where('user_id', Auth::id())->get();
+                $workhistory = Workhistory::where('user_id', Auth::id())->where('developer_job_id', $request->id)->get();
             }
 
 
             return view('admin.data.add_task_show_form', compact('data', 'jobStatus', 'paused', 'running', 'delayThen', 'sales', 'comment', 'taskid','workhistory'));
+        
         } elseif ($request->sale == 'comment') {
 
             // $sales = \App\Models\Sale::where('id', $request->id)->first();

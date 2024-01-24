@@ -65,6 +65,12 @@ class CollectionController extends Controller
 
             $collections -> save();
 
+
+            $message = 'New collection has been added';
+            $url = '/collection/list';
+            $adminmessage = 'New collection has been added';
+            sendCollectionNotification($collections, $message, $url, $adminmessage);
+
             $remark = 'Collections '.'('.$request->project_name.')'.' has been Added';
 
             LogHistoryAdd($request->client_id, $request->id, Auth::id(), $remark);
@@ -124,6 +130,12 @@ class CollectionController extends Controller
             }
 
             $collections->save();
+
+            $collections->save();
+            $message = 'Update collection';
+            $url = '/collection/list';
+            $adminmessage = 'Update collection';
+            sendCollectionNotification($collections, $message, $url, $adminmessage);
 
             return response()->json(['status' => 'success', 'type' => 'store', 'message' => 'Data has been updated successfully.']);
 

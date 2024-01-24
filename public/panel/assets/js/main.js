@@ -54,7 +54,7 @@ $(function(){
 
                 toastr.success(data.message);
 
-                if(data.type == 'update' || data.type == 'store', data.type == 'clockout'){
+                if(data.type == 'update' || data.type == 'store' || data.type == 'clockout'){
                     setTimeout(function(){ // wait for 1 secs(1000)
                         location.reload(); // then reload the page
                    }, 1000);

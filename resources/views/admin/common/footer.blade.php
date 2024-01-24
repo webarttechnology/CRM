@@ -27,41 +27,45 @@
 
 
 
-  <!-- Previous Time Modal -->
-  <div class="modal fade" id="PreviousTimeModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<!-- Previous Time Modal -->
+<div class="modal fade" id="PreviousTimeModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="staticBackdropLabel">Previous day work time</h5>
-        </div>
-        <div class="modal-body">
-            <form method="post" action="{{ route('previous-clockout-time-submit') }}" class="save">
-                  @csrf
-                  <div class="row">
-                    <div class="col-md-12 mb-3">
-                        <label class="form-label" for="end_date">{{ __('Reason') }} <span class="text-danger">*</span></label>
-                        <textarea class="form-control" name="reason" placeholder="Enter Reason"></textarea>
-                    </div> 
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label" for="end_date">{{ __('Start Time') }} <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control clockin"  value=""  readonly  name="start" />
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Previous day work time</h5>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{{ route('previous-clockout-time-submit') }}" class="save">
+                    @csrf
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label" for="end_date">{{ __('Reason') }} <span
+                                    class="text-danger">*</span></label>
+                            <textarea class="form-control" name="reason" placeholder="Enter Reason"></textarea>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="end_date">{{ __('Start Time') }} <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control clockin" value="" readonly name="start" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="end_date">{{ __('End Time') }} <span
+                                    class="text-danger">*</span></label>
+                            <input type="time" class="form-control" name="end_time" />
+                        </div>
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label" for="end_date">{{ __('End Time') }} <span class="text-danger">*</span></label>
-                        <input type="time" class="form-control"  name="end_time" />
+
+                    <div class="text-center mt-4">
+                        <button type="sunmit" class="btn btn-primary">Submit</button>
                     </div>
-                  </div>
 
-                  <div class="text-center mt-4">
-                      <button type="sunmit" class="btn btn-primary">Submit</button>
-                  </div>
+                </form>
+            </div>
 
-             </form>
         </div>
-        
-      </div>
     </div>
-  </div>
+</div>
 
 <!-- jQuery -->
 <script src="{{ url('panel/assets/js/jquery-3.6.0.min.js') }}"></script>
@@ -115,9 +119,6 @@
 
 
 <script>
-
-
-
     $(function() {
 
         $.ajaxSetup({
@@ -327,18 +328,18 @@
 
 
         document.addEventListener('visibilitychange', function() {
-			if (document.visibilityState === 'hidden') {
+            if (document.visibilityState === 'hidden') {
 
-			   // If tab becomes inactive, clear the interval
-				//  clearInterval(timerInterval);
-				// alert("In active")
+                // If tab becomes inactive, clear the interval
+                //  clearInterval(timerInterval);
+                // alert("In active")
 
-			} else {
-			   // If tab becomes active, restart the interval
-               stopCountdown();
-               currentTaskTimerGet();
-			}
-		});
+            } else {
+                // If tab becomes active, restart the interval
+                stopCountdown();
+                currentTaskTimerGet();
+            }
+        });
 
 
         //// End Timer Section 
@@ -411,15 +412,15 @@
                     } else {
                         $userImg = "{{ url('panel/assets/img/profiles/user-profile.png') }}";
                     }
-                    showNotification(data.message.name, $userImg, data.message.chat_message)
+                    showNotification(data.message.name, data.message.from_user_id, $userImg, data.message.chat_message)
                 }
             }
         });
 
 
-        function showNotification(name, image, msg) {
+        function showNotification(name, user_id, image, msg) {
 
-            var html = ` <div class="my-toast-container" id="toast">
+            var html = ` <div class="my-toast-container open-chat-module" id="toast" data-id="`+user_id+`">
                 <div style="display: flex;">
                     <div><img src="` + image + `" width="40px" height="40px" style="border-radius: 100%;" alt="photo"></div>
                     <div style="margin-left: 10px;">
@@ -433,11 +434,84 @@
             $('#toast').show();
 
             setTimeout(function() {
-                $('#toast').fadeOut(1000).remove();
+                // $('#toast').fadeOut(1000).remove();
             }, 3000);
         }
+
+
+        $('#notificationDropdown').click(function() {
+            $.ajax({
+                type: 'POST',
+                url: '{{ route('notifications.markAllAsRead') }}',
+                success: function(response) {
+                    if (response.success) {
+                        // Update the badge count and any other UI changes you need
+                        $('#unreadCount').text('0');
+                    }
+                }
+            });
+        });
+
+        $('.all_notification').click(function() {
+            var html = `<div class="notify_loader"></div>`
+            $('.noti-content').html(html);
+
+            $.ajax({
+                url: '/get-notification',
+                method: 'GET',
+                success: function(response) {
+                    console.log(response);
+                    $('.noti-content').html('');
+                    $('.noti-content').html(response);
+                },
+                error: function(xhr, status, error) {
+                    // Handle error response
+                    console.error(error);
+                }
+            });
+        });
+
+
+        function updateUnreadCount() {
+
+        
+            $.ajax({
+                url: '/getUnreadNotificationCount',
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+    
+                    if(response.unreadCount > 0){
+                        // playBeepSound();
+
+                    }
+
+                    $('#unreadCount').text(response.unreadCount);
+                    
+                },
+                error: function(error) {
+                    console.log('Error fetching unread count: ', error);
+                }
+            });
+        }
+
+
+        function playBeepSound() {
+            var audioElement = document.getElementById('beepSound');
+            if (audioElement) {
+                audioElement.play();
+            }
+            setTimeout(function() {
+                audioElement.pause();
+                audioElement.currentTime = 0;
+            }, 2000);
+        }
+
+        // Update every 3 second
+        setInterval(updateUnreadCount, 3000);
 
     });
 </script>
 </body>
+
 </html>

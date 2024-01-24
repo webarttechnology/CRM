@@ -105,6 +105,11 @@ class UpsaleController extends Controller
 
             $upsale->save();
 
+            $message = 'Added a new upsale';
+            $url = '/upsales/list';
+            $adminmessage = 'Added a new upsale';
+            sendUpSalesNotification($upsale, $message, $url, $adminmessage);
+
             $remark = 'Upsale ' . ' has been added';
 
             LogHistoryAdd($request->client_id, $request->input('project_id'), Auth::id(), $remark);
@@ -184,6 +189,11 @@ class UpsaleController extends Controller
             ]);
 
             $upsale->save();
+
+            $message = 'Updated the upsale.';
+            $url = '/upsales/list';
+            $adminmessage = 'Updated the upsale .';
+            sendUpSalesNotification($upsale, $message, $url, $adminmessage);
 
             $remark = 'Upsale ' . '(' . $request->project_name . ')' . ' has been Updated';
 

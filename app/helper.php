@@ -2,6 +2,8 @@
 
 use Carbon\Carbon;
 use App\Models\Chat;
+use App\Models\User;
+use App\Models\Assign;
 use App\Models\TimeLog;
 use App\Models\LogHistory;
 use App\Models\GroupMember;
@@ -204,9 +206,12 @@ function getRecentMessages($users, $from_user_id, $search = null)
             ->orderBy('created_at', 'desc')
             ->first();
 
-        $unread_chat_data = Chat::whereNot('message_status', 'Read')
+
+        $unread_chat_data = Chat::whereIn('message_status', ['Not Send', 'Send'])
             ->where('from_user_id', $user->id)
-            ->whereNot('group_id', null)->count();
+            ->where('to_user_id', $from_user_id)
+            ->where('group_id',  null)
+            ->count();
 
         $recentMessagesUser->push([
             'id'            => $user->id,
@@ -374,16 +379,16 @@ function ClockBreakTime()
 
         $type        = $lastrecord->type;
         $status      = $lastrecord->status;
-        
+
         $records = TimeLog::whereDate('created_at', date('Y-m-d'))->where('user_id', Auth::id())->where('type', $lastrecord->type)->get();
-        
+
         if (count($records) > 0) {
-            
+
             $totalWorkingTime = Carbon::now()->diffInSeconds(Carbon::now());
-            
+
             $stTime = null;
             $ptTime = null;
-            
+
             $str = '';
             $lastKey = count($records) - 1;
             // dd($lastKey);
@@ -395,7 +400,7 @@ function ClockBreakTime()
                 if (count($records) > 1) {
 
                     if ($key == $lastKey && $record->status == 'start') {
-                        $ptTime = Carbon::now();    
+                        $ptTime = Carbon::now();
                     }
 
                     if ($record->status == 'start') {
@@ -409,9 +414,8 @@ function ClockBreakTime()
                     if ($record->status == 'end') {
                         $ptTime = Carbon::parse($record->created_at);
                     }
-
                 } else {
-                    
+
                     if ($record->status == 'start') {
                         $stTime = Carbon::parse($record->created_at);
                     }
@@ -420,14 +424,13 @@ function ClockBreakTime()
                 }
 
                 if (!empty($stTime) && !empty($ptTime)) {
-                    
+
                     $workingTime = $ptTime->diffInSeconds($stTime);
                     $totalWorkingTime += $workingTime;
-                    
+
                     $str .= $record->created_at . $record->status . ' ,';
                     $stTime = null;
                     $ptTime = null;
-
                 }
             }
 
@@ -441,7 +444,7 @@ function ClockBreakTime()
     }
 
     return [
-        'totalSecond'   => $totalWorkingTime, 
+        'totalSecond'   => $totalWorkingTime,
         'timeformat'    => $timeformat,
         'type'          => $type,
         'status'        => $status,
@@ -449,118 +452,96 @@ function ClockBreakTime()
 }
 
 
-
-function sendNotification($any)
-{
-    // dd($task);
-    $assignTo = json_decode($any->assign_to, true);
-    foreach ($assignTo  as $receiverId) {
-        $notification = new Notification([
-            'sender_id' => Auth::user()->id,
-            'receiver_id' => $receiverId,
-            'message' => 'A new task has been assigned to you.',
-            'url' => '/task', 
-            'status' => 'unread',
-        ]);
-    
-        $notification->save();
-    }
-    return true;
-
-}
-function ClockBreakTimePerUser( $records , $type)
+function ClockBreakTimePerUser($records, $type)
 {
 
-        $totalWorkingTime = 0;
-        $timeformat  = '00:00:00';
-        
-        if (count($records) > 0) {
-            
-            $totalWorkingTime = Carbon::now()->diffInSeconds(Carbon::now());
-            
-            $stTime = null;
-            $ptTime = null;
-            
-            $str = '';
-            $lastKey = count($records) - 1;
-          
-          
+    $totalWorkingTime = 0;
+    $timeformat  = '00:00:00';
 
-            foreach ($records as $key => $record) {
+    if (count($records) > 0) {
 
-                 if($type == 'work'){
-                    if($record->type == 'work'){
+        $totalWorkingTime = Carbon::now()->diffInSeconds(Carbon::now());
 
-                        if ($key == $lastKey && $record->status == 'start') {
-                            $ptTime = Carbon::now();    
-                        }
-    
-                        if ($record->status == 'start') {
-                            $stTime = Carbon::parse($record->created_at);
-                        }
-    
-                        if ($record->status == 'stop') {
-                            $ptTime = Carbon::parse($record->created_at);
-                        }
-    
-                        if ($record->status == 'end') {
-                            $ptTime = Carbon::parse($record->created_at);
-                        }
-    
-                     }
-                 }
+        $stTime = null;
+        $ptTime = null;
 
-                 
-                 if($type == 'break'){
+        $str = '';
+        $lastKey = count($records) - 1;
 
-                    if($record->type == 'break'){
 
-                        if ($key == $lastKey && $record->status == 'start') {
-                            $ptTime = Carbon::now();    
-                        }
-    
-                         if($record->status == 'start'){
-                             $stTime = Carbon::parse($record->created_at);
-                         }
-    
-                         if($record->status == 'stop'){
-                            $ptTime = Carbon::parse($record->created_at);
-                        }
-                      
-                     }
-                 }
-                 
-                 
 
-                
-                if (!empty($stTime) && !empty($ptTime)) {
-                    
-                    $workingTime = $ptTime->diffInSeconds($stTime);
-                    $totalWorkingTime += $workingTime;
-                
-                    $stTime = null;
-                    $ptTime = null;
+        foreach ($records as $key => $record) {
+
+            if ($type == 'work') {
+                if ($record->type == 'work') {
+
+                    if ($key == $lastKey && $record->status == 'start') {
+                        $ptTime = Carbon::now();
+                    }
+
+                    if ($record->status == 'start') {
+                        $stTime = Carbon::parse($record->created_at);
+                    }
+
+                    if ($record->status == 'stop') {
+                        $ptTime = Carbon::parse($record->created_at);
+                    }
+
+                    if ($record->status == 'end') {
+                        $ptTime = Carbon::parse($record->created_at);
+                    }
                 }
-
             }
 
 
-            // Convert total working time to hours, minutes, and seconds
-            $totalWorkingHours = intdiv($totalWorkingTime, 3600);
-            $totalWorkingMinutes = intdiv($totalWorkingTime % 3600, 60);
-            $totalWorkingSeconds = $totalWorkingTime % 60;
+            if ($type == 'break') {
 
-            $timeformat =  formatTime($totalWorkingHours, $totalWorkingMinutes, $totalWorkingSeconds);
+                if ($record->type == 'break') {
+
+                    if ($key == $lastKey && $record->status == 'start') {
+                        $ptTime = Carbon::now();
+                    }
+
+                    if ($record->status == 'start') {
+                        $stTime = Carbon::parse($record->created_at);
+                    }
+
+                    if ($record->status == 'stop') {
+                        $ptTime = Carbon::parse($record->created_at);
+                    }
+                }
+            }
+
+
+
+
+            if (!empty($stTime) && !empty($ptTime)) {
+
+                $workingTime = $ptTime->diffInSeconds($stTime);
+                $totalWorkingTime += $workingTime;
+
+                $stTime = null;
+                $ptTime = null;
+            }
         }
 
+
+        // Convert total working time to hours, minutes, and seconds
+        $totalWorkingHours = intdiv($totalWorkingTime, 3600);
+        $totalWorkingMinutes = intdiv($totalWorkingTime % 3600, 60);
+        $totalWorkingSeconds = $totalWorkingTime % 60;
+
+        $timeformat =  formatTime($totalWorkingHours, $totalWorkingMinutes, $totalWorkingSeconds);
+    }
+
     return [
-        'totalSecond'   => $totalWorkingTime, 
+        'totalSecond'   => $totalWorkingTime,
         'timeformat'    => $timeformat
     ];
-
 }
 
-function TaskTimeTotal($start, $stop){
+function TaskTimeTotal($start, $stop)
+{
 
     $totalWorkingTime = Carbon::now()->diffInSeconds(Carbon::now());
 
@@ -574,10 +555,257 @@ function TaskTimeTotal($start, $stop){
     $timeformat =  formatTime($totalWorkingHours, $totalWorkingMinutes, $totalWorkingSeconds);
 
     return [
-        'totalSecond'   => $totalWorkingTime, 
+        'totalSecond'   => $totalWorkingTime,
         'timeformat'    => $timeformat
     ];
-
 }
 
 
+function sendNotification($any, $message, $url, $adminmessage)
+{
+    // dd($task);
+    $admin_id = User::where('role_id', 1)->first();
+    $assignTo = json_decode($any->assign_to, true);
+    foreach ($assignTo as $receiverId) {
+        $notification = new Notification([
+            'sender_id' => Auth::user()->id,
+            'receiver_id' => $receiverId,
+            'message' => $message,
+            'url' => $url,
+            'status' => 'unread',
+        ]);
+
+        $notification->save();
+    }
+
+    if (Auth::user()->role_id != 1) {
+        $notification = new Notification([
+            'sender_id' => Auth::user()->id,
+            'receiver_id' => $admin_id->id,
+            'message' => $adminmessage,
+            'url' => $url,
+            'status' => 'unread',
+        ]);
+
+        $notification->save();
+    }
+    return true;
+}
+
+
+function sendClientNotification($client, $message, $url, $adminmessage)
+{
+    $admin_id = User::where('role_id', 1)->first();
+    $projectManager = User::where('role_id', 3)->where('id', '!=', Auth::user()->id)->get();
+    $developmentManager = User::where('role_id', 5)->get();
+    foreach ($projectManager as $receiver) {
+        $notification = new Notification([
+            'sender_id' => Auth::user()->id,
+            'receiver_id' => $receiver->id,
+            'message' => $message,
+            'url' => $url,
+            'status' => 'unread',
+        ]);
+
+        $notification->save();
+    }
+
+    foreach ($developmentManager as $manager) {
+        $notification = new Notification([
+            'sender_id' => Auth::user()->id,
+            'receiver_id' => $manager->id,
+            'message' => $message,
+            'url' => $url,
+            'status' => 'unread',
+        ]);
+
+        $notification->save();
+    }
+
+    if (Auth::user()->role_id != 1) {
+        $notification = new Notification([
+            'sender_id' => Auth::user()->id,
+            'receiver_id' => $admin_id->id,
+            'message' => $adminmessage,
+            'url' => $url,
+            'status' => 'unread',
+        ]);
+
+        $notification->save();
+    }
+}
+
+function sendSalesNotification($sales, $message, $url, $adminmessage)
+{
+    $admin_id = User::where('role_id', 1)->first();
+    $projectManager = User::where('role_id', 3)->where('id', '!=', Auth::user()->id)->get();
+    $developmentManager = User::where('role_id', 5)->get();
+    foreach ($projectManager as $receiver) {
+        $notification = new Notification([
+            'sender_id' => Auth::user()->id,
+            'receiver_id' => $receiver->id,
+            'message' => $message,
+            'url' => $url,
+            'status' => 'unread',
+        ]);
+
+        $notification->save();
+    }
+
+    foreach ($developmentManager as $manager) {
+        $notification = new Notification([
+            'sender_id' => Auth::user()->id,
+            'receiver_id' => $manager->id,
+            'message' => $message,
+            'url' => $url,
+            'status' => 'unread',
+        ]);
+
+        $notification->save();
+    }
+
+    if (Auth::user()->role_id != 1) {
+        $notification = new Notification([
+            'sender_id' => Auth::user()->id,
+            'receiver_id' => $admin_id->id,
+            'message' => $adminmessage,
+            'url' => $url,
+            'status' => 'unread',
+        ]);
+
+        $notification->save();
+    }
+}
+
+function sendUpSalesNotification($upsale, $message, $url, $adminmessage)
+{
+    $admin_id = User::where('role_id', 1)->first();
+    $projectManager = User::where('role_id', 3)->where('id', '!=', Auth::user()->id)->get();
+    $developmentManager = User::where('role_id', 5)->get();
+    foreach ($projectManager as $receiver) {
+        $notification = new Notification([
+            'sender_id' => Auth::user()->id,
+            'receiver_id' => $receiver->id,
+            'message' => $message,
+            'url' => $url,
+            'status' => 'unread',
+        ]);
+
+        $notification->save();
+    }
+
+    foreach ($developmentManager as $manager) {
+        $notification = new Notification([
+            'sender_id' => Auth::user()->id,
+            'receiver_id' => $manager->id,
+            'message' => $message,
+            'url' => $url,
+            'status' => 'unread',
+        ]);
+
+        $notification->save();
+    }
+
+    if (Auth::user()->role_id != 1) {
+        $notification = new Notification([
+            'sender_id' => Auth::user()->id,
+            'receiver_id' => $admin_id->id,
+            'message' => $adminmessage,
+            'url' => $url,
+            'status' => 'unread',
+        ]);
+
+        $notification->save();
+    }
+}
+
+function sendEmployeeNotification($any, $message, $url, $adminmessage)
+{
+    // dd($task);
+    $admin_id = User::where('role_id', 1)->first();
+
+    $notification = new Notification([
+        'sender_id' => Auth::user()->id,
+        'receiver_id' => $any->id,
+        'message' => $message,
+        'url' => $url,
+        'status' => 'unread',
+    ]);
+
+    $notification->save();
+
+
+    if (Auth::user()->role_id != 1) {
+        $notification = new Notification([
+            'sender_id' => Auth::user()->id,
+            'receiver_id' => $admin_id->id,
+            'message' => $adminmessage,
+            'url' => $url,
+            'status' => 'unread',
+        ]);
+
+        $notification->save();
+    }
+    return true;
+}
+
+function sendCollectionNotification($collections, $message, $url, $adminmessage)
+{
+    $admin_id = User::where('role_id', 1)->first();
+    $assign = Assign::where('sale_id', $collections->sale_id)->first();
+
+    $notification = new Notification([
+        'sender_id' => Auth::user()->id,
+        'receiver_id' => $assign->assign_to,
+        'message' => $message,
+        'url' => $url,
+        'status' => 'unread',
+    ]);
+
+    $notification->save();
+}
+
+
+function sendGroupNotification($group, $message, $url, $adminmessage)
+{
+    $admin_id = User::where('role_id', 1)->first();
+
+    if (Auth::user()->role_id == 1) {
+        $notification = new Notification([
+            'sender_id' => Auth::user()->id,
+            'receiver_id' => $admin_id->id,
+            'message' => $message,
+            'url' => $url,
+            'status' => 'unread',
+        ]);
+
+        $notification->save();
+    }
+}
+
+function sendUserGroupNotification($group, $message, $url, $adminmessage, $checkuserexist)
+{
+    $admin_id = User::where('role_id', 1)->first();
+
+    if (Auth::user()->role_id != 1) {
+        $notification = new Notification([
+            'sender_id' => Auth::user()->id,
+            'receiver_id' => $checkuserexist->id,
+            'message' => $message,
+            'url' => $url,
+            'status' => 'unread',
+        ]);
+
+        $notification->save();
+
+
+        $notification = new Notification([
+            'sender_id' => Auth::user()->id,
+            'receiver_id' => $admin_id->id,
+            'message' => $adminmessage,
+            'url' => $url,
+            'status' => 'unread',
+        ]);
+        $notification->save();
+    }
+}

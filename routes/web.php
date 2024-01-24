@@ -8,6 +8,7 @@ use App\Http\Controllers\TimerController;
 use App\Http\Controllers\TimeLogController;
 use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\LogHistoryController;
+use App\Http\Controllers\NotificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -86,25 +87,20 @@ Route::group(['prefix' => 'sales'], function(){
 
 });
 
-Route::group(['prefix' => 'group'], function () {
-
-    // Access only for admin
-    Route::group(['middleware' => ['auth', 'isAdmin']], function () {
+Route::group(['prefix' => 'group', 'middleware' => ['auth', 'isSale']], function () {
         Route::get('/list', [App\Http\Controllers\GroupController::class, 'grouplist'])->name('group.new.list');
         Route::post('/list', [App\Http\Controllers\GroupController::class, 'grouplist'])->name('group.search');
-        Route::get('/group-view/{groupid}', [App\Http\Controllers\GroupController::class, 'groupviewById'])->middleware(['auth'])->name('group.view');
-        Route::post('/add', [App\Http\Controllers\GroupController::class, 'addnewgrouplist'])->middleware(['auth'])->name('group.new.insert.suceess');
-        Route::get('/update/{updateid}', [App\Http\Controllers\GroupController::class, 'updatenewgrouplist'])->middleware(['auth'])->name('group.update');
-        Route::post('/update', [App\Http\Controllers\GroupController::class, 'updatenewgrouplist'])->middleware(['auth'])->name('group.update.suceess');
-        Route::get('/delete/{deleteid}', [App\Http\Controllers\GroupController::class, 'deletegroup'])->middleware(['auth'])->name('group.delete');
+        Route::get('/group-view/{groupid}', [App\Http\Controllers\GroupController::class, 'groupviewById'])->name('group.view');
+        Route::post('/add', [App\Http\Controllers\GroupController::class, 'addnewgrouplist'])->name('group.new.insert.suceess');
+        Route::get('/update/{updateid}', [App\Http\Controllers\GroupController::class, 'updatenewgrouplist'])->name('group.update');
+        Route::post('/update', [App\Http\Controllers\GroupController::class, 'updatenewgrouplist'])->name('group.update.suceess');
+        Route::get('/delete/{deleteid}', [App\Http\Controllers\GroupController::class, 'deletegroup'])->name('group.delete');
         Route::get('/invite/{groupid}', [App\Http\Controllers\GroupController::class, 'invite'])->name('group.invite');
-        Route::post('/invite', [App\Http\Controllers\GroupController::class, 'invitegroup'])->middleware(['auth'])->name('group.new.invite');
-        Route::get('/accept-email/{email}/{uniqid}', [App\Http\Controllers\GroupController::class, 'acceptGroup'])->middleware(['auth']);
-        Route::post('/viewMember', [App\Http\Controllers\GroupController::class, 'member'])->middleware(['auth'])->name('group.viewmember');
-        Route::get('/view-member/{groupid}', [App\Http\Controllers\GroupController::class, 'allGroupMember'])->middleware(['auth'])->name('group.viewmembers');
-        Route::get('/memberdelete/{groupmemberid}', [App\Http\Controllers\GroupController::class, 'deleteMember'])->middleware(['auth'])->name('group.memberdelete');
-   
-    });
+        Route::post('/invite', [App\Http\Controllers\GroupController::class, 'invitegroup'])->name('group.new.invite');
+        Route::get('/accept-email/{email}/{uniqid}', [App\Http\Controllers\GroupController::class, 'acceptGroup']);
+        Route::post('/viewMember', [App\Http\Controllers\GroupController::class, 'member'])->name('group.viewmember');
+        Route::get('/view-member/{groupid}', [App\Http\Controllers\GroupController::class, 'allGroupMember'])->name('group.viewmembers');
+        Route::get('/memberdelete/{groupmemberid}', [App\Http\Controllers\GroupController::class, 'deleteMember'])->name('group.memberdelete');
 });
 
 Route::get('/register/{email}/{uniqid}', [App\Http\Controllers\GroupController::class, 'userRegister']);
@@ -227,7 +223,9 @@ Route::controller(LogHistoryController::class)
 
 Route::post("/show-chat-module", [AdminController::class, 'show_chat_module'])->name('show-chat-module');
 
-
+Route::post("/notifications/mark-all-as-read", [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead')->middleware(['auth']);
+Route::get('/get-notification',[NotificationController::class, 'getNotification'])->middleware(['auth']);
+Route::get('/getUnreadNotificationCount',[NotificationController::class, 'getUnreadNotificationCount'])->middleware(['auth']);
 
 
 

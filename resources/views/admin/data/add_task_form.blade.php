@@ -22,10 +22,11 @@
                         <small class="text-danger" id="sale_id_formerrmsg"></small>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label class="form-label" for="assign_type">{{ __('Assign Type') }} <span
+                        <label class="form-label" for="assign_type">{{ __('User Type') }} <span
                                 class="text-danger">*</span></label>
                         <select name="assign_type" id="assign_type" class="form-control">
                             <option value="">Select Type</option>
+                            <option value="all">All</option>
                             @foreach (role() as $key => $val)
                                 <option value="{{ $key }}" {{ $key == $role?->role_id ? 'Selected' : '' }}>
                                     {{ $val }}</option>
@@ -77,14 +78,11 @@
                             id="start_date_formerrmsg">{{ $errors->first('start_date') }}</small>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label class="form-label" for="end_date">{{ __('End Date & Time') }} <span
-                                class="text-danger">*</span></label>
+                        <label class="form-label" for="end_date">{{ __('End Date & Time') }}</label>
                         @if ($task?->end_date)
-                            <input type="datetime-local" class="form-control" id="end_date" name="end_date"
-                                value="{{ $task?->end_date }}" />
+                            <input type="datetime-local" class="form-control" id="end_date" name="end_date"  value="{{ $task?->end_date }}" />
                         @else
-                            <input type="datetime-local" class="form-control" id="end_date" name="end_date"
-                                min="{{ date('Y-m-d') }}T00:00" />
+                            <input type="datetime-local" class="form-control" id="end_date" name="end_date" min="{{ date('Y-m-d') }}T00:00" />
                         @endif
                         <small class="text-danger" id="end_date_formerrmsg">{{ $errors->first('end_date') }}</small>
                     </div>

@@ -77,6 +77,23 @@ class WorkhistoryController extends Controller
             }
 
 
+            $workprevoius = Workhistory::where('user_id', Auth::user()->id)->where('final_status', 'start')->orderBy('id', 'desc')->first();
+
+            if($workprevoius){
+
+                $dataprevious  = [
+                    'developer_job_id' => $workprevoius->developer_job_id,
+                    'user_id'          => Auth::user()->id,
+                    'final_status'     => 'stop',
+                    'currenttime'      => null, // $request->time,
+                    'delayThen'        => 0
+                ];
+    
+                Workhistory::create($dataprevious);
+            }
+
+           
+
             $data  = [
                 'developer_job_id' => $request->id,
                 'user_id'          => Auth::user()->id,
@@ -91,7 +108,7 @@ class WorkhistoryController extends Controller
 
                 Developertask::where('id', $request->id)->update(['status'=> 1]);
 
-                Workhistory::whereNot('developer_job_id', $last->developer_job_id)->where('user_id', Auth::user()->id)->update(['final_status'=> 'stop']);
+                // Workhistory::whereNot('developer_job_id', $last->developer_job_id)->where('user_id', Auth::user()->id)->update(['final_status'=> 'stop']);
 
             }else if($request->type == 'stop'){
 

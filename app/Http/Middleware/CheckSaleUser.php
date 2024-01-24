@@ -18,7 +18,7 @@ class CheckSaleUser
     {
       
         $checkAdmin = false;
-        if(in_array(Auth::user()->role_id, [4, 1, 2])){
+        if(in_array(Auth::user()->role_id, [4, 1, 2, 3])){
             return $next($request);
         }else{
             return redirect('/admin/logout');

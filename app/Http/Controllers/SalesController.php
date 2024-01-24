@@ -40,16 +40,6 @@ class SalesController extends Controller
     {
         if ($request->method() == "POST") {
 
-            // $request -> validate([
-            //     'name'              => 'required|string',
-            //     'country_name'      => 'required|string',
-            //     'email'             => 'required|email|unique:clients',
-            //     'address'           => 'required|string',
-            //     'current_website'   => 'nullable|url',
-            //     'agent_name'        => 'required',
-            //     'closer_name'       => 'required',
-            //     'remarks'           => 'required'
-            // ]);
 
             $validator   =  Validator::make($request->all(), [
                 'name'              => 'required|string',
@@ -59,7 +49,7 @@ class SalesController extends Controller
                 'current_website'   => 'nullable|url',
                 'agent_name'        => 'required',
                 'closer_name'       => 'required',
-                'remarks'           => 'required'
+                // 'remarks'           => 'required'
             ]);
 
             if ($validator->fails()) {
@@ -75,10 +65,15 @@ class SalesController extends Controller
                 'current_website' => $request->input('current_website'),
                 'agent_name' => $request->input('agent_name'),
                 'closer_name' => $request->input('closer_name'),
-                'remarks' => $request->input('remarks')
+                'remarks' => $request->input('remarks') ?? null
             ]);
 
             $result = $client->save();
+
+            $message = 'Added A new client is "' . $request->input('name') . '"';
+            $url = '/sales/client';
+            $adminmessage = 'Added A new client is "' . $request->input('name') . '"';
+            sendClientNotification($client, $message, $url, $adminmessage);
 
             if ($result) {
                 $contactDetailsArray = [];
@@ -111,16 +106,7 @@ class SalesController extends Controller
 
         if ($request->method() == "POST") {
 
-            // $request -> validate([
-            //     'name' => 'required|string',
-            //     'country_name' => 'required|string',
-            //     'email' => 'required|email|unique:clients,email,'.$request -> input('update_id'),
-            //     'address' => 'required|string',
-            //     'current_website' => 'nullable|url',
-            //     'agent_name' => 'required',
-            //     'closer_name' => 'required',
-            //     'remarks' => 'required'
-            // ]);   
+    
 
             $validator   =  Validator::make($request->all(), [
                 'name' => 'required|string',
@@ -130,7 +116,7 @@ class SalesController extends Controller
                 'current_website' => 'nullable|url',
                 'agent_name' => 'required',
                 'closer_name' => 'required',
-                'remarks' => 'required'
+                // 'remarks' => 'required'
             ]);
 
             if ($validator->fails()) {
@@ -149,10 +135,16 @@ class SalesController extends Controller
                 'current_website' => $request->input('current_website'),
                 'agent_name' => $request->input('agent_name'),
                 'closer_name' => $request->input('closer_name'),
-                'remarks' => $request->input('remarks')
+                'remarks' => $request->input('remarks') ?? null
             ]);
 
             $result = $client->save();
+
+            $message = 'Updated a client "' . $request->input('name') . '"';
+            $url = '/sales/client';
+            $adminmessage = 'Updated a client "' . $request->input('name') . '"';
+            sendClientNotification($client, $message, $url, $adminmessage);
+
             \App\Models\Contact_detail::where(['client_id' => $request->input('update_id')])->delete();
             if ($result) {
                 $contactDetailsArray = [];
@@ -184,7 +176,14 @@ class SalesController extends Controller
             DB::disableQueryLog();
             $client = \App\Models\Client::find($deleteid);
             if ($client) {
+
+                $message = 'Deleted a client "' . $client->name . '"';
+                $url = '/sales/client';
+                $adminmessage = 'Deleted a client "' . $request->name . '"';
+                sendClientNotification($client, $message, $url, $adminmessage);
+
                 $client->delete();
+
                 return redirect()->route('sales.client.list')->with('successmsg', "Data has been deleted successfully!!.");
             } else {
                 return redirect()->route('sales.client.list')->with('errmsg', "Error!! Please try agian.");
@@ -226,7 +225,7 @@ class SalesController extends Controller
                 'closer_name'       => 'required',
                 'agent_name'        => 'required',
                 'business_name'     => 'required',
-                'remark'            => 'required',
+                // 'remark'            => 'required',
                 'gross_amt'         => 'required|numeric',
                 'net_amt'           => 'required|numeric',
                 'sale_date'         => 'required|date',
@@ -276,7 +275,7 @@ class SalesController extends Controller
                 'closer_name' => $request->input('closer_name'),
                 'agent_name' => $request->input('agent_name'),
                 'reference_sites' => $request->input('reference_site'),
-                'remarks' => $request->input('remark'),
+                'remarks' => $request->input('remark') ?? null,
                 'upsale_opportunities' => $request->input('upsale'),
                 'gross_amount' => $request->input('gross_amt'),
                 'net_amount' => $request->input('net_amt'),
@@ -289,8 +288,12 @@ class SalesController extends Controller
 
             $saleId = $sales->save();
 
+            $message = 'Added a new project is "' . $request->input('project_name') . '"';
+            $url = '/sales/list';
+            $adminmessage = 'Added a new project is "' . $request->input('project_name') . '"';
+            sendSalesNotification($sales, $message, $url, $adminmessage);
 
-            $remark = 'Task ' . '(' . $request->project_name . ')' . ' has been added';
+            $remark = 'Sale ' . '(' . $request->project_name . ')' . ' has been added';
 
             LogHistoryAdd($request->client_id, $sales->id, Auth::id(), $remark);
 
@@ -309,7 +312,7 @@ class SalesController extends Controller
                 $collectionData->save();
             }
 
-            return response()->json(['status' => 'success', 'type' => 'store', 'message' => 'Task has been added successfully.']);
+            return response()->json(['status' => 'success', 'type' => 'store', 'message' => 'Sale has been added successfully.']);
 
             // return redirect()->route('sales.new.list')->with('successmsg', 'Task has been added successfully.');
        
@@ -330,22 +333,6 @@ class SalesController extends Controller
 
             // dd($request->all());
 
-            // $request->validate([
-            //     'client_id' => 'required|exists:clients,id',
-            //     'project_name' => 'required',
-            //     'project_type' => 'required',
-            //     'closer_name' => 'required',
-            //     'agent_name' => 'required',
-            //     'business_name' => 'required',
-            //     'remark' => 'required',
-            //     'gross_amt' => 'required|numeric',
-            //     'net_amt' => 'required|numeric',
-            //     'sale_date' => 'required|date',
-            //     'payment_mode' => 'required',
-            //     'status' => 'required',
-            //     'currency' => 'required'
-            // ]);
-
             $validator   =  Validator::make($request->all(), [
                 'client_id'         => 'required|exists:clients,id',
                 'project_name'      => 'required',
@@ -353,7 +340,7 @@ class SalesController extends Controller
                 'closer_name'       => 'required',
                 'agent_name'        => 'required',
                 'business_name'     => 'required',
-                'remark'            => 'required',
+                // 'remark'            => 'required',
                 'gross_amt'         => 'required|numeric',
                 'net_amt'           => 'required|numeric',
                 'sale_date'         => 'required|date',
@@ -404,7 +391,7 @@ class SalesController extends Controller
                 'closer_name' => $request->input('closer_name'),
                 'agent_name' => $request->input('agent_name'),
                 'reference_sites' => $request->input('reference_site'),
-                'remarks' => $request->input('remark'),
+                'remarks' => $request->input('remark') ?? null,
                 'upsale_opportunities' => $request->input('upsale'),
                 'gross_amount' => $request->input('gross_amt'),
                 'net_amount' => $request->input('net_amt'),
@@ -414,6 +401,11 @@ class SalesController extends Controller
                 'currency' => $request->input('currency')
             ]);
             $sales->save();
+
+            $message = 'Updated the project is "' . $request->input('project_name') . '"';
+            $url = '/sales/list';
+            $adminmessage = 'Updated the project is "' . $request->input('project_name') . '"';
+            sendSalesNotification($sales, $message, $url, $adminmessage);
 
             $collection = \App\Models\Collection::where(['sale_id' => $request->input('update_id'), 'instalment' => 1])->update(
                 [
@@ -436,7 +428,7 @@ class SalesController extends Controller
                 }
             }
 
-            return response()->json(['status' => 'success', 'type' => 'update', 'message' => 'Task has been updated successfully.']);
+            return response()->json(['status' => 'success', 'type' => 'update', 'message' => 'Sale has been updated successfully.']);
             
             // return redirect()->route('sales.new.list')->with('successmsg', 'Task has been updated successfully.');
         
@@ -481,13 +473,19 @@ class SalesController extends Controller
             $sales = \App\Models\Sale::find($deleteid);
 
             if ($sales) {
+
+                $message = 'Deleted the project is "' . $sales->project_name . '"';
+                $url = '/sales/list';
+                $adminmessage = 'Deleted the project is "' . $sales->project_name . '"';
+                sendSalesNotification($sales, $message, $url, $adminmessage);
+
                 $sales->delete();
 
                 $remark = 'Sale ' . '(' . $sales->project_name . ')' . ' has been Deleted';
 
                 LogHistoryAdd($request->client_id, $sales->id, Auth::id(), $remark);
 
-                return redirect()->route('sales.new.list')->with('successmsg', "Task has been deleted successfully!!.");
+                return redirect()->route('sales.new.list')->with('successmsg', "Sale has been deleted successfully!!.");
             } else {
                 return redirect()->route('sales.new.list')->with('errmsg', "Error!! Please try agian.");
             }
@@ -528,7 +526,7 @@ class SalesController extends Controller
 
                 LogHistoryAdd($request->client_id, $request->id, Auth::id(), $remark);
 
-                 return response()->json(['status' => 'success', 'type' => 'update', 'message' => 'Task assign successfully.']);
+                 return response()->json(['status' => 'success', 'type' => 'update', 'message' => 'Sale assign successfully.']);
 
                 // return redirect()->route('sales.new.list')->with('successmsg', 'Task assign successfully.');
             } else {

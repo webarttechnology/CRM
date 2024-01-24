@@ -40,7 +40,7 @@
 							</li>
 
 
-							@if(Auth::user()->role_id == 3)
+							{{-- @if(Auth::user()->role_id == 3)
 
 							<li class="submenu">
 								<a href="#" class="{{ Request::segment(1) == 'task' ? 'active' : '' }}"><i class="feather-grid"></i> <span>Task</span>
@@ -51,10 +51,10 @@
 								</ul>
 							</li>
 							
-							@endif
+							@endif --}}
 
 
-							@if(Auth::user()->role_id == 4 || Auth::user()->role_id == 1 || Auth::user()->role_id == 2)
+							@if(Auth::user()->role_id == 4 || Auth::user()->role_id == 1 || Auth::user()->role_id == 2 || Auth::user()->role_id == 3)
 							<li class="submenu">
 								<a href="#" class="{{ Request::segment(2) == 'client' ? 'active' : '' }}"><i class="feather-users"></i> <span>Client</span>
 									<span class="menu-arrow"></span>
@@ -83,7 +83,7 @@
 							</li>
 							@endif
 
-							@if(Auth::user()->role_id == 2 || Auth::user()->role_id == 1)
+							@if(Auth::user()->role_id == 2 || Auth::user()->role_id == 1 || Auth::user()->role_id == 3)
 
 							<li class="submenu">
 								<a href="#" class="{{ Request::segment(1) == 'upsales' ? 'active' : '' }}"><i class="feather-trending-up"></i> <span>Upsales</span>
@@ -151,10 +151,8 @@
 										<li><a href="{{ route('developer.task') }}">Task list</a></li>
 									</ul>
 								</li>
-							@endif    
-
-
-
+							@endif
+							    
 						</ul>
 					</div>
            </div>

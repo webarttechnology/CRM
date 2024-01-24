@@ -4,6 +4,7 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
@@ -61,6 +62,7 @@
 <body>
     <!-- Main Wrapper -->
     <div class="main-wrapper">
+        <audio id="beepSound" src="{{asset('panel/assets/beep.mp3')}}"></audio>
 
         <!-- Header -->
         <div class="header" id="heading">
@@ -96,7 +98,7 @@
                 @if (Auth::user()->id !== 1)
                     @php
                         $today = date('Y-m-d');
-                        
+
                         $timerCurrentStatus = App\Models\TimeLog::where('user_id', Auth::user()->id)
                             ->whereDate('created_at', $today)
                             ->orderBy('id', 'desc')
@@ -114,7 +116,7 @@
 
                     @endphp
 
-                   
+
                     <div class="times_track">
                         <small>
                             <a class="text-white" style="margin-right: 38px;">
@@ -132,20 +134,21 @@
                             <span class="dots"></span>
                             <span class="dots right"></span>
                             <h4 id="startduration" class="title-work">Working Day Duration</h4>
-							<h2 id="start_timer"  class="clockin_break_timer" style="color:#2dec2d;">
+                            <h2 id="start_timer" class="clockin_break_timer" style="color:#2dec2d;">
                                 {{-- 00:00:00 --}}
                                 {{-- <div class="timer-loader"></div> --}}
                             </h2>
-                          
-							<div class="clock-break-btn">
-								<small>
-									<button id="startButton" class="custom_btn break clock-btn" data-type="clockin"><i class="fa-solid fa-play"></i>
-										Clock In
-									</button>
-								</small>
-								
-							</div>
-                           
+
+                            <div class="clock-break-btn">
+                                <small>
+                                    <button id="startButton" class="custom_btn break clock-btn" data-type="clockin"><i
+                                            class="fa-solid fa-play"></i>
+                                        Clock In
+                                    </button>
+                                </small>
+
+                            </div>
+
                         </div>
                     </div>
                 @endif
@@ -177,42 +180,29 @@
                 <!-- /Flag -->
 
                 @php
-                    $notify = App\Models\Notification::where('receiver_id', Auth::user()->id)
-                       ->get();
+                    $notify = App\Models\Notification::with('user')
+                        ->where('receiver_id', Auth::user()->id)
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+                    $unreadCount = $notify->where('status', 'unread')->count();
                 @endphp
                 <!-- Notifications -->
                 <li class="nav-item dropdown">
-                    <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
-                        <i class="fa fa-bell-o"></i> <span class="badge rounded-pill">3</span>
+                    <a href="#" class="dropdown-toggle nav-link all_notification" data-bs-toggle="dropdown"
+                        id="notificationDropdown">
+                        <i class="fa fa-bell-o"></i> <span class="badge rounded-pill"
+                            id="unreadCount">{{ $unreadCount }}</span>
                     </a>
                     <div class="dropdown-menu notifications">
                         <div class="topnav-dropdown-header">
                             <span class="notification-title">Notifications</span>
-                            <a href="javascript:void(0)" class="clear-noti"> Clear All </a>
+                            {{-- <a href="javascript:void(0)" class="clear-noti"> Clear All </a> --}}
                         </div>
                         <div class="noti-content">
-                            <ul class="notification-list">
-                                @foreach($notify as $notification)
-                                <li class="notification-message">
-                                    <a href="activities.html">
-                                        <div class="media d-flex">
-                                            <span class="avatar flex-shrink-0">
-                                                <img alt=""
-                                                    src="{{ url('panel/assets/img/profiles/avatar-02.jpg') }}">
-                                            </span>
-                                            <div class="media-body flex-grow-1">
-                                                <p class="noti-details"><span class="noti-title">John Doe</span> {{$notification->message}}</p>
-                                                <p class="noti-time"><span class="notification-time">4 mins ago</span>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </li>
-                                @endforeach
-                            </ul>
+
                         </div>
                         <div class="topnav-dropdown-footer">
-                            <a href="activities.html">View all Notifications</a>
+                            <a href="#">View all Notifications</a>
                         </div>
                     </div>
                 </li>
@@ -339,7 +329,7 @@
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="{{ route('user.profile') }}">My Profile</a>
                         @if (Auth::user()->role_id != 1)
-                        <a class="dropdown-item" href="{{ url('developer/time-log') }}">Time Log</a>
+                            <a class="dropdown-item" href="{{ url('developer/time-log') }}">Time Log</a>
                         @endif
                         <a class="dropdown-item" href="{{ route('admin.logout') }}">Logout</a>
                     </div>
@@ -354,8 +344,8 @@
                 <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" href="{{ route('user.profile') }}">My Profile</a>
                     @if (Auth::user()->role_id != 1)
-                     <a class="dropdown-item" href="{{ url('developer/time-log') }}">Time Log</a>
-                     @endif
+                        <a class="dropdown-item" href="{{ url('developer/time-log') }}">Time Log</a>
+                    @endif
                     <a class="dropdown-item" href="{{ route('admin.logout') }}">Logout</a>
                 </div>
             </div>

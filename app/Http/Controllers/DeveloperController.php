@@ -30,22 +30,14 @@ class DeveloperController extends Controller
             $endDate = date('Y-m-d H:i:s', strtotime($request->input('end_date')));
             $totalTime = getTimeInterval($startDate, $endDate);
 
-            // $request->validate([
-            //     'sale_id' => 'required',
-            //     'assign_to' => 'required',
-            //     'title' => 'required',
-            //     'start_date' => 'required',
-            //     'end_date' => 'required',
-            // ]);
-
             $validator   =  Validator::make($request->all(), [
                 'sale_id'       => 'required',
                 'assign_to'     => 'required',
                 'title'         => 'required',
                 'start_date'    => 'required',
-                'end_date'      => 'required',
+                // 'end_date'      => 'required',
                 'details'       => 'required',
-                'remarks'       => 'required',
+                // 'remarks'       => 'required',
             ]);
             
             if ($validator->fails()) {
@@ -66,10 +58,15 @@ class DeveloperController extends Controller
                     'title' => $request->input('title'),
                     'details' => $request->input('details'),
                     'start_date' => $request->input('start_date'),
-                    'end_date' => $request->input('end_date'),
+                    'end_date' => $request->input('end_date') ?? null,
                     'total_time' => $totalTime,
-                    'remarks' => $request->input('remarks') ? $request->input('remarks') : '',
+                    'remarks' => $request->input('remarks') ?? null,
                 ]);
+
+                $message = $request->input('title') . ' Task has updated.';
+                $url = '/developer/task';
+                $adminmessage = ' has updated the ' . $request->input('title') . ' task';
+                sendNotification($task, $message, $url, $adminmessage);
 
                 if ($task->isDirty()) {
                     $updatedFields = $task->getDirty();
@@ -90,14 +87,19 @@ class DeveloperController extends Controller
                     'title' => $request->input('title'),
                     'details' => $request->input('details'),
                     'start_date' => $request->input('start_date'),
-                    'end_date' => $request->input('end_date'),
+                    'end_date' => $request->input('end_date') ?? null,
                     'total_time' => $totalTime,
                     'status' => 0,
                     'remarks' => $request->input('remarks') ? $request->input('remarks') : '',
                 ]);
 
+                $message = 'A new task has been assigned to you.';
+                $url = '/developer/task';
+                $adminmessage = 'A new task assigned.';
+                sendNotification($task, $message, $url, $adminmessage);
+
                 $remark = 'Task '.'('.$task->sale->project_name.')'.' has been assigned';
-                sendNotification($task);
+            
                 LogHistoryAdd($task->sale->client_id, $task->sale->id, Auth::id(), $remark);
             }
 
@@ -123,7 +125,9 @@ class DeveloperController extends Controller
             }
 
         } elseif ($request->method() == 'GET') {
+
             $isEdit = $isDelete = $isShow = 0;
+
             if (in_array(Auth::user()->role_id, ['6', '7'])) {
                 $data = Developertask::where('assign_to', 'LIKE', '%"' . Auth::user()->id . '"%')
                     ->orderBy('id', 'desc')
@@ -132,13 +136,19 @@ class DeveloperController extends Controller
             } elseif (in_array(Auth::user()->role_id, ['2', '3'])) {
                 $data = Developertask::where('assign_by', Auth::user()->id)->get();
                 $isEdit = $isDelete = 1;
+            }elseif (in_array(Auth::user()->role_id, ['8'])) {
+                $data = Developertask::where('assign_by', Auth::user()->id)
+                ->orwhere('assign_to', 'LIKE', '%"' . Auth::user()->id . '"%')->get();
+                $isEdit = $isDelete = 1;
             } else {
                 $data = Developertask::orderBy('id', 'desc')->get();
                 $isEdit = $isDelete = $isShow = 1;
             }
+
             $sales = Sale::pluck('project_name', 'id');
             $developer = \App\Models\User::pluck('name', 'id');
             $assignBy = \App\Models\User::whereIn('role_id', ['2', '3', '1'])->pluck('name', 'id');
+
             return view('admin.developer.task', compact('data', 'sales', 'developer', 'assignBy', 'isEdit', 'isDelete', 'isShow'));
         }
     }
@@ -210,7 +220,13 @@ class DeveloperController extends Controller
 
     public function get_assign_to(Request $request)
     {
-        $developer = User::where('role_id', $request->id)->pluck('name', 'id');
+
+        if($request->id == 'all'){
+            $developer = User::pluck('name', 'id');
+        }else{
+            $developer = User::where('role_id', $request->id)->pluck('name', 'id');
+        }
+
 
         return view('admin.data.assign_to', compact('developer'))->render();
     }
@@ -261,9 +277,7 @@ class DeveloperController extends Controller
 
        }
 
-
         return view('admin.developer.time_log_list', compact('timelog'));
-
     }
 
 }

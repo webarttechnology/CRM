@@ -97,7 +97,7 @@
                            var online_status = '';
                     }
 
-                    html += `<div class="msg `+online_status+`" onclick="make_chat_area(` + data.data[count].id + `, '` + data.data[
+                    html += `<div class="msg`+online_status+`" onclick="make_chat_area(` + data.data[count].id + `, '` + data.data[
                             count].name + `', '` + data.data[count].type + `', '` + UserImg +
                         `', '`+online_status+`'); load_chat_data(` + from_user_id + `, ` + data.data[count].id + `, '` + data.data[count]
                         .type + `'); GroupMemberData()">`;
@@ -222,6 +222,7 @@
                 chat_history_element.innerHTML = previous_chat_element.innerHTML + html;
 
                 scroll_top();
+
             }
 
         }
@@ -541,6 +542,12 @@
 
         load_chat_data(from_user_id, to_user_id, to_type);
 
+        setTimeout(function() {
+            // Code to run after the delay
+            load_list_user(from_user_id);
+            load_chat_data(from_user_id, to_user_id, to_type);
+        }, 1000);
+
         }
 
     }
@@ -585,6 +592,8 @@
         conn.send(JSON.stringify(data));
 
         load_list_user(from_user_id);
+        load_chat_data(from_user_id, to_user_id, to_type);
+        hideLoading();
     }
 
     // function ChooseFile(e)
@@ -665,7 +674,6 @@
     });
 
 
-   
 function showLoading() {
   document.querySelector('#loading').classList.add('loading');
   document.querySelector('#loading-content').classList.add('loading-content');

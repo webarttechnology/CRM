@@ -876,9 +876,11 @@
   background-color: #57625b;
   position: sticky;
   color: #fff;
-  width: 100%;
-  top: 0;
-  left: 50%;
+  width: 35%;
+  margin: auto;
+  border-radius: 6px;
+  /* top: 0;
+  left: 50%; */
   /* translate: -50% */
 }
 

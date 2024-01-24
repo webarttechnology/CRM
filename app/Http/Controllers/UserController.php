@@ -132,6 +132,11 @@ class UserController extends Controller
 
             User::where('id', $request->update_id)->update($data);
 
+            $message = 'Your profile has been updated';
+            $url = '/employee';
+            $adminmessage = 'Your profile has been updated';
+            sendEmployeeNotification($data, $message, $url, $adminmessage);
+
             return response()->json(['status' => 'success', 'type' => 'store', 'message' => 'Data has been updated successfully.']);
 
         }else{

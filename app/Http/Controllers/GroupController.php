@@ -70,6 +70,11 @@ class GroupController extends Controller
 
             $group->save();
 
+            $message = 'Create A New Group "' . $request->input('group_name') . '"';
+            $url = '/group/list';
+            $adminmessage = 'Create A New Group';
+            sendGroupNotification($group, $message, $url, $adminmessage);
+
             return response()->json(['status' => 'success', 'type' => 'store', 'message' => 'Data has been added successfully.']);
 
             // return redirect()->route('group.new.list')->with('successmsg', 'Data has been added successfully.');
@@ -104,6 +109,11 @@ class GroupController extends Controller
                 'status'    => "Active",
             ]);
             $group->save();
+
+            $message = 'Updated The Group "' . $request->input('group_name') . '"';
+            $url = '/group/list';
+            $adminmessage = 'Updated The Group "' . $request->input('group_name') . '"';
+            sendGroupNotification($group, $message, $url, $adminmessage);
 
             return response()->json(['status' => 'success', 'type' => 'update', 'message' => 'Data has been updated successfully.']);
 
@@ -147,6 +157,10 @@ class GroupController extends Controller
                 // $group->save();
                 $groupname = GroupName::where('id', $request->input('groupid'))->first();
                 Mail::to($checkuserexist->email)->send(new GroupMail($groupname, $checkuserexist->email));
+                $message = 'You will invited the group is "' . $groupname->name . '"';
+                $url = '/group/list';
+                $adminmessage = 'The new person will add in group "' . $groupname->name . '"';
+                sendUserGroupNotification($groupname, $message, $url, $adminmessage,$checkuserexist);
                 return redirect()->route('group.new.list')->with('successmsg', 'Email Send successfully.');
             } else {
                 return view("admin.group.add_group_form");
