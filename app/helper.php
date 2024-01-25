@@ -597,7 +597,7 @@ function sendClientNotification($client, $message, $url, $adminmessage)
 {
     $admin_id = User::where('role_id', 1)->first();
     $projectManager = User::where('role_id', 3)->where('id', '!=', Auth::user()->id)->get();
-    $developmentManager = User::where('role_id', 5)->get();
+    $developmentManager = User::where('role_id', 5)->where('id', '!=', Auth::user()->id)->get();
     foreach ($projectManager as $receiver) {
         $notification = new Notification([
             'sender_id' => Auth::user()->id,
@@ -639,7 +639,7 @@ function sendSalesNotification($sales, $message, $url, $adminmessage)
 {
     $admin_id = User::where('role_id', 1)->first();
     $projectManager = User::where('role_id', 3)->where('id', '!=', Auth::user()->id)->get();
-    $developmentManager = User::where('role_id', 5)->get();
+    $developmentManager = User::where('role_id', 5)->where('id', '!=', Auth::user()->id)->get();
     foreach ($projectManager as $receiver) {
         $notification = new Notification([
             'sender_id' => Auth::user()->id,
@@ -681,7 +681,7 @@ function sendUpSalesNotification($upsale, $message, $url, $adminmessage)
 {
     $admin_id = User::where('role_id', 1)->first();
     $projectManager = User::where('role_id', 3)->where('id', '!=', Auth::user()->id)->get();
-    $developmentManager = User::where('role_id', 5)->get();
+    $developmentManager = User::where('role_id', 5)->where('id', '!=', Auth::user()->id)->get();
     foreach ($projectManager as $receiver) {
         $notification = new Notification([
             'sender_id' => Auth::user()->id,
