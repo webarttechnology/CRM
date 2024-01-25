@@ -45,7 +45,8 @@ class UserController extends Controller
                 'email'         => 'required|email|unique:users',
                 'role_id'       => 'required|in:2,3,4,5,6,7,8',
                 'profile_image' => 'required|file|mimes:jpeg,png,jpg,webp|max:2048',
-                'password'      => 'required'
+                'password'      => 'required',
+                'confirm_password' => 'required|same:password',
             ]);
             
             if ($validator->fails()) {

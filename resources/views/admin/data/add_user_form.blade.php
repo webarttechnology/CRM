@@ -37,7 +37,7 @@
 
                 <div class="col-md-6 mb-3">
                     <label class="form-label" for="mobile_no">{{ __('Mobile No') }}</label>
-                    <input type="text" class="form-control" id="mobile_no" name="mobile_no" placeholder="+998889823"
+                    <input type="text" class="form-control" id="mobile_no" name="mobile_no" placeholder="+998889823" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
                         value="{{ $user_data?->mobile_no }}" />
                 </div>
 

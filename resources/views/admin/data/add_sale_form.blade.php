@@ -183,8 +183,7 @@
                         value="{{ date('Y-m-d', strtotime($sales_data?->start_date)) }}">
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label" for="end_date">{{ __('End Date') }} <span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="end_date">{{ __('End Date') }}</label>
                     <input type="date" name="end_date" id="end_date" class="form-control"
                         value="{{ date('Y-m-d', strtotime($sales_data?->end_date)) }}">
                 </div>
@@ -295,8 +294,7 @@
                         placeholder="Upsale opportunities" value="{{ $sales_data?->upsale_opportunities }}">
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label" for="upsale_type">{{ __('Currency') }} <span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="upsale_type">{{ __('Currency') }}</label>
                     <select name="currency" id="currency" class="form-control">
                         <option value="">--Select--</option>
                         @foreach (currency() as $key => $val)
@@ -309,26 +307,23 @@
                     @endif
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label" for="gross_amt">{{ __('Gross Amount') }} <span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="gross_amt">{{ __('Gross Amount') }}</label>
                     <input type="number" name="gross_amt" id="gross_amt" class="form-control pendingamount"
-                        placeholder="$" value="{{ $sales_data?->gross_amount }}">
+                        placeholder="$" value="{{ $sales_data?->gross_amount }}" min="1">
                     @if ($errors->has('gross_amt'))
                         <small class="text-danger">{{ $errors->first('gross_amt') }}</small>
                     @endif
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label" for="net_amt">{{ __('Net Amount') }} <span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="net_amt">{{ __('Net Amount') }}</label>
                     <input type="number" name="net_amt" id="net_amt" class="form-control pendingamount"
-                        placeholder="$" value="{{ $sales_data?->net_amount }}">
+                        placeholder="$" value="{{ $sales_data?->net_amount }}" min="1">
                     @if ($errors->has('net_amt'))
                         <small class="text-danger">{{ $errors->first('net_amt') }}</small>
                     @endif
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label" for="due_amt">{{ __('Due Amount') }} <span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="due_amt">{{ __('Due Amount') }}</label>
                     <input type="text" readonly name="due_amt" id="due_amt" class="form-control"
                         placeholder="$" value="{{ $sales_data?->gross_amount - $sales_data?->net_amount }}">
                 </div>
@@ -346,8 +341,7 @@
                     @endif
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label" for="payment_mode">{{ __('Payment Mode') }}<span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="payment_mode">{{ __('Payment Mode') }}</label>
                     <select name="payment_mode" id="payment_mode" class="form-control"
                         onchange="paymentonchangeevent()">
 

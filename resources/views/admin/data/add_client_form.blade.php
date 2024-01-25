@@ -64,8 +64,9 @@
                         </div>
                         <div class="col-md-5 mb-3">
                         <label class="form-label" for="address">{{ __('Mobile No') }}</label>
-                        <input type="text" class="form-control" id="mobile_no1" name="mobile_no[]"
-                                placeholder="+998889823" />
+                        <input type="text" class="form-control" id="mobile_no1" name="mobile_no[]" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+                                placeholder="+998889823" minlength="10"
+                                maxlength="10" />
                         </div>
 
 
@@ -83,7 +84,7 @@
                                             </div>
                                             <div class="col-md-5">
                                                 <label class="form-label" for="address">{{ __("Mobile No") }}</label>
-                                                <input type="text" class="form-control" id="address'+ lineNo +'" name="mobile_no[]" placeholder="9000090909" value="{{ $client_data->contact_details[$i]->mobile_no }}"/>
+                                                <input type="text" class="form-control" id="address'+ lineNo +'" name="mobile_no[]" placeholder="9000090909" oninput="this.value = this.value.replace(/\D/g, '')" value="{{ $client_data->contact_details[$i]->mobile_no }}"/>
                                             </div> 
                                             <div class="col-md-2"> 
                                                 <span class="btn btn-danger mt-4"  onclick="deleteRow({{ $i }})"><i class="fa fa-trash-o" aria-hidden="true"></i></span>

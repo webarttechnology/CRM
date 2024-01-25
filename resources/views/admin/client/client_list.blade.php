@@ -147,7 +147,7 @@
                     lineNo +
                     '" name="alteremail[]" placeholder="jhon.doe@gmail.com" /></div><div class="col-md-5"><label class="form-label" for="address">{{ __('Mobile No') }}</label><input type="text" class="form-control" id="address' +
                     lineNo +
-                    '" name="mobile_no[]" placeholder="1A, Ho Chi Minh Sarani Rd" /></div> <div class="col-md-2"> <span class="btn btn-danger mt-4 delete-row"><i class="fa fa-trash-o" aria-hidden="true"></i></span></div> </div>';
+                    '" name="mobile_no[]" onkeypress="return event.charCode >= 48 && event.charCode <= 57" minlength="10" maxlength="10" placeholder="7896541230" /></div> <div class="col-md-2"> <span class="btn btn-danger mt-4 delete-row"><i class="fa fa-trash-o" aria-hidden="true"></i></span></div> </div>';
                 tableBody = $("#multipleimage");
                 tableBody.append(markup);
                 lineNo++;

@@ -226,10 +226,10 @@ class SalesController extends Controller
                 // 'agent_name'        => 'required',
                 'business_name'     => 'required',
                 // 'remark'            => 'required',
-                'gross_amt'         => 'required|numeric',
-                'net_amt'           => 'required|numeric',
+                // 'gross_amt'         => 'required|numeric',
+                // 'net_amt'           => 'required|numeric',
                 'sale_date'         => 'required|date',
-                'payment_mode'      => 'required'
+                // 'payment_mode'      => 'required'
             ]);
             
             if ($validator->fails()) {
@@ -277,12 +277,12 @@ class SalesController extends Controller
                 'reference_sites' => $request->input('reference_site'),
                 'remarks' => $request->input('remark') ?? null,
                 'upsale_opportunities' => $request->input('upsale'),
-                'gross_amount' => $request->input('gross_amt'),
-                'net_amount' => $request->input('net_amt'),
+                'gross_amount' => $request->input('gross_amt')?? null,
+                'net_amount' => $request->input('net_amt')?? null,
                 'due_amount' => $request->input('gross_amt') - $request->input('net_amt'),
                 'currency' => $request->input('currency'),
                 'sale_date' => $request->input('sale_date'),
-                'payment_mode' => $request->input('payment_mode'),
+                'payment_mode' => $request->input('payment_mode')?? null,
                 'other_pay' => $request->input('other_pay')?? null,
             ]);
 
@@ -341,11 +341,11 @@ class SalesController extends Controller
                 // 'agent_name'        => 'required',
                 'business_name'     => 'required',
                 // 'remark'            => 'required',
-                'gross_amt'         => 'required|numeric',
-                'net_amt'           => 'required|numeric',
+                // 'gross_amt'         => 'required|numeric',
+                // 'net_amt'           => 'required|numeric',
                 'sale_date'         => 'required|date',
-                'payment_mode'      => 'required',
-                'currency'          => 'required'
+                // 'payment_mode'      => 'required',
+                // 'currency'          => 'required'
             ]);
             
             if ($validator->fails()) {
@@ -393,11 +393,11 @@ class SalesController extends Controller
                 'reference_sites' => $request->input('reference_site'),
                 'remarks' => $request->input('remark') ?? null,
                 'upsale_opportunities' => $request->input('upsale'),
-                'gross_amount' => $request->input('gross_amt'),
-                'net_amount' => $request->input('net_amt'),
+                'gross_amount' => $request->input('gross_amt')?? null,
+                'net_amount' => $request->input('net_amt')?? null,
                 'due_amount' => $request->input('gross_amt') - $request->input('net_amt'),
                 'sale_date' => $request->input('sale_date'),
-                'payment_mode' => $request->input('payment_mode'),
+                'payment_mode' => $request->input('payment_mode')?? null,
                 'currency' => $request->input('currency')
             ]);
             $sales->save();
