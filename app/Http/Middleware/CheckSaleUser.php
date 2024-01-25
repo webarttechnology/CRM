@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 class CheckSaleUser
 {
     /**
@@ -18,7 +18,7 @@ class CheckSaleUser
     {
       
         $checkAdmin = false;
-        if(in_array(Auth::user()->role_id, [4, 1, 2, 3])){
+        if(in_array(Auth::user()->role_id, [4, 1, 2, 3, 5])){
             return $next($request);
         }else{
             return redirect('/admin/logout');

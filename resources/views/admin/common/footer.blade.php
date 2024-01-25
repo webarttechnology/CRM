@@ -377,6 +377,7 @@
 
         /////// Chat Model
         $(document).on("click", ".open-chat-module", function(e) {
+
             e.preventDefault();
             $.ajax({
                 type: 'POST',
@@ -390,8 +391,45 @@
             });
         });
 
+        $(document).on("click", ".open-chat-module-noti", function(e) {
+            e.preventDefault();
+
+            var username = $(this).data('name');
+            var userimage = $(this).data('image');
+            var touserid = $(this).data('touserid');
+            var fromuserid = $(this).data('fromuserid');
+            var usertype = $(this).data('type');
+            var onlinestatus = $(this).data('onlinestatus');
+            var chatId = $(this).data('id');
+
+            $.ajax({
+                type: 'POST',
+                url: "{{ route('show-chat-module') }}",
+                success: function(data) {
+                    $('.chat-box').html(data);
+                    setTimeout(function() {
+                        $('#fullWidthModal').modal('show');
+
+                        setTimeout(() => {
+
+                            make_chat_area(fromuserid, username, usertype, userimage, onlinestatus);
+
+                            load_chat_data(touserid, fromuserid, usertype);
+                            update_message_status(chatId, touserid, fromuserid, 'Read');
+                            
+                        }, 1000);
+
+
+
+                    }, 500);
+                },
+            });
+        });
+
 
         ////// Pusher Notification
+
+        
 
         var auth_id = '{{ Auth::id() }}';
 
@@ -412,15 +450,15 @@
                     } else {
                         $userImg = "{{ url('panel/assets/img/profiles/user-profile.png') }}";
                     }
-                    showNotification(data.message.name, data.message.from_user_id, $userImg, data.message.chat_message)
+                    showNotification(data.message.id, data.message.name, $userImg, data.message.chat_message, data.message.to_user_id, data.message.from_user_id, data.message.type, data.message.onlineStaus)
                 }
             }
         });
 
 
-        function showNotification(name, user_id, image, msg) {
+        function showNotification(chatId, name, image, msg, to_user_id, from_user_id, type, onlineStatus) {
 
-            var html = ` <div class="my-toast-container open-chat-module" id="toast" data-id="`+user_id+`">
+            var html = ` <div class="my-toast-container open-chat-module-noti toast-show" data-id="`+chatId+`" data-name="`+name+`" data-image="`+image+`" data-touserid="`+to_user_id+`" data-fromuserid="`+from_user_id+`" data-type="`+type+`" data-onlinestatus="`+onlineStatus+`">
                 <div style="display: flex;">
                     <div><img src="` + image + `" width="40px" height="40px" style="border-radius: 100%;" alt="photo"></div>
                     <div style="margin-left: 10px;">
@@ -431,11 +469,14 @@
             </div>`;
 
             $("body").append(html);
-            $('#toast').show();
+            $('.toast-show').show();
 
             setTimeout(function() {
-                // $('#toast').fadeOut(1000).remove();
+                $('.toast-show').fadeOut(8000).remove();
             }, 3000);
+
+           
+
         }
 
 

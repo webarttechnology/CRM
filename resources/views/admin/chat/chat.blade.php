@@ -97,7 +97,7 @@
                            var online_status = '';
                     }
 
-                    html += `<div class="msg`+online_status+`" onclick="make_chat_area(` + data.data[count].id + `, '` + data.data[
+                    html += `<div class="msg  `+online_status+`" data-id="` + data.data[count].id + `" onclick="make_chat_area(` + data.data[count].id + `, '` + data.data[
                             count].name + `', '` + data.data[count].type + `', '` + UserImg +
                         `', '`+online_status+`'); load_chat_data(` + from_user_id + `, ` + data.data[count].id + `, '` + data.data[count]
                         .type + `'); GroupMemberData()">`;
@@ -229,6 +229,7 @@
 
         if (data.chat_history) {
             var html = '';
+
 
             for (var index = 0; index < data.chat_history.length; index++) {
                 html += `<div class="groupdate">` + data.chat_history[index].date + `</div>`;
@@ -572,6 +573,8 @@
             to_type: to_type,
             type: 'request_chat_history'
         };
+
+        console.log(data);
 
         conn.send(JSON.stringify(data));
     }

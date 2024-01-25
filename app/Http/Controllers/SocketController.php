@@ -260,8 +260,11 @@ class SocketController extends Controller implements MessageComponentInterface
                                 'message_status'   => $chatNotify->message_status, 
                                 'name'             => $member->user->name, 
                                 'user_image'       => $userImg, 
-                                'chat_message'     => $chatNotify->chat_message
+                                'chat_message'     => $chatNotify->chat_message,
+                                'type'             => 'group',
+                                'onlineStaus'      => 'Offline',
                             ];
+
 
                             event(new ChatNotifyUser($chatNotifyData));
 
@@ -283,6 +286,8 @@ class SocketController extends Controller implements MessageComponentInterface
                                 'name'             => $chatNotify->user->name, 
                                 'user_image'       => $userImg, 
                                 'chat_message'     => $chatNotify->chat_message,
+                                'type'             => 'user',
+                                'onlineStaus'      => $chatNotify->user->user_status, 
                             ];
 
                             event(new ChatNotifyUser($chatNotifyData));
