@@ -115,8 +115,7 @@
                         </div>
 
                         <div class="col-md-6 mb-3">
-                        <label class="form-label" for="closer_name">{{ __('Closer Name') }} <span
-                                class="text-danger">*</span></label>
+                        <label class="form-label" for="closer_name">{{ __('Closer Name') }}</label>
                         <input type="text" name="closer_name" id="closer_name" class="form-control"
                                 placeholder="Closer name" value="{{ $client_data  ?  $client_data->closer_name : null }}">
                         @if ($errors->has('closer_name'))
@@ -126,8 +125,7 @@
                         </div>
 
                         <div class="col-md-6 mb-3">
-                        <label class="form-label" for="remarks">{{ __('Remarks') }} <span
-                                class="text-danger">*</span></label>
+                        <label class="form-label" for="remarks">{{ __('Remarks') }}</label>
                         <textarea class="form-control" id="remarks" name="remarks" placeholder="Your remarks here...">{{ $client_data ? $client_data->remarks : null }}</textarea>
                         @if ($errors->has('remarks'))
                                 <small class="text-danger"

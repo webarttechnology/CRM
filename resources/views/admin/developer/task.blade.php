@@ -65,6 +65,7 @@
                                         id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
                                         <thead>
                                             <tr>
+                                                 <th>Id</th>
                                                 <th>Sales name</th>
                                                 {{-- <th>Assign By</th> --}}
                                                 <th>Task title</th>
@@ -77,11 +78,14 @@
                                         </thead>
                                         <tbody class="table-border-bottom-0">
                                             @foreach ($data as $val)
-                                                <tr>
+                                                <tr class="open-module-form"
+                                                data-id="{{ $val->id }}" data-type="add_task"
+                                                data-sale="show">
+                                                <td>{{ $loop->index + 1 }}</td>
                                                     <td>
-                                                        <a href="#" class="mr-5 open-module-form"
+                                                        {{-- <a href="#" class="mr-5 open-module-form"
                                                             data-id="{{ $val->id }}" data-type="add_task"
-                                                            data-sale="show"><i class="feather-eye"></i> </a>
+                                                            data-sale="show"><i class="feather-eye"></i> </a> --}}
                                                         <span>{{ $sales[$val->sale_id] }}</span>
                                                     </td>
                                                     {{-- <td>{{ $assignBy[$val->assign_by] }}</td> --}}

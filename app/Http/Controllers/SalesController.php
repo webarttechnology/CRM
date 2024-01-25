@@ -47,8 +47,8 @@ class SalesController extends Controller
                 'email'             => 'required|email|unique:clients',
                 'address'           => 'required|string',
                 'current_website'   => 'nullable|url',
-                'agent_name'        => 'required',
-                'closer_name'       => 'required',
+                // 'agent_name'        => 'required',
+                // 'closer_name'       => 'required',
                 // 'remarks'           => 'required'
             ]);
 
@@ -63,8 +63,8 @@ class SalesController extends Controller
                 'email' => $request->input('email'),
                 'address' => $request->input('address'),
                 'current_website' => $request->input('current_website'),
-                'agent_name' => $request->input('agent_name'),
-                'closer_name' => $request->input('closer_name'),
+                'agent_name' => $request->input('agent_name')?? null,
+                'closer_name' => $request->input('closer_name')?? null,
                 'remarks' => $request->input('remarks') ?? null
             ]);
 
@@ -114,8 +114,8 @@ class SalesController extends Controller
                 'email' => 'required|email|unique:clients,email,' . $request->input('update_id'),
                 'address' => 'required|string',
                 'current_website' => 'nullable|url',
-                'agent_name' => 'required',
-                'closer_name' => 'required',
+                // 'agent_name' => 'required',
+                // 'closer_name' => 'required',
                 // 'remarks' => 'required'
             ]);
 
@@ -133,8 +133,8 @@ class SalesController extends Controller
                 'email' => $request->input('email'),
                 'address' => $request->input('address'),
                 'current_website' => $request->input('current_website'),
-                'agent_name' => $request->input('agent_name'),
-                'closer_name' => $request->input('closer_name'),
+                'agent_name' => $request->input('agent_name')?? null,
+                'closer_name' => $request->input('closer_name')?? null,
                 'remarks' => $request->input('remarks') ?? null
             ]);
 
@@ -222,8 +222,8 @@ class SalesController extends Controller
                 'client_id'         => 'required|exists:clients,id',
                 'project_name'      => 'required',
                 'project_type'      => 'required',
-                'closer_name'       => 'required',
-                'agent_name'        => 'required',
+                // 'closer_name'       => 'required',
+                // 'agent_name'        => 'required',
                 'business_name'     => 'required',
                 // 'remark'            => 'required',
                 'gross_amt'         => 'required|numeric',
@@ -272,8 +272,8 @@ class SalesController extends Controller
                 'project_description' => $request->input('project_description'),
                 'ui_project_description' => $request->input('ui_project_description'),
                 'business_name' => $request->input('business_name'),
-                'closer_name' => $request->input('closer_name'),
-                'agent_name' => $request->input('agent_name'),
+                'closer_name' => $request->input('closer_name')?? null,
+                'agent_name' => $request->input('agent_name')?? null,
                 'reference_sites' => $request->input('reference_site'),
                 'remarks' => $request->input('remark') ?? null,
                 'upsale_opportunities' => $request->input('upsale'),
@@ -283,7 +283,7 @@ class SalesController extends Controller
                 'currency' => $request->input('currency'),
                 'sale_date' => $request->input('sale_date'),
                 'payment_mode' => $request->input('payment_mode'),
-                'other_pay' => $request->input('other_pay')
+                'other_pay' => $request->input('other_pay')?? null,
             ]);
 
             $saleId = $sales->save();
@@ -337,8 +337,8 @@ class SalesController extends Controller
                 'client_id'         => 'required|exists:clients,id',
                 'project_name'      => 'required',
                 'project_type'      => 'required',
-                'closer_name'       => 'required',
-                'agent_name'        => 'required',
+                // 'closer_name'       => 'required',
+                // 'agent_name'        => 'required',
                 'business_name'     => 'required',
                 // 'remark'            => 'required',
                 'gross_amt'         => 'required|numeric',
@@ -389,7 +389,7 @@ class SalesController extends Controller
                 'project_description' => $request->input('project_description'),
                 'business_name' => $request->input('business_name'),
                 'closer_name' => $request->input('closer_name'),
-                'agent_name' => $request->input('agent_name'),
+                'agent_name' => $request->input('agent_name')?? null,
                 'reference_sites' => $request->input('reference_site'),
                 'remarks' => $request->input('remark') ?? null,
                 'upsale_opportunities' => $request->input('upsale'),
