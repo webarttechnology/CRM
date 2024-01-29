@@ -420,6 +420,19 @@ class SocketController extends Controller implements MessageComponentInterface
                 }
             }
 
+            if ($data->type == 'request_send_file') {
+                
+                $fileData = $data->file;
+                $filename = time() . '_' . $fileData->name;
+
+                // Save the file to the public folder
+                file_put_contents(public_path('uploads/' . $filename), base64_decode(preg_replace('#^data:[\w/]+;base64,#i', '', $fileData->data)));
+
+
+                // dd($filename);
+
+            }
+
             
         }
     }
@@ -444,30 +457,6 @@ class SocketController extends Controller implements MessageComponentInterface
         echo "An error has occurred: {$e->getMessage()} \n";
 
         $conn->close();
-    }
-
-    protected function handleFileUpload($file)
-    {
-        // Implement your file handling logic here, such as storing the file
-        // and returning relevant file information.
-        // You might want to use Laravel's Storage facade to store the file.
-
-        // Example:
-        // $path = $file->store('uploads', 'public');
-
-        if(isset($file)){
-            $new_file = rand().'_'.$file->getClientOriginalName();
-            $destinationPath = public_path('admin/comment');
-            $file->move($destinationPath, $new_file);
-            $path = url('/').'/admin/comment/'.$new_file;
-        }else{
-            $path = null;
-        }
-
-        return [
-            'file_path' => $path
-        ];
-
     }
 
 }

@@ -91,15 +91,17 @@
                         UserImg = "{{ url('panel/assets/img/profiles/multiple-users.png') }}";
                     }
 
-                    if(data.data[count].user_status == 'Online'){
-                            var online_status = 'online';
-                    }else{
-                           var online_status = '';
+                    if (data.data[count].user_status == 'Online') {
+                        var online_status = 'online';
+                    } else {
+                        var online_status = '';
                     }
 
-                    html += `<div class="msg  `+online_status+`" data-id="` + data.data[count].id + `" onclick="make_chat_area(` + data.data[count].id + `, '` + data.data[
+                    html += `<div class="msg  ` + online_status + `" data-id="` + data.data[count].id +
+                        `" onclick="make_chat_area(` + data.data[count].id + `, '` + data.data[
                             count].name + `', '` + data.data[count].type + `', '` + UserImg +
-                        `', '`+online_status+`'); load_chat_data(` + from_user_id + `, ` + data.data[count].id + `, '` + data.data[count]
+                        `', '` + online_status + `'); load_chat_data(` + from_user_id + `, ` + data.data[count].id +
+                        `, '` + data.data[count]
                         .type + `'); GroupMemberData()">`;
                     if (data.data[count].type == 'user') {
                         if (data.data[count].user_image) {
@@ -164,7 +166,7 @@
                 html += `
                 <div class="chat-msg owner">
                         <div class="chat-msg-profile">
-                            <img class="chat-msg-img"  src="`+form_user_photo+`" alt />
+                            <img class="chat-msg-img"  src="` + form_user_photo + `" alt />
                            <div class="chat-msg-date">` + data.time + icon_style + `</div>
                         </div>
                         <div class="chat-msg-content">
@@ -177,23 +179,23 @@
                 load_list_user(from_user_id);
 
                 var elementChatEmpty = document.getElementById("chat-msg-empty");
-                
-                if(elementChatEmpty){
+
+                if (elementChatEmpty) {
                     elementChatEmpty.style.display = "none";
                 }
-                
+
                 if (data.from_user_id == to_user_id) {
 
-                       if (data.from_user_photo) {
-                            var to_user_img = data.from_user_photo;
-                        } else {
-                            var to_user_img = "{{ url('panel/assets/img/profiles/user-profile.png') }}";
-                        }
+                    if (data.from_user_photo) {
+                        var to_user_img = data.from_user_photo;
+                    } else {
+                        var to_user_img = "{{ url('panel/assets/img/profiles/user-profile.png') }}";
+                    }
 
                     html += `
                     <div class="chat-msg">
                         <div class="chat-msg-profile">
-                            <img class="chat-msg-img" src="`+to_user_img+`" alt>
+                            <img class="chat-msg-img" src="` + to_user_img + `" alt>
                             <div class="chat-msg-date">` + data.time + `</div>
                         </div>
                         <div class="chat-msg-content">
@@ -327,10 +329,10 @@
                 }
             }
 
-            if(data.chat_history == ''){
+            if (data.chat_history == '') {
                 html += `<div class="chat-msg-empty" id="chat-msg-empty">
                             Type something, send a file, make a call or select one of the canned messages.
-                        </div>`; 
+                        </div>`;
             }
 
             document.querySelector('#chat_history').innerHTML = html;
@@ -340,7 +342,7 @@
             scroll_top();
         }
 
-        if (data.group_member_history) { 
+        if (data.group_member_history) {
 
             if (to_type == 'group') {
 
@@ -352,9 +354,9 @@
                     } else {
                         var group_image_user = "{{ url('panel/assets/img/profiles/user-profile.png') }}";
                     }
-                    group_user +=` <div class="msg">
-                    <img class="msg-profile" src="`+group_image_user+`" alt="profile-photo">
-                    <div class="msg-detail">`+data.group_member_history[index].name+`</div>
+                    group_user += ` <div class="msg">
+                    <img class="msg-profile" src="` + group_image_user + `" alt="profile-photo">
+                    <div class="msg-detail">` + data.group_member_history[index].name + `</div>
                     </div>`;
                 }
 
@@ -394,7 +396,7 @@
 
     function make_chat_area(user_id, to_user_name, type, UserImg, online_status) {
 
-        if(type == 'group'){
+        if (type == 'group') {
 
             var TabElement = `<div class="nav nav-tabs" id="nav-tab" role="tablist">
                         <button class="nav-link active" id="nav-group-member-tab" data-bs-toggle="tab" data-bs-target="#nav-group-member" type="button" role="tab" aria-controls="nav-group-member" aria-selected="true">Group Member</button>
@@ -413,11 +415,11 @@
 
             var online_status_check = '';
 
-        }else{
+        } else {
             var TabElement = '';
-            if(online_status){
+            if (online_status) {
                 var online_status_check = online_status;
-            }else{
+            } else {
                 var online_status_check = 'Offline';
 
             }
@@ -429,7 +431,8 @@
                     <div id="loading-content"></div>
                 </div>
                 <div class="chat-area-header">
-                    <div class="chat-area-title" id="chat-user-name">` + to_user_name + ` <span class="online-offline">`+online_status_check+`</span></div>
+                    <div class="chat-area-title" id="chat-user-name">` + to_user_name +
+            ` <span class="online-offline">` + online_status_check + `</span></div>
                     <div class="chat-area-group">
                    </div>
                 </div>
@@ -438,9 +441,9 @@
                 </div>
                 <div class="chat-area-footer">
                     <a href="javascript:void(0)" title="File Choose" onClick="ChooseFile()">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-paperclip">
-                          <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" />
-                       </svg>
+                        <svg width="30px" height="30px" class="feather" style="margin-right: 5px;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12.44 14.75H3.75C3.34 14.75 3 14.41 3 14C3 13.59 3.34 13.25 3.75 13.25H12.44L10.72 11.53C10.43 11.24 10.43 10.76 10.72 10.47C11.01 10.18 11.49 10.18 11.78 10.47L14.78 13.47C14.85 13.54 14.9 13.62 14.94 13.71C15.02 13.89 15.02 14.1 14.94 14.28C14.9 14.37 14.85 14.45 14.78 14.52L11.78 17.52C11.63 17.67 11.44 17.74 11.25 17.74C11.06 17.74 10.87 17.67 10.72 17.52C10.43 17.23 10.43 16.75 10.72 16.46L12.44 14.74V14.75ZM21 9.5V18C21 19.52 19.77 20.75 18.25 20.75H10.75C9.23 20.75 8 19.52 8 18V17C8 16.59 8.34 16.25 8.75 16.25C9.16 16.25 9.5 16.59 9.5 17V18C9.5 18.69 10.06 19.25 10.75 19.25H18.25C18.94 19.25 19.5 18.69 19.5 18V10.25H14.75C14.34 10.25 14 9.91 14 9.5V4.75H10.75C10.06 4.75 9.5 5.31 9.5 6V11C9.5 11.41 9.16 11.75 8.75 11.75C8.34 11.75 8 11.41 8 11V6C8 4.48 9.23 3.25 10.75 3.25H14.75C14.95 3.25 15.14 3.33 15.28 3.47L20.78 8.97C20.92 9.11 21 9.3 21 9.5ZM15.5 8.75H18.44L15.5 5.81V8.75Z" fill="#c1c7cd"/>
+                        </svg>
                     </a>
 
                     <a href="https://www.sendgb.com/" title="SendGB" target="_blank">
@@ -492,7 +495,7 @@
                     <input type="text"  placeholder="Search in Conversation">
                 </div>
                 <div class="tabs-container mb-3">
-                    `+TabElement+`
+                    ` + TabElement + `
                 </div>
             </div>`;
 
@@ -517,37 +520,37 @@
 
     function send_chat_message() {
 
-        
+
         var message = document.getElementById('message_area').value.trim()
-        
+
         if (message) {
 
-        document.querySelector('#send_button').disabled = true;
+            document.querySelector('#send_button').disabled = true;
 
-        var data = {
-            message: message,
-            from_user_id: from_user_id,
-            to_user_id: to_user_id,
-            to_group_id: to_group_id,
-            to_type: to_type,
-            type: 'request_send_message'
-        };
+            var data = {
+                message: message,
+                from_user_id: from_user_id,
+                to_user_id: to_user_id,
+                to_group_id: to_group_id,
+                to_type: to_type,
+                type: 'request_send_message'
+            };
 
-        conn.send(JSON.stringify(data));
+            conn.send(JSON.stringify(data));
 
-        document.querySelector('#message_area').value = '';
+            document.querySelector('#message_area').value = '';
 
-        document.querySelector('#send_button').disabled = false;
+            document.querySelector('#send_button').disabled = false;
 
-        load_list_user(from_user_id);
-
-        load_chat_data(from_user_id, to_user_id, to_type);
-
-        setTimeout(function() {
-            // Code to run after the delay
             load_list_user(from_user_id);
+
             load_chat_data(from_user_id, to_user_id, to_type);
-        }, 1000);
+
+            setTimeout(function() {
+                // Code to run after the delay
+                load_list_user(from_user_id);
+                load_chat_data(from_user_id, to_user_id, to_type);
+            }, 1000);
 
         }
 
@@ -581,7 +584,7 @@
 
 
     function update_message_status(chat_message_id, from_user_id, to_user_id, chat_message_status) {
-        
+
         var data = {
             chat_message_id: chat_message_id,
             from_user_id: from_user_id,
@@ -599,59 +602,73 @@
         hideLoading();
     }
 
-    // function ChooseFile(e)
-    // {
-      
-    //     var input = document.createElement('input');
-    //         input.type = 'file';
-    //         input.style.display = 'none';
+    function ChooseFile(e) {
 
-    //         // Append the input element to the body
-    //         document.body.appendChild(input);
+        var input = document.createElement('input');
+        input.type = 'file';
+        input.style.display = 'none';
 
-    //         // Trigger the click event on the input element
-    //         input.click();
+        document.body.appendChild(input);
 
-    //         // Listen for the change event on the input element
-    //         input.addEventListener('change', function () {
-    //             // Access the selected file(s)
-    //             // var selectedFile = input.files[0];
+        input.click();
 
-    //             var file_element = input.files[0];
+        input.addEventListener('change', function() {
+            var fileElement = input.files[0];
 
-    //             var file_name = file_element.name;
+            if (!fileElement) {
+                alert('No file selected.');
+                return;
+            }
 
-    //             var file_extension = file_name.split('.').pop().toLowerCase();
 
-    //             var allowed_extensions = ['png', 'jpg'];
+            // var allowedExtensions = ['png', 'jpg'];
+            // var fileExtension = fileElement.name.split('.').pop().toLowerCase();
 
-    //             if (allowed_extensions.indexOf(file_extension) == -1) {
-    //                 alert("Invalid Image File");
-    //                 return false;
-    //             }
+            // if (allowedExtensions.indexOf(fileExtension) === -1) {
+            //     alert('Invalid Image File');
+            //     return;
+            // }
 
-    //             var file_reader = new FileReader();
+            var fileReader = new FileReader();
 
-    //             file_reader.onloadend = function() {
-    //                 var file_raw_data = file_reader.result;
-    //                   console.log(file_raw_data);
-    //                   var data = {
-    //                     // file_data: file_raw_data,
-    //                     message: file_raw_data,
-    //                     from_user_id: from_user_id,
-    //                     to_user_id: to_user_id,
-    //                     to_group_id: to_group_id,
-    //                     to_type: to_type,
-    //                     type: 'request_send_file'
-    //                 };
+            fileReader.onloadend = function() {
+                // var fileData = fileReader.result;
+                var fileData =  fileReader.result.split(',')[1];
 
-    //                 conn.send(JSON.stringify(data));
-    //             };
+               var preview = `<div class="chat-msg-text">
+                <img src="https://media0.giphy.com/media/yYSSBtDgbbRzq/giphy.gif?cid=ecf05e47344fb5d835f832a976d1007c241548cc4eea4e7e&rid=giphy.gif" />
+                </div>`;
+               
 
-    //             file_reader.readAsArrayBuffer(file_element);
-                
-    //         });
-    // }
+                // chat_history
+
+                $('#chat_history').append(preview);
+
+                // console.log(fileData);
+
+                var data = {
+                    message: fileData,
+                    from_user_id: from_user_id,
+                    to_user_id: to_user_id,
+                    to_group_id: to_group_id,
+                    to_type: to_type,
+                    type: 'request_send_file',
+                    file: {
+                    name: fileElement.name,
+                    type: fileElement.type,
+                    data: fileData,
+                  },
+                };
+
+                // conn.send(JSON.stringify(data));
+            };
+
+            // fileReader.readAsArrayBuffer(fileElement);
+            fileReader.readAsDataURL(fileElement);
+            input.remove();
+        });
+
+    }
 
 
     function scroll_top() {
@@ -677,14 +694,13 @@
     });
 
 
-function showLoading() {
-  document.querySelector('#loading').classList.add('loading');
-  document.querySelector('#loading-content').classList.add('loading-content');
-}
+    function showLoading() {
+        document.querySelector('#loading').classList.add('loading');
+        document.querySelector('#loading-content').classList.add('loading-content');
+    }
 
-function hideLoading() {
-  document.querySelector('#loading').classList.remove('loading');
-  document.querySelector('#loading-content').classList.remove('loading-content');
-}
-
+    function hideLoading() {
+        document.querySelector('#loading').classList.remove('loading');
+        document.querySelector('#loading-content').classList.remove('loading-content');
+    }
 </script>

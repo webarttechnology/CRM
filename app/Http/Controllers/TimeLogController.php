@@ -98,7 +98,6 @@ class TimeLogController extends Controller
 
         $workHistory = Workhistory::where('user_id', Auth::user()->id)->orderBy('id', 'desc')->first();
 
-       
         if($lastrecord){
 
 
