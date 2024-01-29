@@ -183,8 +183,7 @@
                         value="{{ date('Y-m-d', strtotime($sales_data?->start_date)) }}">
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label" for="end_date">{{ __('End Date') }} <span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="end_date">{{ __('End Date') }}</label>
                     <input type="date" name="end_date" id="end_date" class="form-control"
                         value="{{ date('Y-m-d', strtotime($sales_data?->end_date)) }}">
                 </div>
@@ -226,8 +225,7 @@
 
             <div class="row" id="div_customised_platforms">
                 <div class="col-md-12 mb-3">
-                    <label class="form-label" for="cus_project_description">{{ __('Project Description') }} <span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="cus_project_description">{{ __('Customer Project Description') }}</label>
                     <textarea type="text" name="cus_project_description" id="cus_project_description" class="form-control"
                         placeholder="Project description">{{ $sales_data?->others }}</textarea>
                 </div>
@@ -235,8 +233,7 @@
 
             <div class="row" id="div_video_graphics">
                 <div class="col-md-12 mb-3">
-                    <label class="form-label" for="gra_project_description">{{ __('Project Description') }} <span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="gra_project_description">{{ __('Gra Project Description') }} </label>
                     <textarea type="text" name="gra_project_description" id="gra_project_description" class="form-control"
                         placeholder="Project Description">{{ $sales_data?->others }}</textarea>
 
@@ -245,8 +242,7 @@
 
             <div class="row" id="div_ui_ux">
                 <div class="col-md-12 mb-3">
-                    <label class="form-label" for="ui_project_description">{{ __('Project Description') }} <span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="ui_project_description">{{ __('Ui Project Description') }} </label>
                     <textarea type="text" name="ui_project_description" id="ui_project_description" class="form-control"
                         placeholder="Project description">{{ $sales_data?->others }}</textarea>
                 </div>
@@ -263,8 +259,7 @@
                     @endif
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label" for="closer_name">{{ __('Closer') }}<span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="closer_name">{{ __('Closer') }}</label>
                     <input type="text" name="closer_name" id="closer_name" class="form-control"
                         placeholder="Closer name" value="{{ $sales_data?->closer_name }}">
                     @if ($errors->has('closer_name'))
@@ -272,8 +267,7 @@
                     @endif
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label" for="agent_name">{{ __('Agent Name') }}<span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="agent_name">{{ __('Agent Name') }}</label>
                     <input type="text" name="agent_name" id="agent_name" class="form-control"
                         placeholder="Agent name" value="{{ $sales_data?->agent_name }}">
                     @if ($errors->has('agent_name'))
@@ -287,8 +281,7 @@
                 </div>
 
                 <div class="col-md-12 mb-3">
-                    <label class="form-label" for="remark">{{ __('Remarks') }} <span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="remark">{{ __('Remarks') }} </label>
                     <textarea type="text" name="remark" id="remark" class="form-control" placeholder="Remark">{{ $sales_data?->remarks }}</textarea>
                     @if ($errors->has('remark'))
                         <small class="text-danger">{{ $errors->first('remark') }}</small>
@@ -301,8 +294,7 @@
                         placeholder="Upsale opportunities" value="{{ $sales_data?->upsale_opportunities }}">
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label" for="upsale_type">{{ __('Currency') }} <span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="upsale_type">{{ __('Currency') }}</label>
                     <select name="currency" id="currency" class="form-control">
                         <option value="">--Select--</option>
                         @foreach (currency() as $key => $val)
@@ -315,26 +307,23 @@
                     @endif
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label" for="gross_amt">{{ __('Gross Amount') }} <span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="gross_amt">{{ __('Gross Amount') }}</label>
                     <input type="number" name="gross_amt" id="gross_amt" class="form-control pendingamount"
-                        placeholder="$" value="{{ $sales_data?->gross_amount }}">
+                        placeholder="$" value="{{ $sales_data?->gross_amount }}" min="1">
                     @if ($errors->has('gross_amt'))
                         <small class="text-danger">{{ $errors->first('gross_amt') }}</small>
                     @endif
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label" for="net_amt">{{ __('Net Amount') }} <span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="net_amt">{{ __('Net Amount') }}</label>
                     <input type="number" name="net_amt" id="net_amt" class="form-control pendingamount"
-                        placeholder="$" value="{{ $sales_data?->net_amount }}">
+                        placeholder="$" value="{{ $sales_data?->net_amount }}" min="1">
                     @if ($errors->has('net_amt'))
                         <small class="text-danger">{{ $errors->first('net_amt') }}</small>
                     @endif
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label" for="due_amt">{{ __('Due Amount') }} <span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="due_amt">{{ __('Due Amount') }}</label>
                     <input type="text" readonly name="due_amt" id="due_amt" class="form-control"
                         placeholder="$" value="{{ $sales_data?->gross_amount - $sales_data?->net_amount }}">
                 </div>
@@ -352,8 +341,7 @@
                     @endif
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label" for="payment_mode">{{ __('Payment Mode') }}<span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="payment_mode">{{ __('Payment Mode') }}</label>
                     <select name="payment_mode" id="payment_mode" class="form-control"
                         onchange="paymentonchangeevent()">
 
@@ -372,8 +360,7 @@
                 </div>
 
                 <div class="col-md-12 mb-3" id="div_other_pay">
-                    <label class="form-label" for="other_pay">{{ __('Payment Description') }} <span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="other_pay">{{ __('Payment Description') }}</label>
                     <input type="text" name="other_pay" id="other_pay" class="form-control"
                         placeholder="Description" value="{{ $sales_data?->other_pay }}">
                 </div>

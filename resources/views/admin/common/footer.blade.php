@@ -551,6 +551,16 @@
         // Update every 3 second
         setInterval(updateUnreadCount, 3000);
 
+        $(document).on('click', '#toggle-password', function() {
+            $(this).toggleClass("fa-eye fa-eye-slash");
+            var input = $("#password");
+            if (input.attr("type") == "password") {
+                input.attr("type", "text");
+            } else {
+                input.attr("type", "password");
+            }
+        });
+
     });
 </script>
 </body>

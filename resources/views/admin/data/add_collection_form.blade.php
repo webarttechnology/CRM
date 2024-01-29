@@ -68,7 +68,7 @@
                 
                   <div class="col-md-6 mb-3">
                         <label class="form-label" for="net_amt">{{ __("Net Amount") }} <span class="text-danger">*</span></label>
-                        <input  type="number" name="net_amt" id="net_amt" class="form-control pendingamount" placeholder="$" value="{{ $collection_data?->net_amount }}">  
+                        <input  type="number" name="net_amt" id="net_amt" class="form-control pendingamount" placeholder="$" value="{{ $collection_data?->net_amount }}" min="1">  
                         @if($errors->has('net_amt'))
                         <small class="text-danger">{{ $errors->first('net_amt') }}</small>
                         @endif             

@@ -92,7 +92,7 @@
                 <div class="col-md-4 mb-3">
                     <label class="form-label" for="gross_amt">{{ __('Gross Amount') }} <span
                             class="text-danger">*</span></label>
-                    <input type="number" name="gross_amt" id="gross_amt" class="form-control pendingamount"
+                    <input type="number" name="gross_amt" id="gross_amt" class="form-control pendingamount" min="1"
                         placeholder="$" value="{{ $upsale_data?->gross_amount }}">
                     @if ($errors->has('gross_amt'))
                         <small class="text-danger">{{ $errors->first('gross_amt') }}</small>
@@ -101,7 +101,7 @@
                 <div class="col-md-4 mb-3">
                     <label class="form-label" for="net_amt">{{ __('Net Amount') }} <span
                             class="text-danger">*</span></label>
-                    <input type="number" name="net_amt" id="net_amt" class="form-control pendingamount"
+                    <input type="number" name="net_amt" id="net_amt" class="form-control pendingamount" min="1"
                         placeholder="$" value="{{ $upsale_data?->net_amount }}">
                     @if ($errors->has('net_amt'))
                         <small class="text-danger">{{ $errors->first('net_amt') }}</small>
