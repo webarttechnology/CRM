@@ -24,4 +24,9 @@ class Sale extends Model
     {
         return $this->hasMany(\App\Models\Developertask::class);
     }
+
+    public function task()
+    {
+    return $this->hasOne(Assign::class, 'sale_id', 'id');
+    }
 }

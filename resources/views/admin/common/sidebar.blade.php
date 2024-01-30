@@ -8,8 +8,6 @@
 					<div id="sidebar-menu" class="sidebar-menu">
 
 						<ul>
-
-
 							<li class="nav-item nav-profile">
 				              <a href="#" class="nav-link">
 				                <div class="nav-profile-image">
@@ -42,19 +40,19 @@
 
 							{{-- @if(Auth::user()->role_id == 3)
 
-							<li class="submenu">
-								<a href="#" class="{{ Request::segment(1) == 'task' ? 'active' : '' }}"><i class="feather-grid"></i> <span>Task</span>
-									<span class="menu-arrow"></span>
-								</a>
-								<ul class="sub-menus">
-									<li><a href="{{ route('task.index') }}">Task</a></li>
-								</ul>
-							</li>
+								<li class="submenu">
+									<a href="#" class="{{ Request::segment(1) == 'task' ? 'active' : '' }}"><i class="feather-grid"></i> <span>Task</span>
+										<span class="menu-arrow"></span>
+									</a>
+									<ul class="sub-menus">
+										<li><a href="{{ route('task.index') }}">Task</a></li>
+									</ul>
+								</li>
 							
 							@endif --}}
 
 
-							@if(Auth::user()->role_id == 4 || Auth::user()->role_id == 1 || Auth::user()->role_id == 2 || Auth::user()->role_id == 3 || Auth::user()->role_id == 5)
+							@if(Auth::user()->role_id == 4 || Auth::user()->role_id == 1 || Auth::user()->role_id == 2 || Auth::user()->role_id == 3 || Auth::user()->role_id == 5 || Auth::user()->role_id == 9)
 							<li class="submenu">
 								<a href="#" class="{{ Request::segment(2) == 'client' ? 'active' : '' }}"><i class="feather-users"></i> <span>Client</span>
 									<span class="menu-arrow"></span>
@@ -63,7 +61,8 @@
 									<li><a href="{{ route('sales.client.list') }}">Client list</a></li>
 								</ul>
 							</li>
-
+							@endif
+							@if( Auth::user()->role_id == 1 || Auth::user()->role_id == 2 || Auth::user()->role_id == 3 || Auth::user()->role_id == 5 || Auth::user()->role_id == 9)
 							<li class="submenu">
 								<a href="#" class="{{ Request::segment(1) == 'sales' && Request::segment(2) == 'list'  ? 'active' : '' }}"><i class="feather-grid"></i> <span>Sales</span>
 									<span class="menu-arrow"></span>
@@ -83,7 +82,7 @@
 							</li>
 							@endif
 
-							@if(Auth::user()->role_id == 2 || Auth::user()->role_id == 1 || Auth::user()->role_id == 3)
+							@if(Auth::user()->role_id == 2 || Auth::user()->role_id == 1 || Auth::user()->role_id == 3 || Auth::user()->role_id == 9)
 
 							<li class="submenu">
 								<a href="#" class="{{ Request::segment(1) == 'upsales' ? 'active' : '' }}"><i class="feather-trending-up"></i> <span>Upsales</span>
@@ -142,7 +141,7 @@
 							@endif
 
 
-							@if(Auth::user()->role_id == 5 || Auth::user()->role_id == 6 || Auth::user()->role_id == 7 || Auth::user()->role_id == 8)
+							@if(Auth::user()->role_id == 5 || Auth::user()->role_id == 6 || Auth::user()->role_id == 7 || Auth::user()->role_id == 8 || Auth::user()->role_id == 9)
 								<li class="submenu">
 									<a href="#" class=" {{ Request::segment(2) == 'task' ? 'active' : '' }} "><i class="feather-check-square"></i><span>Task</span>
 										<span class="menu-arrow"></span>

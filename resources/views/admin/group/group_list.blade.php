@@ -115,7 +115,7 @@
                                                                             href="{{ route('group.viewmembers', ['groupid' => $val->id]) }}"><i
                                                                                 class="bx bx-edit-alt me-1"></i>View Group
                                                                             Members</a>
-                                                                        @if (Auth::user()->role_id == 1)
+                                                                        @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 9)
                                                                             <a class="dropdown-item"
                                                                                 onclick="return confirm('Do you really want to delete this data?')"
                                                                                 href="{{ route('group.delete', ['deleteid' => $val->id]) }}"><i

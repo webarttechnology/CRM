@@ -28,7 +28,11 @@
                   
                 </div>
                 <div class="col text-end">
+                {{-- @if (Auth::user()->role_id != 3) --}}
+
                     <a href="#" class="add mb-3 btn btn-gradient-primary font-weight-bold text-white todo-list-add-btn btn-rounded open-module-form" data-type="add_upsale">Add Upsale</a>
+                    {{-- @endif --}}
+              
                 </div>
             </div>
         </div>
@@ -116,7 +120,7 @@
                                                     <div class="dropdown-menu dropdown-menu-right">
                                                         <a class="dropdown-item open-module-form" data-id="{{ $val->id }}" data-type="add_upsale" href="{{ route('upsale.update', ['updateid' => $val->id ]) }}"
                                                             ><i class="bx bx-edit-alt me-1"></i>Edit</a>
-                                                            @if(Auth::user()->role_id == 1)
+                                                            @if(Auth::user()->role_id == 1 || Auth::user()->role_id == 9)
                                                             <a class="dropdown-item" onclick="return confirm('Do you really want to delete this data?')" href="{{ route('upsale.delete', ['deleteid' => $val->id ]) }}"
                                                             ><i class="bx bx-trash me-1"></i> Delete</a>
                                                             @endif

@@ -71,8 +71,7 @@
                     @endif
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label" for="end_date">{{ __('End Date') }} <span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="end_date">{{ __('End Date') }}</label>
                     @if ($upsale_data?->end_date)
                         <input type="date" name="end_date" id="end_date" class="form-control"  min="{{ date('Y-m-d') }}" value="{{ date('Y-m-d', strtotime($upsale_data?->end_date)) }}">
                     @else
@@ -83,15 +82,13 @@
 
             <div class="row" id="div_other">
                 <div class="col-md-12 mb-3">
-                    <label class="form-label" for="other">{{ __('Others Description') }} <span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="other">{{ __('Others Description') }}</label>
                     <textarea name="other" id="other" class="form-control" placeholder="Other Description">{{ $upsale_data?->others }}</textarea>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-4 mb-3">
-                    <label class="form-label" for="gross_amt">{{ __('Gross Amount') }} <span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="gross_amt">{{ __('Gross Amount') }} </label>
                     <input type="number" name="gross_amt" id="gross_amt" class="form-control pendingamount" min="1"
                         placeholder="$" value="{{ $upsale_data?->gross_amount }}">
                     @if ($errors->has('gross_amt'))
@@ -99,8 +96,7 @@
                     @endif
                 </div>
                 <div class="col-md-4 mb-3">
-                    <label class="form-label" for="net_amt">{{ __('Net Amount') }} <span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="net_amt">{{ __('Net Amount') }} </label>
                     <input type="number" name="net_amt" id="net_amt" class="form-control pendingamount" min="1"
                         placeholder="$" value="{{ $upsale_data?->net_amount }}">
                     @if ($errors->has('net_amt'))
@@ -108,8 +104,7 @@
                     @endif
                 </div>
                 <div class="col-md-4 mb-3">
-                    <label class="form-label" for="due_amt">{{ __('Due Amount') }} <span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="due_amt">{{ __('Due Amount') }} </label>
                     <input type="text" readonly name="due_amt" id="due_amt" class="form-control"
                         placeholder="$" value="{{ $upsale_data?->gross_amount - $upsale_data?->net_amount }}">
                 </div>
@@ -127,8 +122,7 @@
                     @endif
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label" for="payment_mode">{{ __('Payment Mode') }}<span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="payment_mode">{{ __('Payment Mode') }}</label>
                     <select name="payment_mode" id="payment_mode" class="form-control"
                         onchange="paymentonchangeevent()">
 

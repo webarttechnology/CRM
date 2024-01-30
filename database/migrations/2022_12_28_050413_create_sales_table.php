@@ -28,9 +28,9 @@ return new class extends Migration
             $table -> string('platform_name')->nullable();            
             $table -> string('prefer_technology')->nullable(); 
             $table -> string('description')->nullable(); 
-            $table -> string('business_name');
-            $table -> integer('closer');
-            $table -> integer('agent_name');
+            $table -> string('business_name')->nullable();
+            $table -> integer('closer')->nullable();
+            $table -> integer('agent_name')->nullable();
             $table -> text('reference_sites')->nullable(); 
             $table -> text('remarks')->nullable(); 
             $table -> text('upsale_opportunities')->nullable();           

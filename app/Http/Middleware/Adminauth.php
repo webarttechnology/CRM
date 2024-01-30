@@ -17,7 +17,7 @@ class Adminauth
      */
     public function handle(Request $request, Closure $next)
     {
-        if(in_array(Auth::user()->role_id, [1])){
+        if(in_array(Auth::user()->role_id, [1,9])){
             return $next($request);
         }else{
             return redirect('/admin/logout');

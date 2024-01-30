@@ -306,7 +306,7 @@ class SocketController extends Controller implements MessageComponentInterface
 
                 if($data->to_type == 'user'){
 
-                    $chat_data = Chat::select('id', 'from_user_id', 'to_user_id', 'group_id', 'chat_message', 'message_status', 'created_at')
+                    $chat_data = Chat::select('id', 'from_user_id', 'to_user_id', 'group_id', 'chat_message', 'file','message_status', 'created_at')
                     ->where(function ($query) use ($data) {
                         $query->where('from_user_id', $data->from_user_id)->where('to_user_id', $data->to_user_id);
                     })
@@ -359,6 +359,7 @@ class SocketController extends Controller implements MessageComponentInterface
                                 'from_user_photo'     => $from_user_img->user_image ?? null,
                                 'to_user_photo'       => $to_user_img->user_image ?? null,
                                 'chat_message'      => $message->chat_message,
+                                'file'      => $message->file,
                                 'message_status'    => $message->message_status,
                                 'time'              => $message->created_at->format('h:i A'),
                             ];
@@ -426,11 +427,31 @@ class SocketController extends Controller implements MessageComponentInterface
                 $filename = time() . '_' . $fileData->name;
 
                 // Save the file to the public folder
-                file_put_contents(public_path('uploads/' . $filename), base64_decode(preg_replace('#^data:[\w/]+;base64,#i', '', $fileData->data)));
+                $imagePath = 'uploads/' . $filename;
+                $image = file_put_contents(public_path($imagePath), base64_decode(preg_replace('#^data:[\w/]+;base64,#i', '', $fileData->data)));
+                $imageUrl = asset($imagePath);
 
+                if($data->to_type == 'user'){
+                    $to_user_id = $data->to_user_id; 
+                    $to_group_id = null; 
+                }
 
+                if($data->to_type == 'group'){
+                    $to_user_id = null; 
+                    $to_group_id = $data->to_group_id; 
+                }
+
+                $data_message = [
+                    'from_user_id'  => $data->from_user_id,
+                    'to_user_id'    => $to_user_id,
+                    'group_id'      => $to_group_id, 
+                    'chat_message'  => null,
+                    'file'    => $imageUrl, 
+                    'message_status'=> 'Not Send'
+                ];
+
+                $chat =  Chat::create($data_message);
                 // dd($filename);
-
             }
 
             

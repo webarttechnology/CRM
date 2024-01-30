@@ -20,6 +20,14 @@ class CollectionController extends Controller
                                                 ->join('clients', 'clients.id', '=', 'collections.client_id')
                                                 ->join('sales', 'sales.id', '=', 'collections.sale_id')
                                                 ->whereBetween('collections.sale_date', [$startdate, $enddate])
+                                                ->when(Auth::user()->role_id == 3, function ($query) {
+                                                    $query->whereExists(function ($subquery) {
+                                                        $subquery->select(DB::raw(1))
+                                                            ->from('tasks')
+                                                            ->whereColumn('tasks.sale_id', 'collections.sale_id')
+                                                            ->where('tasks.assign_to', Auth::user()->id);
+                                                    });
+                                                })
                                                 ->orderBy('collections.id', 'DESC')
                                                 ->get();
 
@@ -43,13 +51,15 @@ class CollectionController extends Controller
                 'currency' => 'required',
                 'instalment' => 'required',
                 'net_amt' => 'required',
-                'sale_date' => 'required',
-                'payment_mode' => 'required'
+                // 'sale_date' => 'required',
+                'other_payment_mode' => 'required_if:payment_mode,6',
             ]);
             
             if ($validator->fails()) {
                 return response()->json(['status' => 'errors', 'message' => $validator->errors()->all()]);
             }
+
+            // if($request -> input('payment_mode') == "other")
 
 
             $collections = new \App\Models\Collection([
@@ -93,8 +103,9 @@ class CollectionController extends Controller
                 'currency'      => 'required',
                 'instalment'    => 'required',
                 'net_amt' => 'required',
-                'sale_date' => 'required',
-                'payment_mode' => 'required'
+                // 'sale_date' => 'required',
+                // 'payment_mode' => 'required'
+                'other_payment_mode' => 'required_if:payment_mode,6',
             ]);
             
             if ($validator->fails()) {
@@ -166,7 +177,7 @@ class CollectionController extends Controller
     }
 
     public function deletecollection(Request $request, $deleteid){
-        if(Auth::user() -> role_id == 1){
+        if(Auth::user() -> role_id == 1 || Auth::user()->role_id == 9){
             $collections = \App\Models\Collection::find($deleteid);
             if($collections){
                 $collections -> delete();

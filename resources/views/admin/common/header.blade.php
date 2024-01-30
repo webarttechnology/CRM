@@ -320,9 +320,9 @@
                     <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
                         <span class="user-img">
                             @if (Auth::user()->user_image)
-                                <img alt="" src="{{ url(Auth::user()->user_image) }}">
+                                <img alt="" id="myImage" src="{{ url(Auth::user()->user_image) }}">
                             @else
-                                <img alt="" src="{{ url('panel/assets/img/profiles/user-profile.png') }}">
+                                <img alt="" id="myImage" src="{{ url('panel/assets/img/profiles/user-profile.png') }}">
                             @endif
                             <span class="status {{ Auth::user()->user_status == 'Online' ? 'online' : '' }}"></span>
                         </span>

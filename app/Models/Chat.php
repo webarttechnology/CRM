@@ -9,7 +9,7 @@ class Chat extends Model
 {
     use HasFactory;
     
-    protected $fillable = ['from_user_id', 'to_user_id', 'group_id', 'chat_message', 'message_status'];
+    protected $fillable = ['from_user_id', 'to_user_id', 'group_id', 'chat_message','file', 'message_status'];
 
     public function user(){
         return $this -> belongsTo(User::class, 'from_user_id', 'id');

@@ -272,8 +272,60 @@
                             var form_user_photo = "{{ url('panel/assets/img/profiles/user-profile.png') }}";
                         }
 
-
-                        html += `<div class="chat-msg owner">
+                        if(data.chat_history[index].messages[count].chat_message == null){
+                            var imagefile = data.chat_history[index].messages[count].file;
+                            // Use the split method to separate the URL by dot (.)
+                            var parts = imagefile.split('.');
+                            var extension = parts[parts.length - 1];
+                            var fileName = imagefile.split('/').pop();
+                            if(extension == 'jpg' || extension == 'jpeg' || extension == 'png' || extension == 'webp'){
+                                html += `<div class="chat-msg owner">
+                                    <div class="chat-msg-profile">
+                                        <img class="chat-msg-img"  src=" ` + form_user_photo + `" alt />
+                                        <div class="chat-msg-date">` + data.chat_history[index].messages[count].time +
+                                icon_style + `</div>
+                                    </div>
+                                    <div class="chat-msg-content">
+                                        <div class="chat-msg-text">
+                                            <div class="group_user_name">` + user_name + `</div>
+                                            <img src="` + imagefile + `" alt="file">
+                                        </div>
+                                    </div>
+                                </div>`;
+                            }else if(extension == 'pdf'){
+                                html += `<div class="chat-msg owner">
+                                    <div class="chat-msg-profile">
+                                        <img class="chat-msg-img"  src=" ` + form_user_photo + `" alt />
+                                        <div class="chat-msg-date">` + data.chat_history[index].messages[count].time +
+                                icon_style + `</div>
+                                    </div>
+                                    <div class="chat-msg-content">
+                                        <div class="chat-msg-text">
+                                            <div class="group_user_name">` + user_name + `</div>
+                                            `+fileName+`
+                                            <i class="fas fa-file-pdf"></i>
+                                        </div>
+                                    </div>
+                                </div>`;
+                            }else if(extension == 'zip'){
+                                html += `<div class="chat-msg owner">
+                                    <div class="chat-msg-profile">
+                                        <img class="chat-msg-img"  src=" ` + form_user_photo + `" alt />
+                                        <div class="chat-msg-date">` + data.chat_history[index].messages[count].time +
+                                icon_style + `</div>
+                                    </div>
+                                    <div class="chat-msg-content">
+                                        <div class="chat-msg-text">
+                                            <div class="group_user_name">` + user_name + `</div>
+                                            `+fileName+`
+                                          <i class="fas fa-file-archive"></i>
+                                        </div>
+                                    </div>
+                                </div>`;
+                            }
+                           
+                        }else{
+                            html += `<div class="chat-msg owner">
                                     <div class="chat-msg-profile">
                                         <img class="chat-msg-img"  src=" ` + form_user_photo + `" alt />
                                         <div class="chat-msg-date">` + data.chat_history[index].messages[count].time +
@@ -286,6 +338,8 @@
                                         </div>
                                     </div>
                                 </div>`;
+                        }
+                     
 
                     } else {
 
@@ -311,8 +365,59 @@
                             var to_user_img = "{{ url('panel/assets/img/profiles/user-profile.png') }}";
                         }
 
-
-                        html += `
+                        if(data.chat_history[index].messages[count].chat_message == null){
+                            var imagefile = data.chat_history[index].messages[count].file;
+                            // Use the split method to separate the URL by dot (.)
+                            var parts = imagefile.split('.');
+                            var extension = parts[parts.length - 1];
+                            var fileName = imagefile.split('/').pop();
+                            if(extension == 'jpg' || extension == 'jpeg' || extension == 'png' || extension == 'webp'){
+                                html += `<div class="chat-msg owner">
+                                    <div class="chat-msg-profile">
+                                        <img class="chat-msg-img"  src=" ` + form_user_photo + `" alt />
+                                        <div class="chat-msg-date">` + data.chat_history[index].messages[count].time +
+                                icon_style + `</div>
+                                    </div>
+                                    <div class="chat-msg-content">
+                                        <div class="chat-msg-text">
+                                            <div class="group_user_name">` + user_name + `</div>
+                                            <img src="` + imagefile + `" alt="file">
+                                        </div>
+                                    </div>
+                                </div>`;
+                            }else if(extension == 'pdf'){
+                                html += `<div class="chat-msg owner">
+                                    <div class="chat-msg-profile">
+                                        <img class="chat-msg-img"  src=" ` + form_user_photo + `" alt />
+                                        <div class="chat-msg-date">` + data.chat_history[index].messages[count].time +
+                                icon_style + `</div>
+                                    </div>
+                                    <div class="chat-msg-content">
+                                        <div class="chat-msg-text">
+                                            <div class="group_user_name">` + user_name + `</div>
+                                            `+fileName+`.pdf
+                                            <i class="fas fa-file-pdf"></i>
+                                        </div>
+                                    </div>
+                                </div>`;
+                            }else if(extension == 'zip'){
+                                html += `<div class="chat-msg owner">
+                                    <div class="chat-msg-profile">
+                                        <img class="chat-msg-img"  src=" ` + form_user_photo + `" alt />
+                                        <div class="chat-msg-date">` + data.chat_history[index].messages[count].time +
+                                icon_style + `</div>
+                                    </div>
+                                    <div class="chat-msg-content">
+                                        <div class="chat-msg-text">
+                                            <div class="group_user_name">` + user_name + `</div>
+                                            `+fileName+`.zip 
+                                          <i class="fas fa-file-archive"></i>
+                                        </div>
+                                    </div>
+                                </div>`;
+                            }
+                        }else{
+                            html += `
                             <div class="chat-msg">
                                 <div class="chat-msg-profile">
                                     <img class="chat-msg-img" src="` + to_user_img + `" alt>
@@ -325,6 +430,8 @@
                                     </div>
                                 </div>
                             </div>`;
+                        }
+                        
                     }
                 }
             }
@@ -614,7 +721,6 @@
 
         input.addEventListener('change', function() {
             var fileElement = input.files[0];
-
             if (!fileElement) {
                 alert('No file selected.');
                 return;
@@ -634,12 +740,54 @@
             fileReader.onloadend = function() {
                 // var fileData = fileReader.result;
                 var fileData =  fileReader.result.split(',')[1];
-
-               var preview = `<div class="chat-msg-text">
-                <img src="https://media0.giphy.com/media/yYSSBtDgbbRzq/giphy.gif?cid=ecf05e47344fb5d835f832a976d1007c241548cc4eea4e7e&rid=giphy.gif" />
-                </div>`;
+                const formattedTime = new Date().toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit'
+                });
+                var imgElement = document.getElementById('myImage');
+                var fileExtension = fileElement.name.split('.').pop().toLowerCase();
+                var fileName = truncateString(removeFileExtension(fileElement.name));
+                if(fileExtension == 'jpg' || fileExtension == 'jpeg' || fileExtension == 'png' || fileExtension == 'webp'){
+                    var preview = `<div class="chat-msg owner">
+                    <div class="chat-msg-profile">
+                    <img class="chat-msg-img" src="`+imgElement.src+`" alt="">
+                    <div class="chat-msg-date">${formattedTime}</div>
+                    </div>
+                    <div class="chat-msg-content">
+                    <div class="chat-msg-text">
+                    <img src="`+fileReader.result+`" />
+                    </div>
+                    </div>
+                    </div>`;
+                }else if(fileExtension == 'pdf'){
+                    var preview = `<div class="chat-msg owner">
+                    <div class="chat-msg-profile">
+                    <img class="chat-msg-img" src="`+imgElement.src+`" alt="">
+                    <div class="chat-msg-date">${formattedTime}</div>
+                    </div>
+                    <div class="chat-msg-content">
+                    <div class="chat-msg-text">
+                    `+fileName+`.pdf
+                     <i class="fas fa-file-pdf"></i>
+                    </div>
+                    </div>
+                    </div>`;
+                }else if(fileExtension == 'zip'){
+                    var preview = `<div class="chat-msg owner">
+                    <div class="chat-msg-profile">
+                    <img class="chat-msg-img" src="`+imgElement.src+`" alt="">
+                    <div class="chat-msg-date">${formattedTime}</div>
+                    </div>
+                    <div class="chat-msg-content">
+                    <div class="chat-msg-text">
+                    `+fileName+`.zip 
+                     <i class="fas fa-file-archive"></i>
+                    </div>
+                    </div>
+                    </div>`;
+                }
+                
                
-
                 // chat_history
 
                 $('#chat_history').append(preview);
@@ -660,7 +808,7 @@
                   },
                 };
 
-                // conn.send(JSON.stringify(data));
+                conn.send(JSON.stringify(data));
             };
 
             // fileReader.readAsArrayBuffer(fileElement);
@@ -702,5 +850,24 @@
     function hideLoading() {
         document.querySelector('#loading').classList.remove('loading');
         document.querySelector('#loading-content').classList.remove('loading-content');
+    }
+
+
+    function truncateString(str) {
+        if (str.length > 10) {
+            return str.substring(0, 10) + '...';
+        } else {
+            return str;
+        }
+    }
+
+    function removeFileExtension(fileName) {
+        const lastDotIndex = fileName.lastIndexOf('.');
+        if (lastDotIndex !== -1) {
+            return fileName.substring(0, lastDotIndex);
+        } else {
+            // No dot found, or the dot is the first character (hidden file)
+            return fileName;
+        }
     }
 </script>
