@@ -170,43 +170,23 @@ class TimeLogController extends Controller
 
                     if($workHistory){
                         if($workHistory->final_status == 'start'){
-                            Workhistory::create(
-                                [
-                                    'developer_job_id' => $workHistory->developer_job_id,
-                                    'user_id'          => Auth::user()->id,
-                                    'final_status'     => 'stop',
-                                    'currenttime'      => null, 
-                                    'delayThen'        => 0
-                                ]
-                            );
+                            if($workHistory->final_status != 'stop'){
+                                Workhistory::create(
+                                    [
+                                        'developer_job_id' => $workHistory->developer_job_id,
+                                        'user_id'          => Auth::user()->id,
+                                        'final_status'     => 'stop',
+                                        'currenttime'      => null, 
+                                        'delayThen'        => 0
+                                    ]
+                                );
+                               }
+                            
                         }
                     }
                 }
 
             }elseif($lastrecord->type == 'break'){
-
-                // dd($request->type);
-
-                // if($request->type != 'continue' && $request->type != 'clockout'){
-
-                //     TimeLog::create([
-                //         'user_id'       => Auth::id(),
-                //         'start_time'    => null,
-                //         'timer_data'    => null,
-                //         'type'          => 'break',
-                //         'status'        => "stop",
-                //     ]);
-
-                //     TimeLog::create([
-                //         'user_id'       => Auth::id(),
-                //         'start_time'    => null,
-                //         'timer_data'    => null,
-                //         'type'          => 'work',
-                //         'status'        => "start",
-                //     ]);
-    
-
-                // }
 
                 if($request->type == 'continue'){
 
@@ -260,15 +240,18 @@ class TimeLogController extends Controller
 
                     if($workHistory){
                         if($workHistory->final_status == 'start'){
-                            Workhistory::create(
-                                [
-                                    'developer_job_id' => $workHistory->developer_job_id,
-                                    'user_id'          => Auth::user()->id,
-                                    'final_status'     => 'stop',
-                                    'currenttime'      => null, 
-                                    'delayThen'        => 0
-                                ]
-                            );
+                              if($workHistory->final_status != 'stop'){
+                                Workhistory::create(
+                                    [
+                                        'developer_job_id' => $workHistory->developer_job_id,
+                                        'user_id'          => Auth::user()->id,
+                                        'final_status'     => 'stop',
+                                        'currenttime'      => null, 
+                                        'delayThen'        => 0
+                                    ]
+                                );
+                              }
+                            
                         }
                     }
                     

@@ -420,7 +420,7 @@ class SocketController extends Controller implements MessageComponentInterface
                 }
             }
 
-            if ($data->type == 'request_send_file') {
+            if ($data->type == 'request_send_file') {  
                 
                 $fileData = $data->file;
                 $filename = time() . '_' . $fileData->name;

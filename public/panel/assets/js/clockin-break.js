@@ -166,7 +166,7 @@ $(function () {
 					}, 1000);
 
 
-					$('.show-task-timer').hide();
+					$('.show-task-timer').addClass('d-none');
 					
 				} else if (type == 'clockout') {
 
@@ -191,7 +191,7 @@ $(function () {
 						});
 					}, 1000);
 
-					$('.show-task-timer').hide();
+					$('.show-task-timer').addClass('d-none');
 
 				} else if (type == 'continue') {
 

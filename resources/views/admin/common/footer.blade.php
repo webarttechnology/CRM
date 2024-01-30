@@ -218,6 +218,8 @@
                 success: function(data) {
                     currentTime = parseInt(data, 10) || 0;
                     intervalId = setInterval(() => updateCountdown(index), 1000);
+                    $('.show-task-timer').removeClass('d-none');
+                    // $('.show-task-timer').show();
                 },
             });
         }
@@ -549,7 +551,7 @@
         }
 
         // Update every 3 second
-        setInterval(updateUnreadCount, 3000);
+        // setInterval(updateUnreadCount, 3000);
 
         $(document).on('click', '#toggle-password', function() {
             $(this).toggleClass("fa-eye fa-eye-slash");

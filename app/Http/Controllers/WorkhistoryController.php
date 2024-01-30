@@ -21,10 +21,10 @@ class WorkhistoryController extends Controller
         if(in_array(Auth::user()->id, $assignTo)){
             $history = new Workhistory([
                 'developer_job_id' => $request->get('job_id'),
-                'user_id'=> Auth::user()->id,
-                'final_status' => $request->get('final_status'),
-                'currenttime'  => $request->get('currentTime'),
-                'delayThen'    => $request->get('delayThen') ? $request->get('delayThen') : 0
+                'user_id'       => Auth::user()->id,
+                'final_status'  => $request->get('final_status'),
+                'currenttime'   => $request->get('currentTime'),
+                'delayThen'     => $request->get('delayThen') ? $request->get('delayThen') : 0
             ]);
 
             $history->save();
@@ -77,19 +77,23 @@ class WorkhistoryController extends Controller
             }
 
 
-            $workprevoius = Workhistory::where('user_id', Auth::user()->id)->where('final_status', 'start')->orderBy('id', 'desc')->first();
+            $workprevoius = Workhistory::where('user_id', Auth::user()->id)->whereNot('developer_job_id', $request->id)->orderBy('id', 'desc')->first();
 
             if($workprevoius){
 
-                $dataprevious  = [
-                    'developer_job_id' => $workprevoius->developer_job_id,
-                    'user_id'          => Auth::user()->id,
-                    'final_status'     => 'stop',
-                    'currenttime'      => null, // $request->time,
-                    'delayThen'        => 0
-                ];
-    
-                Workhistory::create($dataprevious);
+                if($workprevoius->final_status == 'start'){
+                    $dataprevious  = [
+                        'developer_job_id' => $workprevoius->developer_job_id,
+                        'user_id'          => Auth::user()->id,
+                        'final_status'     => 'stop',
+                        'currenttime'      => null, // $request->time,
+                        'delayThen'        => 0
+                    ];
+        
+                    Workhistory::create($dataprevious);
+                }
+
+                
             }
 
            
@@ -130,7 +134,7 @@ class WorkhistoryController extends Controller
     public function get_status_work_history(Request $request)
     {
         
-       $work =  Workhistory::where('user_id', Auth::user()->id)->where('developer_job_id', $request->id)->latest()->first();
+       $work =  Workhistory::where('user_id', Auth::user()->id)->where('developer_job_id', $request->id)->orderBy('id', 'desc')->first();
       
        if($work){
          $status  = $work->final_status;
@@ -144,38 +148,38 @@ class WorkhistoryController extends Controller
 
     }
 
-    public function store_status_page_refresh(Request $request)
-    {
+    // public function store_status_page_refresh(Request $request)
+    // {
         
-        $work =  Workhistory::where('user_id', Auth::user()->id)->orderBy('id', 'desc')->first();
+    //     $work =  Workhistory::where('user_id', Auth::user()->id)->orderBy('id', 'desc')->first();
 
-        if($work){
-             if($work->final_status == 'start'){
+    //     if($work){
+    //          if($work->final_status == 'start'){
 
-                $data  = [
-                    'developer_job_id' => $work->developer_job_id,
-                    'user_id'          => Auth::user()->id,
-                    'final_status'     => $work->final_status,
-                    'currenttime'      => $request->last_counter_time,
-                    'delayThen'        => 0
-                ];
+    //             $data  = [
+    //                 'developer_job_id' => $work->developer_job_id,
+    //                 'user_id'          => Auth::user()->id,
+    //                 'final_status'     => $work->final_status,
+    //                 'currenttime'      => $request->last_counter_time,
+    //                 'delayThen'        => 0
+    //             ];
 
-                $timeWithoutColons = str_replace(":", "", $request->last_counter_time);
+    //             $timeWithoutColons = str_replace(":", "", $request->last_counter_time);
 
-                if($timeWithoutColons > 0){
-                    Workhistory::create($data);
-                }
+    //             if($timeWithoutColons > 0){
+    //                 Workhistory::create($data);
+    //             }
 
-             }
-        }
+    //          }
+    //     }
 
-          return true;
-    }
+    //       return true;
+    // }
 
     public function current_task_timer_get(Request $request)
     {
         
-       $work =  Workhistory::where('user_id', Auth::user()->id)->latest()->first();
+       $work =  Workhistory::where('user_id', Auth::user()->id)->orderBy('id', 'desc')->first();
       
        if($work){
          $status  = $work->final_status;

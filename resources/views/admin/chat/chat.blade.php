@@ -635,10 +635,19 @@
                 // var fileData = fileReader.result;
                 var fileData =  fileReader.result.split(',')[1];
 
-               var preview = `<div class="chat-msg-text">
-                <img src="https://media0.giphy.com/media/yYSSBtDgbbRzq/giphy.gif?cid=ecf05e47344fb5d835f832a976d1007c241548cc4eea4e7e&rid=giphy.gif" />
-                </div>`;
-               
+                var imgElement = document.getElementById('myImage');
+
+                var preview = `<div class="chat-msg owner">
+                            <div class="chat-msg-profile">
+                            <img class="chat-msg-img" src="`+imgElement.src+`" alt="">
+                            <div class="chat-msg-date">05:43 PM</div>
+                            </div>
+                            <div class="chat-msg-content">
+                            <div class="chat-msg-text">
+                            <img src="`+fileReader.result+`" />
+                            </div>
+                            </div>
+                            </div>`;
 
                 // chat_history
 
@@ -660,7 +669,7 @@
                   },
                 };
 
-                // conn.send(JSON.stringify(data));
+                conn.send(JSON.stringify(data));
             };
 
             // fileReader.readAsArrayBuffer(fileElement);
