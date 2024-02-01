@@ -70,11 +70,6 @@ class SalesController extends Controller
 
             $result = $client->save();
 
-            $message = 'Added A new client is "' . $request->input('name') . '"';
-            $url = '/sales/client';
-            $adminmessage = 'Added A new client is "' . $request->input('name') . '"';
-            sendClientNotification($client, $message, $url, $adminmessage);
-
             if ($result) {
                 $contactDetailsArray = [];
                 $limit = count(array_filter($request->input('alteremail')));
@@ -89,6 +84,11 @@ class SalesController extends Controller
                     $contactDetails = \App\Models\Contact_detail::insert($contactDetailsArray);
                 }
             }
+
+            $message = 'Added A new client is "' . $request->input('name') . '"';
+            $url = '/sales/client';
+            $adminmessage = 'Added A new client is "' . $request->input('name') . '"';
+            sendClientNotification($client, $message, $url, $adminmessage);
 
             return response()->json(['status' => 'success', 'type' => 'store', 'message' => 'Data has been added successfully!']);
 
@@ -140,10 +140,7 @@ class SalesController extends Controller
 
             $result = $client->save();
 
-            $message = 'Updated a client "' . $request->input('name') . '"';
-            $url = '/sales/client';
-            $adminmessage = 'Updated a client "' . $request->input('name') . '"';
-            sendClientNotification($client, $message, $url, $adminmessage);
+        
 
             \App\Models\Contact_detail::where(['client_id' => $request->input('update_id')])->delete();
             if ($result) {
@@ -161,6 +158,11 @@ class SalesController extends Controller
                 }
             }
 
+            $message = 'Updated a client "' . $request->input('name') . '"';
+            $url = '/sales/client';
+            $adminmessage = 'Updated a client "' . $request->input('name') . '"';
+            sendClientNotification($client, $message, $url, $adminmessage);
+
             return response()->json(['status' => 'success', 'type' => 'update', 'message' => 'Data has been Update successfully!']);
 
             //    return redirect() -> route('sales.client.list')->with('successmsg', "Data has been Update successfully.");
@@ -172,7 +174,7 @@ class SalesController extends Controller
     }
     public function deleteclient(Request $request, $deleteid)
     {
-        if (Auth::user()->role_id == 1) {
+        if (Auth::user()->role_id == 1 || Auth::user()->role_id == 9) {
             DB::disableQueryLog();
             $client = \App\Models\Client::find($deleteid);
             if ($client) {
@@ -199,7 +201,7 @@ class SalesController extends Controller
             DB::disableQueryLog();
             $searchkey = $request->input('search');
 
-            $result = \App\Models\Sale::select(['sales.id', 'sales.status', 'clients.name as client_name', 'sales.project_name', 'sales.project_type', 'sales.closer_name', 'sales.gross_amount', 'sales.net_amount', 'sales.sale_date', 'sales.status'])
+            $result = \App\Models\Sale::with('task')->select(['sales.id', 'sales.status', 'clients.name as client_name', 'sales.project_name', 'sales.project_type', 'sales.closer_name', 'sales.gross_amount', 'sales.net_amount', 'sales.sale_date', 'sales.status'])
                 ->join('clients', 'clients.id', '=', 'sales.client_id')
                 ->where('clients.name', 'like', '%' . $searchkey . '%')
                 ->orWhere('sales.project_name', 'like', '%' . $searchkey . '%')
@@ -218,6 +220,7 @@ class SalesController extends Controller
 
         if ($request->method() == "POST") {
 
+            // dd($request->all());
             $validator   =  Validator::make($request->all(), [
                 'client_id'         => 'required|exists:clients,id',
                 'project_name'      => 'required',
@@ -228,8 +231,10 @@ class SalesController extends Controller
                 // 'remark'            => 'required',
                 // 'gross_amt'         => 'required|numeric',
                 // 'net_amt'           => 'required|numeric',
+                'start_date'         => 'required_if:project_type,1,7,8,9',
                 'sale_date'         => 'required|date',
                 // 'payment_mode'      => 'required'
+                'other_pay' => 'required_if:payment_mode,6',
             ]);
             
             if ($validator->fails()) {
@@ -261,7 +266,7 @@ class SalesController extends Controller
                 'project_type' => $request->input('project_type'),
                 'technology' => $request->input('technology'),
                 'type' => $request->input('type'),
-                'others' => $others,
+                'others' => $others ?? null,
                 'customer_requerment' => $request->input('type') == 5 ? $request->customer_requirement : '',
                 'marketing_plan' =>  $request->input('project_type') == 2 ? $request->input('digital_marketing') : '',
                 'smo_on' =>  $request->input('project_type') == 2 ? json_encode($request->input('smo_platfrom')) : '',
@@ -280,7 +285,7 @@ class SalesController extends Controller
                 'gross_amount' => $request->input('gross_amt')?? null,
                 'net_amount' => $request->input('net_amt')?? null,
                 'due_amount' => $request->input('gross_amt') - $request->input('net_amt'),
-                'currency' => $request->input('currency'),
+                'currency' => $request->currency ?? null,
                 'sale_date' => $request->input('sale_date'),
                 'payment_mode' => $request->input('payment_mode')?? null,
                 'other_pay' => $request->input('other_pay')?? null,
@@ -344,8 +349,10 @@ class SalesController extends Controller
                 // 'gross_amt'         => 'required|numeric',
                 // 'net_amt'           => 'required|numeric',
                 'sale_date'         => 'required|date',
+                'start_date'         => 'required_if:project_type,1,7,8,9',
                 // 'payment_mode'      => 'required',
                 // 'currency'          => 'required'
+                'other_pay' => 'required_if:payment_mode,6',
             ]);
             
             if ($validator->fails()) {
@@ -378,7 +385,7 @@ class SalesController extends Controller
                 'project_type' => $request->input('project_type'),
                 'technology' => $request->input('technology'),
                 'type' => $request->input('type'),
-                'others' => $others,
+                'others' => $others ?? null,
                 'customer_requerment' => $request->input('type') == 5 ? $request->input('customer_requerment') : '',
                 'marketing_plan' =>  $request->input('project_type') == 2 ? $request->input('digital_marketing') : '',
                 'smo_on' =>  $request->input('project_type') == 2 ? json_encode($request->input('smo_platfrom')) : '',
@@ -398,7 +405,7 @@ class SalesController extends Controller
                 'due_amount' => $request->input('gross_amt') - $request->input('net_amt'),
                 'sale_date' => $request->input('sale_date'),
                 'payment_mode' => $request->input('payment_mode')?? null,
-                'currency' => $request->input('currency')
+                'currency' => $request->input('currency')?? null
             ]);
             $sales->save();
 
@@ -468,7 +475,7 @@ class SalesController extends Controller
 
     public function deletesales(Request $request, $deleteid)
     {
-        if (Auth::user()->role_id == 1) {
+        if (Auth::user()->role_id == 1 || Auth::user()->role_id == 9) {
             DB::disableQueryLog();
             $sales = \App\Models\Sale::find($deleteid);
 

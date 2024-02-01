@@ -113,7 +113,7 @@ if (!function_exists('country')) {
 if (!function_exists('role')) {
     function role()
     {
-        $role = collect(['1' => "Admin", "2" => "Accounts", "3" => "Project Manager", "4" => "Sales", "5" => "Devlopment Maneger", "6" => "Developer", "7" => "Designer", "8" => "Senior Developer"]);
+        $role = collect(['1' => "Admin", "2" => "Accounts", "3" => "Project Manager", "4" => "Sales", "5" => "Devlopment Maneger", "6" => "Developer", "7" => "Designer", "8" => "Senior Developer", "9" => "Senior Project Manager"]);
         return $role;
     }
 }
@@ -597,7 +597,21 @@ function sendClientNotification($client, $message, $url, $adminmessage)
 {
     $admin_id = User::where('role_id', 1)->first();
     $projectManager = User::where('role_id', 3)->where('id', '!=', Auth::user()->id)->get();
+    $seniorprojectManager = User::where('role_id', 9)->where('id', '!=', Auth::user()->id)->get();
     $developmentManager = User::where('role_id', 5)->where('id', '!=', Auth::user()->id)->get();
+
+    foreach ($seniorprojectManager as $receivers) {
+        $notification = new Notification([
+            'sender_id' => Auth::user()->id,
+            'receiver_id' => $receivers->id,
+            'message' => $message,
+            'url' => $url,
+            'status' => 'unread',
+        ]);
+
+        $notification->save();
+    }
+
     foreach ($projectManager as $receiver) {
         $notification = new Notification([
             'sender_id' => Auth::user()->id,

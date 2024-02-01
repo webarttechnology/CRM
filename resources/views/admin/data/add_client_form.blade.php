@@ -105,8 +105,7 @@
                         </div>
 
                         <div class="col-md-6 mb-3">
-                        <label class="form-label" for="agent_name">{{ __('Agent Name') }} <span
-                                class="text-danger">*</span></label>
+                        <label class="form-label" for="agent_name">{{ __('Agent Name') }}</label>
                         <input type="text" name="agent_name" id="agent_name" class="form-control"
                                 placeholder="Agent name" value="{{ $client_data  ?  $client_data->agent_name : null }}">
                         @if ($errors->has('agent_name'))

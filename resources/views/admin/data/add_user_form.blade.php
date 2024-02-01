@@ -43,7 +43,8 @@
 
 
                 <div class="col-md-6 mb-3">
-                    <label class="form-label" for="role">{{ __('Role') }}</label>
+                    <label class="form-label" for="role">{{ __('Role') }}<span
+                        class="text-danger">*</span></label>
                     <select name="role_id" id="role_id" class="form-control">
                         <option value="">Select</option>
                         @foreach ($role->toArray() as $key => $r)

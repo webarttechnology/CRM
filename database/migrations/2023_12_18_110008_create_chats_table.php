@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('to_user_id')->nullable();
             $table->integer('group_id')->nullable();
             $table->longText('chat_message');
+            $table->text('file')->nullable();
             $table->string('message_status');
             $table->timestamps();
         });

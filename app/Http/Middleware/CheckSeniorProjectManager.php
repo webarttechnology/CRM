@@ -4,8 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-class CheckSaleUser
+use Auth;
+class CheckSeniorProjectManager
 {
     /**
      * Handle an incoming request.
@@ -16,12 +16,10 @@ class CheckSaleUser
      */
     public function handle(Request $request, Closure $next)
     {
-      
-        $checkAdmin = false;
-        if(in_array(Auth::user()->role_id, [4, 1, 2, 3, 5, 9])){
+        if(in_array(Auth::user()->role_id, [9])){
             return $next($request);
         }else{
-            return redirect('/admin/logout');
-        } 
+            return redirect() -> route('admin.logout');
+        }
     }
 }

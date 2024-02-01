@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use DB;
 use App\Traits\UpsaleTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,6 +20,14 @@ class UpsaleController extends Controller
                 ->join('sales', 'sales.id', '=', 'upsales.sale_id')
                 ->where('clients.name', 'like', '%' . $searchkey . '%')
                 ->orWhere('sales.project_name', 'like', '%' . $searchkey . '%')
+                ->when(Auth::user()->role_id == 3, function ($query) {
+                    $query->whereExists(function ($subquery) {
+                        $subquery->select(DB::raw(1))
+                            ->from('tasks')
+                            ->whereColumn('tasks.sale_id', 'upsales.sale_id')
+                            ->where('tasks.assign_to', Auth::user()->id);
+                    });
+                })
                 ->orderBy('upsales.id', 'DESC')
                 ->get();
 
@@ -48,10 +57,10 @@ class UpsaleController extends Controller
                 'client_id' => 'required',
                 'project_id' => 'required',
                 'upsale_type' => 'required',
-                'gross_amt' => 'required',
-                'net_amt' => 'required',
+                // 'gross_amt' => 'required',
+                // 'net_amt' => 'required',
                 'sale_date' => 'required',
-                'payment_mode' => 'required'
+                // 'payment_mode' => 'required'
             ]);
             
             if ($validator->fails()) {
@@ -66,7 +75,7 @@ class UpsaleController extends Controller
                 
                 $validator   =  Validator::make($request->all(), [
                  'start_date' => 'required',
-                 'end_date' => 'required',
+                //  'end_date' => 'required',
                ]);
             
                 if ($validator->fails()) {
@@ -79,7 +88,7 @@ class UpsaleController extends Controller
             } else {
 
                 $validator   =  Validator::make($request->all(), [
-                  'other' => 'required',
+                //   'other' => 'required',
                 ]);
             
                 if ($validator->fails()) {
@@ -93,13 +102,13 @@ class UpsaleController extends Controller
                 'client_id' => $request->input('client_id'),
                 'sale_id' => $request->input('project_id'),
                 'upsale_type' => $request->input('upsale_type'),
-                'gross_amount' => $request->input('gross_amt'),
-                'net_amount' => $request->input('net_amt'),
+                'gross_amount' => $request->input('gross_amt') ?? null,
+                'net_amount' => $request->input('net_amt') ?? null,
                 'sale_date' => $request->input('sale_date'),
                 'start_date' => $startDate,
-                'end_date' => $endDate,
-                'others' => $other,
-                'payment_mode' => $request->input('payment_mode'),
+                'end_date' => $endDate ?? null,
+                'others' => $other ?? null,
+                'payment_mode' => $request->input('payment_mode') ?? null,
                 'other_payment_mode' => $request->input('payment_mode') == 6 ? $request->input('other_payment_mode') : '',
             ]);
 
@@ -131,10 +140,10 @@ class UpsaleController extends Controller
                 'client_id' => 'required',
                 'project_id' => 'required',
                 'upsale_type' => 'required',
-                'gross_amt' => 'required',
-                'net_amt' => 'required',
+                // 'gross_amt' => 'required',
+                // 'net_amt' => 'required',
                 'sale_date' => 'required',
-                'payment_mode' => 'required'
+                // 'payment_mode' => 'required'
             ]);
             
             if ($validator->fails()) {
@@ -149,7 +158,7 @@ class UpsaleController extends Controller
                 
                   $validator   =  Validator::make($request->all(), [
                     'start_date'    => 'required',
-                    'end_date'      => 'required',
+                    // 'end_date'      => 'required',
                   ]);
                
                    if ($validator->fails()) {
@@ -162,7 +171,7 @@ class UpsaleController extends Controller
             } else {
 
                 $validator   =  Validator::make($request->all(), [
-                    'other'     => 'required',
+                    // 'other'     => 'required',
                   ]);
               
                   if ($validator->fails()) {
@@ -178,13 +187,13 @@ class UpsaleController extends Controller
                 'client_id' => $request->input('client_id'),
                 'sale_id' => $request->input('project_id'),
                 'upsale_type' => $request->input('upsale_type'),
-                'gross_amount' => $request->input('gross_amt'),
-                'net_amount' => $request->input('net_amt'),
+                'gross_amount' => $request->input('gross_amt') ?? null,
+                'net_amount' => $request->input('net_amt') ?? null,
                 'sale_date' => $request->input('sale_date'),
-                'start_date' => $startDate,
-                'end_date' => $endDate,
-                'others' => $other,
-                'payment_mode' => $request->input('payment_mode'),
+                'start_date' => $startDate ?? null,
+                'end_date' => $endDate ?? null,
+                'others' => $other ?? null,
+                'payment_mode' => $request->input('payment_mode') ?? null,
                 'other_payment_mode' => $request->input('payment_mode') == 6 ? $request->input('other_payment_mode') : '',
             ]);
 
@@ -212,7 +221,7 @@ class UpsaleController extends Controller
     public function deleteupsale(Request $request, $deleteid)
     {
         if ($request->method() == "GET") {
-            if (Auth::user()->role_id == 1) {
+            if (Auth::user()->role_id == 1 || Auth::user()->role_id == 9) {
                 $upsale = \App\Models\Upsale::find($deleteid);
                 if ($upsale) {
                     $upsale->delete();
@@ -234,7 +243,16 @@ class UpsaleController extends Controller
     public function getproject(Request $request)
     {
         if ($request->ajax()) {
-            $data = \App\Models\Sale::select(['id', 'project_name'])->where(['client_id' => $request->get('client_id')])->get();
+            $data = \App\Models\Sale::with('task')->select(['id', 'project_name'])->where(['client_id' => $request->get('client_id')]);
+            if (Auth::user()->role_id == 3) {
+                $data->whereHas('task', function ($query) {
+                    $query->where([
+                        'sale_id' => DB::raw('sales.id'), // assuming 'sales' is the table name for Sale model
+                        'assign_to' => \Auth::user()->id
+                    ]);
+                });
+            }
+            $data = $data->get();
             $options = '<option value="">Select</option>';
             foreach ($data as $val) {
                 $options .= '<option value=' . $val->id . '>' . $val->project_name . '</option>';

@@ -1,12 +1,21 @@
 <?php
+
+
     namespace App\Traits;
     use Auth;
     trait SalesTrait{
 
         public function saleslists($status=''){
             \DB::disableQueryLog();
-            $sales = \App\Models\Sale::select(['sales.id', 'sales.status', 'clients.name as client_name', 'sales.project_name', 'sales.project_type', 'sales.closer_name', 'sales.gross_amount', 'sales.net_amount', 'sales.sale_date'])
+            $sales = \App\Models\Sale::with('task')->select(['sales.id', 'sales.status', 'clients.name as client_name', 'sales.project_name', 'sales.project_type', 'sales.closer_name', 'sales.gross_amount', 'sales.net_amount', 'sales.sale_date'])
             ->join('clients', 'clients.id', '=', 'sales.client_id');
+        
+            if(Auth::user()->role_id == 3){
+                $sales->whereHas('task', function ($query) {
+                    $query->where('assign_to', '=', Auth::user()->id);
+                });
+            }
+
             if($status){
                 $sales = $sales->where('sales.status', $status);
             }

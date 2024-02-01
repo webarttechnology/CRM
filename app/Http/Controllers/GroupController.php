@@ -127,7 +127,7 @@ class GroupController extends Controller
 
     public function deletegroup(Request $request, $deleteid)
     {
-        if (Auth::user()->role_id == 1) {
+        if (Auth::user()->role_id == 1 || Auth::user()->role_id == 9) {
             $group = \App\Models\GroupName::find($deleteid);
             $groupmember = \App\Models\GroupMember::where('group_id', $deleteid)->get();
             foreach ($groupmember as $data) {

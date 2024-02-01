@@ -43,7 +43,7 @@ class UserController extends Controller
             $validator   =  Validator::make($request->all(), [
                 'name'          => 'required|string',
                 'email'         => 'required|email|unique:users',
-                'role_id'       => 'required|in:2,3,4,5,6,7,8',
+                'role_id'       => 'required|in:2,3,4,5,6,7,8,9',
                 'profile_image' => 'required|file|mimes:jpeg,png,jpg,webp|max:2048',
                 'password'      => 'required',
                 'confirm_password' => 'required|same:password',
@@ -94,7 +94,7 @@ class UserController extends Controller
             $validator   =  Validator::make($request->all(), [
                 'name'      => 'required|string',
                 'email'     => 'required|email|unique:users,id,'.$request->input('update_id'),
-                'role_id'   => 'required|in:1,2,3,4,5,6,7,8',
+                'role_id'   => 'required|in:1,2,3,4,5,6,7,8,9',
                 'is_active' => 'required|in:0,1',
             ]);
             
@@ -149,7 +149,7 @@ class UserController extends Controller
     }
 
     public function delete(Request $request, $deleteid){
-        if(Auth::user() -> role_id == 1){
+        if(Auth::user() -> role_id == 1 || Auth::user()->role_id == 9){
             DB::disableQueryLog();
             $users = \App\Models\User::find($deleteid);
             if($users){

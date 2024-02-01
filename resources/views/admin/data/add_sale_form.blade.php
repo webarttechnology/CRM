@@ -69,8 +69,7 @@
             </div>
             <div class="row" id="div_website">
                 <div class="col-md-6 mb-3">
-                    <label class="form-label" for="technology">{{ __('Technology/platform') }}<span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="technology">{{ __('Technology/platform') }}</label>
                     <select name="technology" id="technology" class="form-control">
 
                         <option value="">--Select--</option>
@@ -84,8 +83,7 @@
                     </select>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label" for="type">{{ __('Type') }}<span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="type">{{ __('Type') }}</label>
                     <select name="type" id="type" class="form-control" onchange="customerOnchangeEvent()">
 
                         <option value="">--Select--</option>
@@ -360,7 +358,8 @@
                 </div>
 
                 <div class="col-md-12 mb-3" id="div_other_pay">
-                    <label class="form-label" for="other_pay">{{ __('Payment Description') }}</label>
+                    <label class="form-label" for="other_pay">{{ __('Payment Description') }}<span
+                        class="text-danger">*</span></label>
                     <input type="text" name="other_pay" id="other_pay" class="form-control"
                         placeholder="Description" value="{{ $sales_data?->other_pay }}">
                 </div>
@@ -376,6 +375,9 @@
 </div>
 
 <script>
+    $(document).ready(function() {
+        $("#div_other_pay").hide();
+    });
     function projectTypechangeEvent() {
         if ($("#project_type").val() == 1) {
             $("#div_website").show();
