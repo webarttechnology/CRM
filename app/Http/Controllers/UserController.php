@@ -15,7 +15,15 @@ class UserController extends Controller
 {
     
     public function index(Request $request){
-        $user = User::all()->except(1);
+
+        if (Auth::user()->role_id == 5) {
+            $user = User::whereNot('id', Auth::id())->whereIn('role_id', [6,7,8])->get()->except(1);
+        }else {
+            $user = User::whereNot('id', Auth::id())->get()->except(1);
+        }
+        
+
+       
         $role = role(); 
 
         if($request -> method() == "POST"){
@@ -43,8 +51,7 @@ class UserController extends Controller
             $validator   =  Validator::make($request->all(), [
                 'name'          => 'required|string',
                 'email'         => 'required|email|unique:users',
-                'role_id'       => 'required|in:2,3,4,5,6,7,8,9',
-                'profile_image' => 'required|file|mimes:jpeg,png,jpg,webp|max:2048',
+                'role_id'       => 'required|in:2,3,4,5,6,7,8,9,10',
                 'password'      => 'required',
                 'confirm_password' => 'required|same:password',
             ]);
@@ -55,11 +62,21 @@ class UserController extends Controller
 
 
             if(isset($request->profile_image)){
+
+                $validator   =  Validator::make($request->all(), [
+                    'profile_image' => 'required|file|mimes:jpeg,png,jpg,webp|max:2048',
+                ]);
+                
+                if ($validator->fails()) {
+                    return response()->json(['status' => 'errors', 'message' => $validator->errors()->all()]);
+                }
+
                 $file = $request->file('profile_image');
                 $new_file = rand().'_'.$file->getClientOriginalName();
                 $destinationPath = public_path('admin/Employee');
                 $file->move($destinationPath, $new_file);
                 $image = url('/').'/admin/Employee/'.$new_file;
+                
             }else{
                 $image = null;
             }
@@ -94,7 +111,7 @@ class UserController extends Controller
             $validator   =  Validator::make($request->all(), [
                 'name'      => 'required|string',
                 'email'     => 'required|email|unique:users,id,'.$request->input('update_id'),
-                'role_id'   => 'required|in:1,2,3,4,5,6,7,8,9',
+                'role_id'   => 'required|in:1,2,3,4,5,6,7,8,9,10',
                 'is_active' => 'required|in:0,1',
             ]);
             
@@ -123,6 +140,7 @@ class UserController extends Controller
 
 
             $data = [
+                'id' =>$request->update_id,
                 'name'      => $request->name,
                 'email'     => $request->email,
                 'mobile_no' => $request->mobile_no,

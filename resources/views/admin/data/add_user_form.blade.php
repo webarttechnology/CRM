@@ -48,8 +48,23 @@
                     <select name="role_id" id="role_id" class="form-control">
                         <option value="">Select</option>
                         @foreach ($role->toArray() as $key => $r)
-                            <option value="{{ $key }}" {{ $key == $user_data?->role_id ? 'Selected' : '' }}>
-                                {{ $r }}</option>
+                            @if (Auth::user()->role_id == 5 && in_array($key, ['6', '7', '8']))
+                                <option value="{{ $key }}" {{ $key == $user_data?->role_id ? 'selected' : '' }}>
+                                    {{ $r }}
+                                </option>
+                            @elseif (Auth::user()->role_id == 9 && in_array($key, ['3']))
+                            <option value="{{ $key }}" {{ $key == $user_data?->role_id ? 'selected' : '' }}>
+                                {{ $r }}
+                            </option>
+                            @elseif (Auth::user()->role_id == 10 && in_array($key, ['4']))
+                            <option value="{{ $key }}" {{ $key == $user_data?->role_id ? 'selected' : '' }}>
+                                {{ $r }}
+                            </option>
+                            @elseif(Auth::user()->role_id == 1)
+                                <option value="{{ $key }}" {{ $key == $user_data?->role_id ? 'selected' : '' }}>
+                                    {{ $r }}
+                                </option>
+                            @endif
                         @endforeach
                     </select>
                     @if ($errors->has('role_id'))

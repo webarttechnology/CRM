@@ -113,7 +113,7 @@ if (!function_exists('country')) {
 if (!function_exists('role')) {
     function role()
     {
-        $role = collect(['1' => "Admin", "2" => "Accounts", "3" => "Project Manager", "4" => "Sales", "5" => "Devlopment Maneger", "6" => "Developer", "7" => "Designer", "8" => "Senior Developer", "9" => "Senior Project Manager"]);
+        $role = collect(['1' => "Admin", "2" => "Accounts", "3" => "Project Manager", "4" => "Sales", "5" => "Devlopment Maneger", "6" => "Developer", "7" => "Designer", "8" => "Senior Developer", "9" => "Senior Project Manager", "10" => "Sales Manager"]);
         return $role;
     }
 }
@@ -738,9 +738,12 @@ function sendEmployeeNotification($any, $message, $url, $adminmessage)
     // dd($task);
     $admin_id = User::where('role_id', 1)->first();
 
+
+    // dd($any);
+
     $notification = new Notification([
         'sender_id' => Auth::user()->id,
-        'receiver_id' => $any->id,
+        'receiver_id' => $any['id'],
         'message' => $message,
         'url' => $url,
         'status' => 'unread',

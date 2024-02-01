@@ -13,7 +13,7 @@ class Sale extends Model
 
     protected $dates = ['deleted_at'];
 
-    protected $fillable = ['client_id', 'project_name', 'project_type', 'technology', 'type', 'others', 'marketing_plan', 'smo_on', 'start_date', 'end_date', 'platform_name', 'prefer_technology', 'customer_requerment', 'description', 'business_name', 'closer_name', 'agent_name', 'reference_sites', 'remarks', 'upsale_opportunities', 'isupsale', 'sale_date', 'payment_mode', 'gross_amount', 'net_amount', 'due_amount', 'other_pay', 'status', 'currency'];
+    protected $fillable = ['client_id', 'project_name', 'project_type', 'technology', 'type', 'others', 'marketing_plan', 'smo_on', 'start_date', 'end_date', 'platform_name', 'prefer_technology', 'customer_requerment', 'description', 'business_name', 'closer_name', 'agent_name', 'reference_sites', 'remarks', 'upsale_opportunities', 'isupsale', 'sale_date', 'payment_mode', 'gross_amount', 'net_amount', 'due_amount', 'other_pay', 'status', 'created_by', 'currency'];
 
     public function client()
     {

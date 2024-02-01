@@ -53,7 +53,9 @@
                                         <ul>
                                             @foreach ($tasks as $item)
                                             <li>
-                                                <div>{{ $item->remark }}</div>
+                                                <div>{{ $item->remark }}
+                                                 <span class="d-block">{{ $item->created_at }}</span>
+                                                </div>
                                             </li>
                                             @endforeach
                                         </ul>

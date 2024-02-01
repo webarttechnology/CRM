@@ -3,6 +3,7 @@
 
     namespace App\Traits;
     use Auth;
+
     trait SalesTrait{
 
         public function saleslists($status=''){
@@ -15,6 +16,11 @@
                     $query->where('assign_to', '=', Auth::user()->id);
                 });
             }
+
+            if(Auth::user()->role_id == 4){
+                $sales->where('sales.created_by', Auth::id());
+            }
+
 
             if($status){
                 $sales = $sales->where('sales.status', $status);

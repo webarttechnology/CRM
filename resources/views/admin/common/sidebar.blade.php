@@ -38,21 +38,9 @@
 							</li>
 
 
-							{{-- @if(Auth::user()->role_id == 3)
-
-								<li class="submenu">
-									<a href="#" class="{{ Request::segment(1) == 'task' ? 'active' : '' }}"><i class="feather-grid"></i> <span>Task</span>
-										<span class="menu-arrow"></span>
-									</a>
-									<ul class="sub-menus">
-										<li><a href="{{ route('task.index') }}">Task</a></li>
-									</ul>
-								</li>
 							
-							@endif --}}
 
-
-							@if(Auth::user()->role_id == 4 || Auth::user()->role_id == 1 || Auth::user()->role_id == 2 || Auth::user()->role_id == 3 || Auth::user()->role_id == 5 || Auth::user()->role_id == 9)
+							@if(Auth::user()->role_id == 4 || Auth::user()->role_id == 1 || Auth::user()->role_id == 2 || Auth::user()->role_id == 3 || Auth::user()->role_id == 5 || Auth::user()->role_id == 9 || Auth::user()->role_id == 10)
 							<li class="submenu">
 								<a href="#" class="{{ Request::segment(2) == 'client' ? 'active' : '' }}"><i class="feather-users"></i> <span>Client</span>
 									<span class="menu-arrow"></span>
@@ -62,13 +50,25 @@
 								</ul>
 							</li>
 							@endif
-							@if( Auth::user()->role_id == 1 || Auth::user()->role_id == 2 || Auth::user()->role_id == 3 || Auth::user()->role_id == 5 || Auth::user()->role_id == 9)
+							@if( Auth::user()->role_id == 1 || Auth::user()->role_id == 2 || Auth::user()->role_id == 3 || Auth::user()->role_id == 5 || Auth::user()->role_id == 9 || Auth::user()->role_id == 10)
 							<li class="submenu">
-								<a href="#" class="{{ Request::segment(1) == 'sales' && Request::segment(2) == 'list'  ? 'active' : '' }}"><i class="feather-grid"></i> <span>Sales</span>
+								<a href="#" class="{{ Request::segment(1) == 'sales' && Request::segment(2) == 'list'  ? 'active' : '' }}"><i class="feather-grid"></i> 
+									 @if (in_array(Auth::user()->role_id, [3, 9]) )
+									 <span>Project</span>
+									 @else
+									 <span>Sales</span> 
+									 @endif
+									
 									<span class="menu-arrow"></span>
 								</a>
 								<ul class="sub-menus">
-									<li><a href="{{ route('sales.new.list') }}">Sales list</a></li>
+									<li><a href="{{ route('sales.new.list') }}">
+										@if (in_array(Auth::user()->role_id, [3, 9]) )
+										Project
+										@else
+										Sales
+										@endif
+										list</a></li>
 								</ul>
 							</li>
 							
@@ -82,7 +82,7 @@
 							</li>
 							@endif
 
-							@if(Auth::user()->role_id == 2 || Auth::user()->role_id == 1 || Auth::user()->role_id == 3 || Auth::user()->role_id == 9)
+							@if(Auth::user()->role_id == 2 || Auth::user()->role_id == 1 || Auth::user()->role_id == 3 || Auth::user()->role_id == 9 || Auth::user()->role_id == 10)
 
 							<li class="submenu">
 								<a href="#" class="{{ Request::segment(1) == 'upsales' ? 'active' : '' }}"><i class="feather-trending-up"></i> <span>Upsales</span>
@@ -151,6 +151,32 @@
 									</ul>
 								</li>
 							@endif
+
+							@if (Auth::user()->role_id == 5)
+							<li class="submenu">
+								<a href="#" class="{{ Request::segment(1) == 'employee' ? 'active' : '' }}"><i class="feather-user"></i><span>Employee</span>
+									<span class="menu-arrow"></span>
+								</a>
+								<ul class="sub-menus">
+									<li><a href="{{ route('user.index') }}">Employee list</a></li>
+								</ul>
+							</li>
+							@endif
+
+							@if (Auth::user()->role_id == 4)
+							<li class="submenu">
+								<a href="#" class="{{ Request::segment(1) == 'sales' && Request::segment(2) == 'list'  ? 'active' : '' }}"><i class="feather-grid"></i> 
+									<span>Sales</span> 
+									<span class="menu-arrow"></span>
+								</a>
+								<ul class="sub-menus">
+									<li><a href="{{ route('sales.new.list') }}">
+										Sales list</a></li>
+								</ul>
+							</li>
+							@endif
+
+							
 							    
 						</ul>
 					</div>

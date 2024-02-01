@@ -108,7 +108,7 @@
                                                                             data-id="{{ $val->id }}"
                                                                             href="{{ route('sales.client.update', ['updateid' => $val->id]) }}"><i
                                                                                 class="bx bx-edit-alt me-1"></i>Edit</a>
-                                                                        @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 9)
+                                                                        @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 4 || Auth::user()->role_id == 9)
                                                                             <a class="dropdown-item"
                                                                                 onclick="return confirm('Do you really want to delete this data?')"
                                                                                 href="{{ route('sales.client.delete', ['deleteid' => $val->id]) }}"><i

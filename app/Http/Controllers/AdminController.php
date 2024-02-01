@@ -449,13 +449,6 @@ class AdminController extends Controller
 
     
 
-    public function chat()
-    {
-        return view('admin.chat.chat2');
-    }
-
-
-
     public function forgotPassword()
     {
         return view('forgotpassword');
@@ -464,6 +457,11 @@ class AdminController extends Controller
     public function sendResetLinkEmail(Request $request)
     {
         $user = User::where('email', $request->email)->first();
+
+        if($user == null){
+            return redirect(url('/forgot-password'))->with('errmsg', 'User not found');
+        }
+
         $newToken = Str::random(60);
         $user->remember_token = hash('sha256', $newToken);
         $user->save();

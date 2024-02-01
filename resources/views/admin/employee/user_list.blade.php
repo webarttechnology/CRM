@@ -28,9 +28,13 @@
 
                     </div>
                     <div class="col text-end">
+
+                        @if (Auth::user()->role_id != 3)
                         <a href="#"
-                            class="add btn btn-gradient-primary font-weight-bold text-white todo-list-add-btn btn-rounded open-module-form"
-                            data-type="add_user">Add User</a>
+                        class="add btn btn-gradient-primary font-weight-bold text-white todo-list-add-btn btn-rounded open-module-form"
+                        data-type="add_user">Add User</a>
+                        @endif
+                        
                     </div>
                 </div>
             </div>
@@ -97,8 +101,24 @@
                                                                 <div class="dropdown dropdown-action">
                                                                     <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
                                                                     <div class="dropdown-menu dropdown-menu-right">
-                                                                    <a class="dropdown-item open-module-form" data-type="add_user" data-id="{{ $val->id }}" href="{{ route('user.update', ['updateid' => $val->id]) }}"><i
-                                                                            class="bx bx-edit-alt me-1"></i>Edit</a>
+
+                                                                        @if (Auth::user()->role_id == 9 && in_array($val->role_id, ['3']))
+                                                                        <a class="dropdown-item open-module-form" data-type="add_user" data-id="{{ $val->id }}" href="{{ route('user.update', ['updateid' => $val->id]) }}">
+                                                                            <i class="bx bx-edit-alt me-1"></i>
+                                                                            Edit
+                                                                        </a>
+                                                                        @elseif (Auth::user()->role_id == 10 && in_array($val->role_id, ['4']))
+                                                                        <a class="dropdown-item open-module-form" data-type="add_user" data-id="{{ $val->id }}" href="{{ route('user.update', ['updateid' => $val->id]) }}">
+                                                                            <i class="bx bx-edit-alt me-1"></i>
+                                                                            Edit
+                                                                        </a>
+                                                                        @elseif(Auth::user()->role_id == 1 || Auth::user()->role_id == 2 || Auth::user()->role_id == 5)
+                                                                        <a class="dropdown-item open-module-form" data-type="add_user" data-id="{{ $val->id }}" href="{{ route('user.update', ['updateid' => $val->id]) }}">
+                                                                            <i class="bx bx-edit-alt me-1"></i>
+                                                                            Edit
+                                                                        </a>
+                                                                        @endif
+
                                                                     <a class="dropdown-item" href="{{ url('employee/time-log', $val->id) }}"><i class="bx bx-edit-alt me-1"></i>Time Log</a>
                                                                     @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 9)
                                                                         <a class="dropdown-item"  onclick="return confirm('Do you really want to delete this data?')"

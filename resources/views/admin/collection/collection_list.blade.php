@@ -92,10 +92,10 @@
                                                     <tr>
                                                         <td>{{ $val->client_name }}</td>
                                                         <td>{{ Str::limit($val->project_name, 20, '...') }}</td>
-                                                        <td>{{ $currency[$val->currency] }}</td>
+                                                        <td>{{ !empty($val->currency) ? $currency[$val->currency] : 'NA' }}</td>
                                                         <td>{{ number_format($val->net_amount, 2) }}</td>
                                                         <td>{{ $instalment[$val->instalment] }}</td>
-                                                        <td>{{ $val->payment_mode != 6?$paymentmode[$val->payment_mode]:$val->other_payment_mode }}</td>
+                                                        <td>{{ $val->payment_mode != 6 && !empty($val->payment_mode) ?$paymentmode[$val->payment_mode]: $val->other_payment_mode }}</td>
                                                         <td>{{ date("d/m/Y", strtotime($val->sale_date)) }}</td>
                                                         <td>
                                                             <div class="dropdown dropdown-action">

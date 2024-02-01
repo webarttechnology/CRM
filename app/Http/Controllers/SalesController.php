@@ -32,6 +32,7 @@ class SalesController extends Controller
             return view("admin.client.client_list", ["data" => $clients]);
         } else {
             $result = $this->getClients();
+
             return view("admin.client.client_list", ["data" => $result]);
         }
     }
@@ -174,7 +175,7 @@ class SalesController extends Controller
     }
     public function deleteclient(Request $request, $deleteid)
     {
-        if (Auth::user()->role_id == 1 || Auth::user()->role_id == 9) {
+        if (Auth::user()->role_id == 1 || Auth::user()->role_id == 4 || Auth::user()->role_id == 9) {
             DB::disableQueryLog();
             $client = \App\Models\Client::find($deleteid);
             if ($client) {
@@ -289,24 +290,19 @@ class SalesController extends Controller
                 'sale_date' => $request->input('sale_date'),
                 'payment_mode' => $request->input('payment_mode')?? null,
                 'other_pay' => $request->input('other_pay')?? null,
+                'created_by' => Auth::id(),
             ]);
 
             $saleId = $sales->save();
 
-            $message = 'Added a new project is "' . $request->input('project_name') . '"';
-            $url = '/sales/list';
-            $adminmessage = 'Added a new project is "' . $request->input('project_name') . '"';
-            sendSalesNotification($sales, $message, $url, $adminmessage);
-
-            $remark = 'Sale ' . '(' . $request->project_name . ')' . ' has been added';
-
-            LogHistoryAdd($request->client_id, $sales->id, Auth::id(), $remark);
+            
 
             if ($saleId) {
+
                 $collectionData = new \App\Models\Collection([
                     'client_id' => $request->input('client_id'),
                     'sale_id' => $sales->id,
-                    'currency' => $request->input('currency'),
+                    'currency' => $request->input('currency') ?? null,
                     'instalment' => 1,
                     'net_amount' => $request->input('net_amt'),
                     'sale_date' => $request->input('sale_date'),
@@ -315,7 +311,19 @@ class SalesController extends Controller
                 ]);
 
                 $collectionData->save();
+
+                // dd($collectionData);
             }
+
+            $message = 'Added a new project is "' . $request->input('project_name') . '"';
+            $url = '/sales/list';
+            $adminmessage = 'Added a new project is "' . $request->input('project_name') . '"';
+            
+            sendSalesNotification($sales, $message, $url, $adminmessage);
+
+            $remark = 'Sale ' . '(' . $request->project_name . ')' . ' has been added';
+
+            LogHistoryAdd($request->client_id, $sales->id, Auth::id(), $remark);
 
             return response()->json(['status' => 'success', 'type' => 'store', 'message' => 'Sale has been added successfully.']);
 

@@ -4,11 +4,8 @@
 @section('content')
 
 @php
-  //  $user_data = App\Models\User::where('id', '!=', 8)
-  //                   ->orderBy('name', 'ASC')
-  //                   ->get();
 
-  //   dd(getRecentMessages($user_data, 8));
+
 @endphp
 
 <!-- Page Wrapper -->

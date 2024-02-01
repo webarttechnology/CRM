@@ -60,12 +60,16 @@ Route::group(['prefix' => 'sales'], function(){
         Route::post('/client/add', [App\Http\Controllers\SalesController::class, 'addclient'])->name('sales.client.insert.suceess');
         Route::get('/client/update/{updateid}', [App\Http\Controllers\SalesController::class, 'updateclient'])->name('sales.client.update');
         Route::post('/client/update', [App\Http\Controllers\SalesController::class, 'updateclient'])->name('sales.client.update.suceess');
-        Route::get('/list', [App\Http\Controllers\SalesController::class, 'newsaleslist'])->name('sales.new.list');
+        Route::get('/list', [App\Http\Controllers\SalesController::class, 'newsal
+        
+        
+        
+        eslist'])->name('sales.new.list');
         Route::post('/list', [App\Http\Controllers\SalesController::class, 'newsaleslist'])->name('sales.new.list.success');
     });
 
     // Access only for admin
-    Route::group(['middleware' => ['auth', 'isAdmin']], function(){
+    Route::group(['middleware' => ['auth', 'isSale']], function(){
         Route::get('/client/delete/{deleteid}', [App\Http\Controllers\SalesController::class, 'deleteclient'])->name('sales.client.delete');
     });
 
