@@ -326,7 +326,7 @@ class SocketController extends Controller implements MessageComponentInterface
 
                     //// Group ///
 
-                    $chat_data = Chat::select('id', 'from_user_id', 'to_user_id', 'group_id', 'chat_message', 'message_status', 'created_at')
+                    $chat_data = Chat::select('id', 'from_user_id', 'to_user_id', 'group_id', 'chat_message','file','message_status', 'created_at')
                     ->where(function ($query) use ($data) {
                         $query->where('group_id', $data->to_user_id);
                     })
@@ -446,12 +446,24 @@ class SocketController extends Controller implements MessageComponentInterface
                     'to_user_id'    => $to_user_id,
                     'group_id'      => $to_group_id, 
                     'chat_message'  => null,
-                    'file'    => $imageUrl, 
+                    'file'          => $imageUrl, 
                     'message_status'=> 'Not Send'
                 ];
 
                 $chat =  Chat::create($data_message);
                 // dd($filename);
+
+
+                $send_data['response_file_history'] = $data_message;
+
+                $receiver_connection_id = User::select('connection_id')->where('id', $data->from_user_id)->get();
+
+                foreach ($this->clients as $client) {
+                    if ($client->resourceId == $receiver_connection_id[0]->connection_id) {
+                        $client->send(json_encode($send_data));
+                    }
+                }
+
             }
 
             

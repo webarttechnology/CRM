@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\Chat;
 use App\Models\Sale;
 use App\Models\User;
 use App\Models\Agent;
@@ -512,6 +513,33 @@ class AdminController extends Controller
             ]);
 
         return redirect()->route('login')->with('successmsg', 'Your password has been changed!');
+    }
+
+
+    public function download_chatfile(Request $request)
+    {
+        $chat = Chat::where('id',$request->id)->first();
+
+        $file_urls = $chat->file;
+
+        $fil_path = url('/uploads/').'/';
+
+        $pattern = '/\/\d+_/';
+        $replacement = '/'; // Replace the dynamic number with a forward slash
+
+        $remove_number_result = preg_replace($pattern, $replacement, $file_urls);
+
+        $fil_path = url('/uploads/').'/';
+
+        $file_name = str_replace($fil_path, '', $remove_number_result);
+
+        $data = [
+            'url'   => $file_urls,
+            'name'  => $file_name,
+        ];
+
+        return response()->json(['status' => 'success', 'data'=> $data ]);
+
     }
 
 }

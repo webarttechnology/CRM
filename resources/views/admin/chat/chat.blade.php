@@ -278,17 +278,18 @@
                             var parts = imagefile.split('.');
                             var extension = parts[parts.length - 1];
                             var fileName = imagefile.split('/').pop();
+                            var filenameWithoutPrefix = fileName.substring(fileName.indexOf('_') + 1);
                             if(extension == 'jpg' || extension == 'jpeg' || extension == 'png' || extension == 'webp'){
                                 html += `<div class="chat-msg owner">
                                     <div class="chat-msg-profile">
-                                        <img class="chat-msg-img"  src=" ` + form_user_photo + `" alt />
+                                        <img class="chat-msg-img"  src=" ` + form_user_photo + `" alt height="100"/>
                                         <div class="chat-msg-date">` + data.chat_history[index].messages[count].time +
                                 icon_style + `</div>
                                     </div>
                                     <div class="chat-msg-content">
                                         <div class="chat-msg-text">
                                             <div class="group_user_name">` + user_name + `</div>
-                                            <img src="` + imagefile + `" alt="file">
+                                            <img src="` + imagefile + `" class="file-downloads" data-id="${data.chat_history[index].messages[count].id}" alt="file" height="100">
                                         </div>
                                     </div>
                                 </div>`;
@@ -302,8 +303,9 @@
                                     <div class="chat-msg-content">
                                         <div class="chat-msg-text">
                                             <div class="group_user_name">` + user_name + `</div>
-                                            `+fileName+`
+                                            `+filenameWithoutPrefix+`
                                             <i class="fas fa-file-pdf"></i>
+                                            <span style="margin-left: 20px"><i class="fas fa-download file-downloads" data-id="${data.chat_history[index].messages[count].id}"></i></span>
                                         </div>
                                     </div>
                                 </div>`;
@@ -317,24 +319,47 @@
                                     <div class="chat-msg-content">
                                         <div class="chat-msg-text">
                                             <div class="group_user_name">` + user_name + `</div>
-                                            `+fileName+`
+                                            `+filenameWithoutPrefix+`
                                           <i class="fas fa-file-archive"></i>
+                                          <span style="margin-left: 20px"><i class="fas fa-download file-downloads" data-id="${data.chat_history[index].messages[count].id}"></i></span>
+                                        </div>
+                                    </div>
+                                </div>`;
+                            }else if(extension == 'sql'){
+                                html += `<div class="chat-msg owner">
+                                    <div class="chat-msg-profile">
+                                        <img class="chat-msg-img"  src=" ` + form_user_photo + `" alt />
+                                        <div class="chat-msg-date">` + data.chat_history[index].messages[count].time +
+                                icon_style + `</div>
+                                    </div>
+                                    <div class="chat-msg-content">
+                                        <div class="chat-msg-text">
+                                            <div class="group_user_name">` + user_name + `</div>
+                                            `+filenameWithoutPrefix+`
+                                          <i class="fas fa-file-archive"></i>
+                                          <span style="margin-left: 20px"><i class="fas fa-download file-downloads" data-id="${data.chat_history[index].messages[count].id}"></i></span>
                                         </div>
                                     </div>
                                 </div>`;
                             }
                            
                         }else{
+                            if(data.chat_history[index].messages[count].chat_message){
+                                var msg = data.chat_history[index].messages[count].chat_message
+                            }else{
+                                var msg = data.chat_history[index].messages[count].file
+                            }
+
                             html += `<div class="chat-msg owner">
                                     <div class="chat-msg-profile">
-                                        <img class="chat-msg-img"  src=" ` + form_user_photo + `" alt />
+                                        <img class="chat-msg-img"  src=" ` + form_user_photo + `" alt height="100"/>
                                         <div class="chat-msg-date">` + data.chat_history[index].messages[count].time +
                             icon_style + `</div>
                                     </div>
                                     <div class="chat-msg-content">
                                         <div class="chat-msg-text">
                                             <div class="group_user_name">` + user_name + `</div>
-                                            ` + data.chat_history[index].messages[count].chat_message + `
+                                            ` + msg + `
                                         </div>
                                     </div>
                                 </div>`;
@@ -367,40 +392,59 @@
 
                         if(data.chat_history[index].messages[count].chat_message == null){
                             var imagefile = data.chat_history[index].messages[count].file;
+                            // console.warn(imagefile);
                             // Use the split method to separate the URL by dot (.)
                             var parts = imagefile.split('.');
                             var extension = parts[parts.length - 1];
                             var fileName = imagefile.split('/').pop();
+                            var filenameWithoutPrefix = fileName.substring(fileName.indexOf('_') + 1);
                             if(extension == 'jpg' || extension == 'jpeg' || extension == 'png' || extension == 'webp'){
-                                html += `<div class="chat-msg owner">
+                                html += `<div class="chat-msg">
                                     <div class="chat-msg-profile">
-                                        <img class="chat-msg-img"  src=" ` + form_user_photo + `" alt />
+                                        <img class="chat-msg-img"  src=" ` + to_user_img + `" alt height="100"/>
                                         <div class="chat-msg-date">` + data.chat_history[index].messages[count].time +
                                 icon_style + `</div>
                                     </div>
                                     <div class="chat-msg-content">
                                         <div class="chat-msg-text">
                                             <div class="group_user_name">` + user_name + `</div>
-                                            <img src="` + imagefile + `" alt="file">
+                                            <img src="` + imagefile + `" class="file-downloads" data-id="${data.chat_history[index].messages[count].id}" alt="file" height="100">
                                         </div>
                                     </div>
                                 </div>`;
                             }else if(extension == 'pdf'){
-                                html += `<div class="chat-msg owner">
+                                html += `<div class="chat-msg">
                                     <div class="chat-msg-profile">
-                                        <img class="chat-msg-img"  src=" ` + form_user_photo + `" alt />
+                                        <img class="chat-msg-img"  src=" ` + to_user_img + `" alt />
                                         <div class="chat-msg-date">` + data.chat_history[index].messages[count].time +
                                 icon_style + `</div>
                                     </div>
                                     <div class="chat-msg-content">
                                         <div class="chat-msg-text">
                                             <div class="group_user_name">` + user_name + `</div>
-                                            `+fileName+`.pdf
+                                            `+filenameWithoutPrefix+`
                                             <i class="fas fa-file-pdf"></i>
+                                            <span style="margin-left: 20px"><i class="fas fa-download file-downloads" data-id="${data.chat_history[index].messages[count].id}"></i></span>
                                         </div>
                                     </div>
                                 </div>`;
                             }else if(extension == 'zip'){
+                                html += `<div class="chat-msg">
+                                    <div class="chat-msg-profile">
+                                        <img class="chat-msg-img"  src=" ` + to_user_img + `" alt />
+                                        <div class="chat-msg-date">` + data.chat_history[index].messages[count].time +
+                                icon_style + `</div>
+                                    </div>
+                                    <div class="chat-msg-content">
+                                        <div class="chat-msg-text">
+                                            <div class="group_user_name">` + user_name + `</div>
+                                            `+filenameWithoutPrefix+`
+                                          <i class="fas fa-file-archive"></i>
+                                          <span style="margin-left: 20px"><i class="fas fa-download file-downloads" data-id="${data.chat_history[index].messages[count].id}"></i></span>
+                                        </div>
+                                    </div>
+                                </div>`;
+                            }else if(extension == 'sql'){
                                 html += `<div class="chat-msg owner">
                                     <div class="chat-msg-profile">
                                         <img class="chat-msg-img"  src=" ` + form_user_photo + `" alt />
@@ -410,13 +454,19 @@
                                     <div class="chat-msg-content">
                                         <div class="chat-msg-text">
                                             <div class="group_user_name">` + user_name + `</div>
-                                            `+fileName+`.zip 
+                                            `+filenameWithoutPrefix+`
                                           <i class="fas fa-file-archive"></i>
+                                          <span style="margin-left: 20px"><i class="fas fa-download file-downloads" data-id="${data.chat_history[index].messages[count].id}"></i></span>
                                         </div>
                                     </div>
                                 </div>`;
                             }
                         }else{
+                            if(data.chat_history[index].messages[count].chat_message){
+                                var msg = data.chat_history[index].messages[count].chat_message
+                            }else{
+                                var msg = data.chat_history[index].messages[count].file
+                            }
                             html += `
                             <div class="chat-msg">
                                 <div class="chat-msg-profile">
@@ -426,7 +476,7 @@
                                 <div class="chat-msg-content">
                                     <div class="chat-msg-text">
                                         <div class="group_user_name">` + user_name + `</div>
-                                        ` + data.chat_history[index].messages[count].chat_message + `
+                                        ` + msg + `
                                     </div>
                                 </div>
                             </div>`;
@@ -461,17 +511,28 @@
                     } else {
                         var group_image_user = "{{ url('panel/assets/img/profiles/user-profile.png') }}";
                     }
-                    group_user += ` <div class="msg">
+
+                  
+                    group_user += ` <div class="msg" onclick="make_chat_area( ` + data.group_member_history[index].id + `,` + "'" + data.group_member_history[index].name + "'" + `,'user',` +  "'" + group_image_user +"'" + `, 'offline' );
+                    load_chat_data(` + from_user_id + `, ` + data.group_member_history[index].id +
+                        `, 'user');">
                     <img class="msg-profile" src="` + group_image_user + `" alt="profile-photo">
                     <div class="msg-detail">` + data.group_member_history[index].name + `</div>
                     </div>`;
                 }
 
             } else {
-                var group_user = '';
+                var group_user = ''; 
             }
 
             $('#group_user_list').html(group_user);
+        }
+        
+
+        if (data.response_file_history) {
+                 
+            load_chat_data(from_user_id, to_user_id, to_type);
+            
         }
 
     };
@@ -735,6 +796,14 @@
             //     return;
             // }
 
+            // Check file size
+            var maxFileSize = 5 * 1024 * 1024; // 5 MB in bytes
+            if (fileElement.size > maxFileSize) {
+                alert('File size exceeds 5 MB.');
+                input.remove();
+                return;
+            }
+
             var fileReader = new FileReader();
 
             fileReader.onloadend = function() {
@@ -755,7 +824,7 @@
                     </div>
                     <div class="chat-msg-content">
                     <div class="chat-msg-text">
-                    <img src="`+fileReader.result+`" />
+                    <img src="`+fileReader.result+`" height="100"/>
                     </div>
                     </div>
                     </div>`;
@@ -780,7 +849,20 @@
                     </div>
                     <div class="chat-msg-content">
                     <div class="chat-msg-text">
-                    `+fileName+`.zip 
+                    `+fileName+`.zip
+                     <i class="fas fa-file-archive"></i>
+                    </div>
+                    </div>
+                    </div>`;
+                }else if(fileExtension == 'sql'){
+                    var preview = `<div class="chat-msg owner">
+                    <div class="chat-msg-profile">
+                    <img class="chat-msg-img" src="`+imgElement.src+`" alt="">
+                    <div class="chat-msg-date">${formattedTime}</div>
+                    </div>
+                    <div class="chat-msg-content">
+                    <div class="chat-msg-text">
+                    `+fileName+`.sql
                      <i class="fas fa-file-archive"></i>
                     </div>
                     </div>
@@ -814,8 +896,18 @@
             // fileReader.readAsArrayBuffer(fileElement);
             fileReader.readAsDataURL(fileElement);
             input.remove();
-        });
+            setTimeout(function() {
+                scroll_top();
+            }, 1000);
 
+            
+            setTimeout(function() {
+                load_list_user(from_user_id);
+                load_chat_data(from_user_id, to_user_id, to_type);
+            }, 2000);
+            
+            // load_chat_data(from_user_id, to_user_id, to_type);
+        });
     }
 
 
@@ -870,4 +962,33 @@
             return fileName;
         }
     }
+
+
+    $(document).on("click", '.file-downloads', function(e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: '/chat/download-file',
+            type: 'POST',
+            data: {
+                id: $(this).data('id')
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                var link = document.createElement('a');
+                link.href = response.data.url;
+                link.download = response.data.name;
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            },
+            error: function() {
+                toastr.error('Failed to download the file.');
+            }
+        });
+
+    });
 </script>

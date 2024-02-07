@@ -60,11 +60,7 @@ Route::group(['prefix' => 'sales'], function(){
         Route::post('/client/add', [App\Http\Controllers\SalesController::class, 'addclient'])->name('sales.client.insert.suceess');
         Route::get('/client/update/{updateid}', [App\Http\Controllers\SalesController::class, 'updateclient'])->name('sales.client.update');
         Route::post('/client/update', [App\Http\Controllers\SalesController::class, 'updateclient'])->name('sales.client.update.suceess');
-        Route::get('/list', [App\Http\Controllers\SalesController::class, 'newsal
-        
-        
-        
-        eslist'])->name('sales.new.list');
+        Route::get('/list', [App\Http\Controllers\SalesController::class, 'newsaleslist'])->name('sales.new.list');
         Route::post('/list', [App\Http\Controllers\SalesController::class, 'newsaleslist'])->name('sales.new.list.success');
     });
 
@@ -226,6 +222,7 @@ Route::controller(LogHistoryController::class)
 
 
 Route::post("/show-chat-module", [AdminController::class, 'show_chat_module'])->name('show-chat-module');
+Route::post("/chat/download-file", [AdminController::class, 'download_chatfile']);
 
 Route::post("/notifications/mark-all-as-read", [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead')->middleware(['auth']);
 Route::get('/get-notification',[NotificationController::class, 'getNotification'])->middleware(['auth']);

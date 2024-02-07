@@ -787,7 +787,7 @@ function sendGroupNotification($group, $message, $url, $adminmessage)
 {
     $admin_id = User::where('role_id', 1)->first();
 
-    if (Auth::user()->role_id == 1) {
+    if (Auth::user()->role_id != 1) {
         $notification = new Notification([
             'sender_id' => Auth::user()->id,
             'receiver_id' => $admin_id->id,
