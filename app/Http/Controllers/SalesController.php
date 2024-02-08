@@ -86,9 +86,9 @@ class SalesController extends Controller
                 }
             }
 
-            $message = 'Added A new client is "' . $request->input('name') . '"';
+            $message = 'Added A new client "' . $request->input('name') . '"';
             $url = '/sales/client';
-            $adminmessage = 'Added A new client is "' . $request->input('name') . '"';
+            $adminmessage = 'Added A new client "' . $request->input('name') . '"';
             sendClientNotification($client, $message, $url, $adminmessage);
 
             return response()->json(['status' => 'success', 'type' => 'store', 'message' => 'Data has been added successfully!']);
@@ -315,9 +315,9 @@ class SalesController extends Controller
                 // dd($collectionData);
             }
 
-            $message = 'Added a new project is "' . $request->input('project_name') . '"';
+            $message = 'Added a new project "' . $request->input('project_name') . '"';
             $url = '/sales/list';
-            $adminmessage = 'Added a new project is "' . $request->input('project_name') . '"';
+            $adminmessage = 'Added a new project "' . $request->input('project_name') . '"';
             
             sendSalesNotification($sales, $message, $url, $adminmessage);
 
@@ -417,9 +417,9 @@ class SalesController extends Controller
             ]);
             $sales->save();
 
-            $message = 'Updated the project is "' . $request->input('project_name') . '"';
+            $message = 'Updated the project "' . $request->input('project_name') . '"';
             $url = '/sales/list';
-            $adminmessage = 'Updated the project is "' . $request->input('project_name') . '"';
+            $adminmessage = 'Updated the project "' . $request->input('project_name') . '"';
             sendSalesNotification($sales, $message, $url, $adminmessage);
 
             $collection = \App\Models\Collection::where(['sale_id' => $request->input('update_id'), 'instalment' => 1])->update(
@@ -489,9 +489,9 @@ class SalesController extends Controller
 
             if ($sales) {
 
-                $message = 'Deleted the project is "' . $sales->project_name . '"';
+                $message = 'Deleted the project "' . $sales->project_name . '"';
                 $url = '/sales/list';
-                $adminmessage = 'Deleted the project is "' . $sales->project_name . '"';
+                $adminmessage = 'Deleted the project "' . $sales->project_name . '"';
                 sendSalesNotification($sales, $message, $url, $adminmessage);
 
                 $sales->delete();

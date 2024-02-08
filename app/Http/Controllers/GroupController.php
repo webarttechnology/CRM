@@ -157,7 +157,7 @@ class GroupController extends Controller
                 // $group->save();
                 $groupname = GroupName::where('id', $request->input('groupid'))->first();
                 Mail::to($checkuserexist->email)->send(new GroupMail($groupname, $checkuserexist->email));
-                $message = 'You will invited the group is "' . $groupname->name . '"';
+                $message = 'You will invited the group "' . $groupname->name . '"';
                 $url = '/group/list';
                 $adminmessage = 'The new person will add in group "' . $groupname->name . '"';
                 sendUserGroupNotification($groupname, $message, $url, $adminmessage,$checkuserexist);
