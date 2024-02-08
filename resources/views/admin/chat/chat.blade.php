@@ -968,7 +968,7 @@
         e.preventDefault();
 
         $.ajax({
-            url: '/chat/download-file',
+            url: '/downloadchat-file',
             type: 'POST',
             data: {
                 id: $(this).data('id')

@@ -222,7 +222,7 @@ Route::controller(LogHistoryController::class)
 
 
 Route::post("/show-chat-module", [AdminController::class, 'show_chat_module'])->name('show-chat-module');
-Route::post("/chat/download-file", [AdminController::class, 'download_chatfile']);
+Route::post("/downloadchat-file", [AdminController::class, 'download_chatfile']);
 
 Route::post("/notifications/mark-all-as-read", [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead')->middleware(['auth']);
 Route::get('/get-notification',[NotificationController::class, 'getNotification'])->middleware(['auth']);

@@ -429,8 +429,8 @@ class SocketController extends Controller implements MessageComponentInterface
                 // Save the file to the public folder
                 $imagePath = 'uploads/' . $filename;
                 $image = file_put_contents(public_path($imagePath), base64_decode(preg_replace('#^data:[\w/]+;base64,#i', '', $fileData->data)));
-                $imageUrl = asset($imagePath);
-
+                // $imageUrl =  url('/uploads/'.$filename);
+                $imageUrl =  "http://dwcrm.digitalwebber.com/".$imagePath;
                 if($data->to_type == 'user'){
                     $to_user_id = $data->to_user_id; 
                     $to_group_id = null; 
