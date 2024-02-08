@@ -459,13 +459,17 @@
 
 
         function showNotification(chatId, name, image, msg, to_user_id, from_user_id, type, onlineStatus) {
-
+            if(msg == null){
+                var txtmsg= "file";
+            }else{
+                var txtmsg= msg;
+            }
             var html = ` <div class="my-toast-container open-chat-module-noti toast-show" data-id="`+chatId+`" data-name="`+name+`" data-image="`+image+`" data-touserid="`+to_user_id+`" data-fromuserid="`+from_user_id+`" data-type="`+type+`" data-onlinestatus="`+onlineStatus+`">
                 <div style="display: flex;">
                     <div><img src="` + image + `" width="40px" height="40px" style="border-radius: 100%;" alt="photo"></div>
                     <div style="margin-left: 10px;">
                     <div style="font-weight: 600; font-size: 15px;">` + name + `</div>
-                    <div style="font-size: 13px; font-weight: 400;  margin-top: 5px;">` + msg + `</div>
+                    <div style="font-size: 13px; font-weight: 400;  margin-top: 5px;">` + txtmsg + `</div>
                     </div>
                 </div>
             </div>`;
