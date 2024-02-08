@@ -431,6 +431,8 @@ class SocketController extends Controller implements MessageComponentInterface
                 $image = file_put_contents(public_path($imagePath), base64_decode(preg_replace('#^data:[\w/]+;base64,#i', '', $fileData->data)));
                 // $imageUrl =  url('/uploads/'.$filename);
                 $imageUrl =  "http://dwcrm.digitalwebber.com/".$imagePath;
+
+
                 if($data->to_type == 'user'){
                     $to_user_id = $data->to_user_id; 
                     $to_group_id = null; 
@@ -441,28 +443,161 @@ class SocketController extends Controller implements MessageComponentInterface
                     $to_group_id = $data->to_group_id; 
                 }
 
+            
                 $data_message = [
                     'from_user_id'  => $data->from_user_id,
                     'to_user_id'    => $to_user_id,
                     'group_id'      => $to_group_id, 
-                    'chat_message'  => null,
-                    'file'          => $imageUrl, 
+                    'file'          =>  $imageUrl ,
                     'message_status'=> 'Not Send'
                 ];
 
+                // dd($data_message);
+
                 $chat =  Chat::create($data_message);
-                // dd($filename);
 
+                $chat_message_id = $chat->id;
 
-                $send_data['response_file_history'] = $data_message;
+                if($to_user_id){
+                    $receiver_connection = User::select('connection_id')->where('id', $to_user_id)->get();
+                }else{
+                    $receiver_connection = [];
+                }
 
-                $receiver_connection_id = User::select('connection_id')->where('id', $data->from_user_id)->get();
+                // $sender_connection = User::select('connection_id')->where('id', $data->from_user_id)->get();
 
                 foreach ($this->clients as $client) {
-                    if ($client->resourceId == $receiver_connection_id[0]->connection_id) {
+
+                        $send_data = [];
+
+                        if(count($receiver_connection)){
+                            $receiver_connection_id = $receiver_connection[0]->connection_id;
+                        }else{
+                            $receiver_connection_id = null;
+                        }
+                    
+                       
+                        // $sender_connection_id   = $sender_connection[0]->connection_id;
+                        // if ($client->resourceId == $receiver_connection_id || $client->resourceId == $sender_connection_id) {
+                     
+                     if ($client->resourceId) {
+                       
+                        $from_user_img = User::where('id', $data->from_user_id)->first();
+                        $to_user_img = User::where('id', $to_user_id)->first();
+                       
+                        $send_data['chat_message_id'] = $chat->id;
+
+                        $send_data['message'] = $imageUrl;
+                        $send_data['time']    = $chat->created_at->format('h:i A');
+                        $send_data['from_user_id'] = $data->from_user_id;
+                        $send_data['from_user_photo'] = $from_user_img->user_image ?? null;
+                        $send_data['to_user_photo'] =  $to_user_img->user_image ?? null;
+                        $send_data['to_user_id']  = $to_user_id ?? null;
+                        $send_data['to_group_id'] = $to_group_id;
+
+                        if ($client->resourceId == $receiver_connection_id) {
+                            Chat::where('id', $chat_message_id)->update(['message_status' => 'Send']);
+                            $send_data['message_status'] = 'Send';
+                        } else {
+                            $chat_message = Chat::find($chat->id);
+                            $send_data['message_status'] = $chat_message->message_status;
+                        }
+
+                        $chatNotify = Chat::find($chat->id);
+
+                        if($chatNotify->group_id){
+
+                        $group_member = GroupMember::where('group_id', $chatNotify->group_id)
+                                        ->whereNot('user_id', $data->from_user_id)->get();
+
+                        foreach($group_member as $member){
+
+                            if($member->user?->user_image){
+                                $userImg = $member->user->user_image;
+                            }else{
+                                $userImg = '';
+                            }
+
+                            $chatNotifyData = [
+                                'id'               => $chatNotify->id, 
+                                'to_user_id'       => $member->user_id, 
+                                'from_user_id'     => $chatNotify->from_user_id, 
+                                'message_status'   => $chatNotify->message_status, 
+                                'name'             => $member->user->name, 
+                                'user_image'       => $userImg, 
+                                'chat_message'     => $chatNotify->chat_message,
+                                'type'             => 'group',
+                                'onlineStaus'      => 'Offline',
+                            ];
+
+
+                            event(new ChatNotifyUser($chatNotifyData));
+
+                        }
+
+                         }else{
+
+                            if($chatNotify->user?->user_image){
+                                $userImg = $chatNotify->user->user_image;
+                            }else{
+                                $userImg = '';
+                            }
+
+                            $chatNotifyData = [
+                                'id'               => $chatNotify->id, 
+                                'to_user_id'       => $chatNotify->to_user_id, 
+                                'from_user_id'     => $chatNotify->from_user_id, 
+                                'message_status'   => $chatNotify->message_status, 
+                                'name'             => $chatNotify->user->name, 
+                                'user_image'       => $userImg, 
+                                'chat_message'     => $chatNotify->chat_message,
+                                'type'             => 'user',
+                                'onlineStaus'      => $chatNotify->user->user_status, 
+                            ];
+
+                            event(new ChatNotifyUser($chatNotifyData));
+
+                         }
+
                         $client->send(json_encode($send_data));
                     }
+                    
+                    
+
                 }
+
+                // if($data->to_type == 'user'){
+                //     $to_user_id = $data->to_user_id; 
+                //     $to_group_id = null; 
+                // }
+
+                // if($data->to_type == 'group'){
+                //     $to_user_id = null; 
+                //     $to_group_id = $data->to_group_id; 
+                // }
+
+                // $data_message = [
+                //     'from_user_id'  => $data->from_user_id,
+                //     'to_user_id'    => $to_user_id,
+                //     'group_id'      => $to_group_id, 
+                //     'chat_message'  => null,
+                //     'file'          => $imageUrl, 
+                //     'message_status'=> 'Not Send'
+                // ];
+
+                // $chat =  Chat::create($data_message);
+                // // dd($filename);
+
+
+                // $send_data['response_file_history'] = $data_message;
+
+                // $receiver_connection_id = User::select('connection_id')->where('id', $data->from_user_id)->get();
+
+                // foreach ($this->clients as $client) {
+                //     if ($client->resourceId == $receiver_connection_id[0]->connection_id) {
+                //         $client->send(json_encode($send_data));
+                //     }
+                // }
 
             }
 
