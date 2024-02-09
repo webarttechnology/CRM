@@ -97,8 +97,7 @@
                     </select>
                 </div>
                 <div class="col-md-12 mb-3" id="div_customer_requirment">
-                    <label class="form-label" for="customer_requirement">{{ __('Custom Requirements') }} <span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="customer_requirement">{{ __('Custom Requirements') }}</label>
                     <input name="customer_requirement" id="customer_requerment" class="form-control"
                         placeholder="Custom Requirements" value="{{ $sales_data?->customer_requerment }}">
                 </div>
@@ -189,8 +188,7 @@
 
             <div class="row" id="div_mobile_application">
                 <div class="col-md-6 mb-3">
-                    <label class="form-label" for="mobile_app_platform">{{ __('Platform ') }}<span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="mobile_app_platform">{{ __('Platform ') }}</label>
                     <select text="text" name="mobile_app_platform" id="mobile_app_platform" class="form-control">
 
                         <option value="">--Select--</option>
@@ -204,8 +202,7 @@
                     </select>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label" for="preferred_technology">{{ __('Preferred technology') }}<span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="preferred_technology">{{ __('Preferred technology') }}</label>
                     <select name="preferred_technology" id="preferred_technology" class="form-control">
 
                         <option value="">--Select--</option>
@@ -377,6 +374,7 @@
 <script>
     $(document).ready(function() {
         $("#div_other_pay").hide();
+        $("#div_hosting").hide();
     });
     function projectTypechangeEvent() {
         if ($("#project_type").val() == 1) {

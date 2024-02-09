@@ -105,8 +105,7 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label" for="role">{{ __('Profile Image') }}<span
-                            class="text-danger">*</span></label>
+                    <label class="form-label" for="role">{{ __('Profile Image') }}</label>
                     <input type="file" class="form-control" id="profile_image" name="profile_image" />
                     @if ($user_data?->user_image)
                         <input type="hidden" name="old_image" value="{{ $user_data->user_image }}">

@@ -59,6 +59,7 @@ class UpsaleController extends Controller
                 'upsale_type' => 'required',
                 // 'gross_amt' => 'required',
                 // 'net_amt' => 'required',
+                'start_date'         => 'required_if:upsale_type,1,2,3',
                 'sale_date' => 'required',
                 // 'payment_mode' => 'required'
             ]);

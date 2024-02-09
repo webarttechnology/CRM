@@ -160,7 +160,7 @@
 <script>
     $(document).ready(function() {
         $("#div_other_pay").hide();
-        // $("#div_hosting").hide();
+        $("#div_hosting").hide();
         $("#div_other").hide();
     });
 
