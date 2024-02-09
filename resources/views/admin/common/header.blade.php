@@ -86,13 +86,13 @@
             <!-- Header Title -->
             <div class="page-title-box d-flex">
                 <div class="top-nav-search">
-                    <a href="javascript:void(0);" class="responsive-search">
+                    {{-- <a href="javascript:void(0);" class="responsive-search">
                         <i class="fa fa-search"></i>
                     </a>
                     <form action="#">
                         <input class="form-control" type="text" placeholder="Search here">
                         <button class="btn" type="submit"><i class="fa fa-search"></i></button>
-                    </form>
+                    </form> --}}
                 </div>
 
                 @if (Auth::user()->id !== 1)
@@ -165,7 +165,7 @@
                 </li>
                 <!-- /Search -->
                 <!-- Flag -->
-                <li class="nav-item dropdown has-arrow flag-nav">
+                {{-- <li class="nav-item dropdown has-arrow flag-nav">
                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button">
                         <img src="{{ url('panel/assets/img/flags/us.png') }}" alt="" height="20">
                         <span>English</span>
@@ -176,7 +176,7 @@
                             English
                         </a>
                     </div>
-                </li>
+                </li> --}}
                 <!-- /Flag -->
 
                 @php
