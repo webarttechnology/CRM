@@ -1,66 +1,66 @@
 // Bar chart
-new Chart(document.getElementById("bar-chart"), {
-    type: 'bar',
-    data: {
-      labels: ["2006", "2010", "2011", "2012", "2018"],
-      datasets: [
-        {
-          label: "Projects",
-          backgroundColor: ["#fe7096", "#9a55ff","#fe7096","#e8c3b9","#9a55ff"],
-          data: [2478,5267,734,784,433]
-        }
-      ]
-    },
-    options: {
-      legend: { display: false },
-      title: {
-        display: true,
-        text: 'Projects Yearly Sales'
-      }
-    }
-});
+// new Chart(document.getElementById("bar-chart"), {
+//     type: 'bar',
+//     data: {
+//       labels: ["2006", "2010", "2011", "2012", "2018"],
+//       datasets: [
+//         {
+//           label: "Projects",
+//           backgroundColor: ["#fe7096", "#9a55ff","#fe7096","#e8c3b9","#9a55ff"],
+//           data: [2478,5267,734,784,433]
+//         }
+//       ]
+//     },
+//     options: {
+//       legend: { display: false },
+//       title: {
+//         display: true,
+//         text: 'Projects Yearly Sales'
+//       }
+//     }
+// });
 
 /*pie chart*/
 
-new Chart(document.getElementById("pie-chart"), {
-    type: 'pie',
-    data: {
-      labels: ["Asia", "Europe"],
-      datasets: [{
-        label: "Population (millions)",
-        backgroundColor: [ "#9a55ff","#fe7096"],
-        data: [2478,5267]
-      }]
-    },
-    options: {
-      title: {
-        display: true,
-        text: ''
-      }
-    }
-});
+// new Chart(document.getElementById("pie-chart"), {
+//     type: 'pie',
+//     data: {
+//       labels: ["Asia", "Europe"],
+//       datasets: [{
+//         label: "Population (millions)",
+//         backgroundColor: [ "#9a55ff","#fe7096"],
+//         data: [2478,5267]
+//       }]
+//     },
+//     options: {
+//       title: {
+//         display: true,
+//         text: ''
+//       }
+//     }
+// });
 
 /*horixzontal bar chart*/
-new Chart(document.getElementById("bar-chart-horizontal"), {
-    type: 'horizontalBar',
-    data: {
-      labels: ["2000", "2010", "2011", "2015", "2020"],
-      datasets: [
-        {
-          label: "Products",
-          backgroundColor: ["#fe7096", "#9a55ff","#3cba9f","#e8c3b9","#9a55ff"],
-          data: [2478,5267,734,784,433]
-        }
-      ]
-    },
-    options: {
-      legend: { display: false },
-      title: {
-        display: true,
-        text: ''
-      }
-    }
-});
+// new Chart(document.getElementById("bar-chart-horizontal"), {
+//     type: 'horizontalBar',
+//     data: {
+//       labels: ["2000", "2010", "2011", "2015", "2020"],
+//       datasets: [
+//         {
+//           label: "Products",
+//           backgroundColor: ["#fe7096", "#9a55ff","#3cba9f","#e8c3b9","#9a55ff"],
+//           data: [2478,5267,734,784,433]
+//         }
+//       ]
+//     },
+//     options: {
+//       legend: { display: false },
+//       title: {
+//         display: true,
+//         text: ''
+//       }
+//     }
+// });
 
 /*grouped bar chart*/
 new Chart(document.getElementById("bar-chart-grouped"), {

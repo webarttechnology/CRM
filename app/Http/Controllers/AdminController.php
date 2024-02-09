@@ -61,7 +61,7 @@ class AdminController extends Controller
         if($request -> method() == "POST"){
             
         }else{           
-            $month = date('m');          
+            $month = date('m'); 
             
             DB::disableQueryLog();
             $task = $salesGrossAmount = $salesNetAmount = $upsaleGrossAmount = $upsaleNetAmount = $collectionAmount = $salesdata = $upsalesdata = $collections = [];
@@ -98,7 +98,110 @@ class AdminController extends Controller
 
             // $work = Workhistory::where('developer_job_id', 1)->where('user_id', Auth::user()->id)->pluck('currenttime');
 
+            //For Client
+            // Get the monthly-wise client count
+            $monthlyClientCount = Client::select(
+                DB::raw('YEAR(created_at) as year'),
+                DB::raw('MONTH(created_at) as month'),
+                DB::raw('COUNT(*) as count')
+            )
+            ->groupBy('year', 'month')
+            ->orderBy('year', 'ASC')
+            ->orderBy('month', 'ASC')
+            ->get();
+            
+            // Now $monthlyClientCount contains an array of objects with 'month' and 'count' properties.
+            // You can iterate over this array to display or manipulate the data as needed.
+            $clientData = [];
+            foreach ($monthlyClientCount as $monthlyCount) {
+                $clientData[] = $monthlyCount->count;
+            // echo "Month: " . $monthlyCount->month . ", Count: " . $monthlyCount->count . "<br>";
+            }
+            $clientDataJSON = json_encode($clientData);
 
+
+            //For Monthly sales
+            $monthlySaleCount = Sale::select(
+                DB::raw('YEAR(created_at) as year'),
+                DB::raw('MONTH(created_at) as month'),
+                DB::raw('COUNT(*) as count')
+            )
+            ->groupBy('year', 'month')
+            ->orderBy('year', 'ASC')
+            ->orderBy('month', 'ASC')
+            ->get();
+            
+            // Now $monthlyClientCount contains an array of objects with 'month' and 'count' properties.
+            // You can iterate over this array to display or manipulate the data as needed.
+            $saleData = [];
+            foreach ($monthlySaleCount as $monthlyCount) {
+                $saleData[] = $monthlyCount->count;
+            // echo "Month: " . $monthlyCount->month . ", Count: " . $monthlyCount->count . "<br>";
+            }
+            $saleDataJSON = json_encode($saleData);
+
+            //For Monthly Colections
+            $monthlyCollections = Collection::select(
+                DB::raw('SUM(net_amount) as monthly_net_amount'),
+                DB::raw('MONTH(created_at) as month'),
+                DB::raw('YEAR(created_at) as year')
+            )
+            ->groupBy(DB::raw('YEAR(created_at)'), DB::raw('MONTH(created_at)'))
+            ->get();
+            $collectionsData = [];
+            foreach ($monthlyCollections as $monthlyCollection) {
+                $month = $monthlyCollection->month;
+                $year = $monthlyCollection->year;
+                $netAmount = $monthlyCollection->monthly_net_amount;
+                $collectionsData[] = $netAmount;
+                // echo "Month: $month, Year: $year, Net Amount: $netAmount<br>";
+            }
+            $collectionDataJSON = json_encode($collectionsData);
+
+            //For Department Wise Employee Chart
+            $role = collect(['1' => "Admin", "2" => "Accounts", "3" => "Project Manager", "4" => "Sales", "5" => "Devlopment Maneger", "6" => "Developer", "7" => "Designer", "8" => "Senior Developer", "9" => "Senior Project Manager", "10" => "Sales Manager"]);
+
+            $roleCounts = [];
+            
+            // Initialize role counts
+            foreach ($role as $roleId => $roleName) {
+                $roleCounts[$roleName] = 0;
+            }
+            
+            // Iterate over each role
+            foreach ($role as $roleId => $roleName) {
+                // Get users with the current role ID
+                $users = User::where('role_id', $roleId)->get();
+                
+                // Count the number of users for the current role
+                $roleCounts[$roleName] = $users->count();
+            }
+            
+            // Encode PHP variables into JSON format
+            $labels = json_encode(array_keys($roleCounts));
+            $data = json_encode(array_values($roleCounts));
+
+
+            //For Employee Chart
+            $activeuser =  User::whereNotIn('role_id', [1])->where('is_active',1)->count();
+            $inactiveuser = User::whereNotIn('role_id', [1])->where('is_active',0)->count();
+
+            //For Client wise project/sales 
+            $client = Client::with('sale')->get();
+            $projectlabels = [];
+            $projectdata = [];
+            
+            foreach ($client as $singleClient) {
+                $numberOfSales = $singleClient->sale->where('status', 'Active')->count();
+                $projectlabels[] = $singleClient->name;
+                $projectdata[] = $numberOfSales;
+            }
+            
+            // Encode PHP arrays to JSON
+            $labelsJSON = json_encode($projectlabels);
+            $dataJSON = json_encode($projectdata);
+            
+            
             // dd($work);
 
             return view("home", ['sales' => $salesdata, 
@@ -115,7 +218,16 @@ class AdminController extends Controller
                                  'task' => $task,
                                  'isEdit'=>$isEdit,
                                  'isDelete' => $isDelete,
-                                 'isShow' => $isShow 
+                                 'isShow' => $isShow ,
+                                 'clientDataJSON' => $clientDataJSON,
+                                 'saleDataJSON' => $saleDataJSON,
+                                 'collectionDataJSON' => $collectionDataJSON,
+                                 'labels' => $labels,
+                                 'data' => $data,
+                                 'activeuser' => $activeuser,
+                                 'inactiveuser' => $inactiveuser,
+                                 'labelsJSON' => $labelsJSON,
+                                 'dataJSON' => $dataJSON,
                                 ]);
         }
     }
