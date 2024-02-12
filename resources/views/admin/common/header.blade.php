@@ -85,7 +85,7 @@
             </a>
             <!-- Header Title -->
             <div class="page-title-box d-flex">
-                <div class="top-nav-search">
+                <div class="top-nav-search" style="width: 200px;">
                     {{-- <a href="javascript:void(0);" class="responsive-search">
                         <i class="fa fa-search"></i>
                     </a>
