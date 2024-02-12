@@ -63,29 +63,29 @@
 // });
 
 /*grouped bar chart*/
-new Chart(document.getElementById("bar-chart-grouped"), {
-    type: 'bar',
-    data: {
-      labels: ["0", "100", "150", "200"],
-      datasets: [
-        {
-          label: "Total Cost",
-          backgroundColor: "#fe7096",
-          data: [133,221,783,2478]
-        }, {
-          label: "Total Revenue",
-          backgroundColor: "#9a55ff",
-          data: [408,547,675,734]
-        }
-      ]
-    },
-    options: {
-      title: {
-        display: true,
-        text: ''
-      }
-    }
-});
+// new Chart(document.getElementById("bar-chart-grouped"), {
+//     type: 'bar',
+//     data: {
+//       labels: ["0", "100", "150", "200"],
+//       datasets: [
+//         {
+//           label: "Total Cost",
+//           backgroundColor: "#fe7096",
+//           data: [133,221,783,2478]
+//         }, {
+//           label: "Total Revenue",
+//           backgroundColor: "#9a55ff",
+//           data: [408,547,675,734]
+//         }
+//       ]
+//     },
+//     options: {
+//       title: {
+//         display: true,
+//         text: ''
+//       }
+//     }
+// });
 
 /*mixed chart*/
 new Chart(document.getElementById("mixed-chart"), {

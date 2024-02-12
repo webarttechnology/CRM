@@ -174,7 +174,7 @@ if (!function_exists('getTimeInterval')) {
 if (!function_exists('getProjectStatus')) {
     function getProjectStatus($status)
     {
-        $statusArray = collect(['New', 'Inprogress', 'Deactive', 'Hold']);
+        $statusArray = collect(['New', 'Inprogress', 'Deactive', 'Hold','Finish']);
         return $statusArray[$status];
     }
 }

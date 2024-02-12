@@ -283,7 +283,7 @@
                             $clickBtn.addClass('btn-danger');
                             $clickBtn.html('Stop Task');
                             $clickBtn.data('type', 'stop');
-
+                            $(`.finishs`).removeClass('d-none');
                             $(`.show-task-timer`).removeClass('d-none');
 
                             stopCountdown();
@@ -296,12 +296,24 @@
                             $clickBtn.addClass('btn-warning');
                             $clickBtn.html('Start Task');
                             $clickBtn.data('type', 'start');
-
+                            $(`.finishs`).removeClass('d-none');
                             $(`.show-task-timer`).addClass('d-none');
 
                             stopCountdown();
 
-                        }
+                        }else if ($clickBtn.data('type') == 'finish') {
+
+                            $clickBtn.removeClass('btn-danger');
+                            $clickBtn.addClass('btn-warning');
+                            // $clickBtn.html('Completed');
+                            // $clickBtn.data('type', 'finish');
+
+                            $(`.show-task-timer`).addClass('d-none');
+
+                            stopCountdown();
+                            location.reload();
+
+                            }
                     }
                 },
             });

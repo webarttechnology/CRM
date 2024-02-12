@@ -28,76 +28,107 @@
             </div>
 
             <!-- /Page Header -->
+            @if (in_array(Auth::user()->role_id, [1, 3, 5, 9, 10]))
+                <div class="row graphs">
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h3 class="card-title">Department Wise Employee</h3>
+                                <h4></h4>
+                                <canvas id="pie-chart" width="800" height="450"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h3 class="card-title">Monthly Wise Collections</h3>
+                                <canvas id="bar-chart-horizontal" width="800" height="450"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row graphs">
+                    {{-- <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h3 class="card-title">Sales Overview</h3>
+                                <div id="line-charts"></div>
+                            </div>
+                        </div>
+                    </div> --}}
+                    <div class="col-md-6">
 
-            <div class="row graphs">
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h3 class="card-title">Department Wise Employee</h3>
-                            <h4></h4>
-                            <canvas id="pie-chart" width="800" height="450"></canvas>
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h3 class="card-title">Total Client</h3>
+                                <div id="chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h3 class="card-title">Monthly Projects</h3>
+                                <canvas id="bar-chart" width="800" height="550"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="card h-100">      
-                        <div class="card-body">
-                            <h3 class="card-title">Monthly Wise Collections</h3>
-                            <canvas id="bar-chart-horizontal" width="800" height="450"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row graphs">
-                {{-- <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h3 class="card-title">Sales Overview</h3>
-                            <div id="line-charts"></div>
-                        </div>
-                    </div>
-                </div> --}}
-                <div class="col-md-6">
 
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h3 class="card-title">Total Client</h3>
-                            <div id="chart"></div>
+                <div class="row graphs">
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h3 class="card-title">Total Active/Inactive Employee</h3>
+                                <h4></h4>
+                                <canvas id="emppie-chart" width="800" height="450"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h3 class="card-title">Client Wise Active Projects</h3>
+                                <canvas id="salesbar-chart" width="800" height="550"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h3 class="card-title">Monthly Projects</h3>
-                            <canvas id="bar-chart" width="800" height="550"></canvas>
+
+              
+            @endif
+
+            @if (in_array(Auth::user()->role_id, [6]))
+            
+                <div class="row graphs">
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h3 class="card-title">Monthly Task</h3>
+                                <canvas id="taskbar-chart" width="800" height="550"></canvas>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-         
-            <div class="row graphs">
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h3 class="card-title">Total Active/Inactive Employee</h3>
-                            <h4></h4>
-                            <canvas id="emppie-chart" width="800" height="450"></canvas>
+
+                    {{-- <div class="col-md-6 mb-0">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h3 class="card-title">Sales Statistics</h3>
+                                <canvas id="bar-chart-grouped" width="800" height="450"></canvas>
+                            </div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h3 class="card-title">Client Wise Active Projects</h3>
-                            <canvas id="salesbar-chart" width="800" height="550"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                
+            @endif
         </div>
     </div>
 @endsection
+
+@php
+    // dd($taskdataJSON);
+@endphp
 
 @section('script')
     <!-- Chart JS -->
@@ -109,152 +140,218 @@
     <script src="{{ url('panel/assets/js/apex.min.js') }}"></script>
 
     <script>
-        
-        var options = {
-            series: [{
-                name: "Client",
-                data: <?php echo $clientDataJSON; ?>
-            }],
-            chart: {
-                height: 350,
-                type: 'line',
-                zoom: {
-                    enabled: false
-                }
-            },
-            dataLabels: {
-                enabled: false
-            },
-            stroke: {
-                curve: 'straight'
-            },
-            title: {
-                text: 'Product Trends by Month',
-                align: 'left'
-            },
-            grid: {
-                row: {
-                    colors: ['transparent'], // takes an array which will be repeated on columns
-                    opacity: 0.5
+        var tasks = <?php echo $taskdataJSON ?>;
+        console.log('data:',tasks);
+
+        <?php if (in_array(Auth::user()->role_id, [1, 3, 5, 9, 10])) : ?>
+
+            var options = {
+                series: [{
+                    name: "Client",
+                    data: <?php echo $clientDataJSON; ?>
+                }],
+                chart: {
+                    height: 350,
+                    type: 'line',
+                    zoom: {
+                        enabled: false
+                    }
                 },
-            },
-            xaxis: {
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov',
-                'Dec'], // takes an array which will be repeated on
-            }
-        };
-
-        var chart = new ApexCharts(document.querySelector("#chart"), options);
-        chart.render();
-
-
-
-        // Bar chart
-        new Chart(document.getElementById("bar-chart"), {
-            type: 'bar',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov',
-                'Dec'],
-                datasets: [{
-                    label: "Projects",
-                    backgroundColor: ["#fe7096", "#9a55ff", "#fe7096", "#e8c3b9", "#9a55ff"],
-                    data: <?php echo $saleDataJSON; ?>
-                }]
-            },
-            options: {
-                legend: {
-                    display: false
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    curve: 'straight'
                 },
                 title: {
+                    text: 'Product Trends by Month',
+                    align: 'left'
+                },
+                grid: {
+                    row: {
+                        colors: ['transparent'], // takes an array which will be repeated on columns
+                        opacity: 0.5
+                    },
+                },
+                xaxis: {
+                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov',
+                        'Dec'
+                    ], // takes an array which will be repeated on
+                }
+            };
+
+            var chart = new ApexCharts(document.querySelector("#chart"), options);
+            chart.render();
+
+            // Bar chart
+            new Chart(document.getElementById("bar-chart"), {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov',
+                        'Dec'
+                    ],
+                    datasets: [{
+                        label: "Projects",
+                        backgroundColor: ["#fe7096", "#9a55ff", "#fe7096", "#e8c3b9", "#9a55ff"],
+                        data: <?php echo $saleDataJSON; ?>
+                    }]
+                },
+                options: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Monthly Wise Projects'
+                    }
+                }
+            });
+
+
+            /*horixzontal bar chart*/
+            new Chart(document.getElementById("bar-chart-horizontal"), {
+                type: 'horizontalBar',
+                data: {
+                    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                    datasets: [{
+                        label: "Collections",
+                        backgroundColor: ["#fe7096", "#9a55ff", "#3cba9f", "#e8c3b9", "#9a55ff", "#fe7096",
+                            "#9a55ff", "#3cba9f", "#e8c3b9", "#9a55ff", "#fe7096"
+                        ],
+                        data: <?php echo $collectionDataJSON; ?>
+                    }]
+                },
+                options: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: ''
+                    }
+                }
+            });
+
+
+            /*pie chart*/
+            new Chart(document.getElementById("pie-chart"), {
+                type: 'pie',
+                data: {
+                    labels: <?php echo $labels; ?>,
+                    datasets: [{
+                        label: "Role Chart",
+                        backgroundColor: ["#9a55ff", "#fe7096", "#ffdd57", "#00d4ff", "#ff6b6b", "#28df99",
+                            "#ffa801", "#ff3838", "#4b4b4b", "#0fb9b1"
+                        ],
+                        data: <?php echo $data; ?>
+                    }]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: ''
+                    }
+                }
+            });
+
+            /*Employee pie chart*/
+            new Chart(document.getElementById("emppie-chart"), {
+                type: 'pie',
+                data: {
+                    labels: ["Active", "Inactive"],
+                    datasets: [{
+                        label: "Employee",
+                        backgroundColor: ["#9a55ff", "#fe7096"],
+                        data: [<?php echo $activeuser; ?>, <?php echo $inactiveuser; ?>]
+                    }]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: ''
+                    }
+                }
+            });
+
+            /*Client Wise Sales chart*/
+            new Chart(document.getElementById("salesbar-chart"), {
+                type: 'bar',
+                data: {
+                    labels: <?php echo $labelsJSON; ?>,
+                    datasets: [{
+                        label: "Projects",
+                        backgroundColor: ["#fe7096", "#9a55ff", "#fe7096", "#e8c3b9", "#9a55ff"],
+                        data: <?php echo $dataJSON; ?>
+                    }]
+                },
+                options: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Client Wise Active Projects'
+                    }
+                }
+            });
+
+        <?php endif; ?>
+
+
+        <?php if (in_array(Auth::user()->role_id, [6])) : ?>
+
+            //Task Bar chart
+            new Chart(document.getElementById("taskbar-chart"), {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov',
+                        'Dec'
+                    ],
+                    datasets: [{
+                        label: "Projects",
+                        backgroundColor: ["#fe7096", "#9a55ff", "#fe7096", "#e8c3b9", "#9a55ff", "#fe7096",
+                            "#9a55ff", "#fe7096", "#e8c3b9", "#9a55ff", "#fe7096", "#fe7096"
+                        ],
+                        data: <?php echo $taskdataJSON; ?>
+                    }]
+                },
+                options: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Monthly Wise Projects'
+                    }
+                }
+            });
+
+            new Chart(document.getElementById("bar-chart-grouped"), {
+                type: 'bar',
+                data: {
+                labels: ["Task1", "Task2", "Task3", "Task4"],
+                datasets: [
+                    {
+                    label: "Complete",
+                    backgroundColor: "#fe7096",
+                    data: [133,221,783,2478]
+                    }, {
+                    label: "Incomplete",
+                    backgroundColor: "#9a55ff",
+                    data: [408,547,675,734]
+                    }
+                ]
+                },
+                options: {
+                title: {
                     display: true,
-                    text: 'Monthly Wise Projects'
+                    text: ''
                 }
-            }
-        });
-
-
-        /*horixzontal bar chart*/
-        new Chart(document.getElementById("bar-chart-horizontal"), {
-            type: 'horizontalBar',
-            data: {
-              labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-              datasets: [
-                {
-                  label: "Collections",
-                  backgroundColor: ["#fe7096", "#9a55ff","#3cba9f","#e8c3b9","#9a55ff","#fe7096", "#9a55ff","#3cba9f","#e8c3b9","#9a55ff","#fe7096"],
-                  data: <?php echo $collectionDataJSON; ?>
                 }
-              ]
-            },
-            options: {
-              legend: { display: false },
-              title: {
-                display: true,
-                text: ''
-              }
-            }
-        });
+            });
 
+        <?php endif; ?>
 
-        /*pie chart*/
-        new Chart(document.getElementById("pie-chart"), {
-            type: 'pie',
-            data: {
-            labels: <?php echo $labels; ?>,
-            datasets: [{
-                label: "Population (millions)",
-                backgroundColor: ["#9a55ff", "#fe7096", "#ffdd57", "#00d4ff", "#ff6b6b", "#28df99", "#ffa801", "#ff3838", "#4b4b4b", "#0fb9b1"],
-                data: <?php echo $data; ?>
-            }]
-            },
-            options: {
-            title: {
-                display: true,
-                text: ''
-            }
-            }
-        });
-
-        /*Employee pie chart*/
-        new Chart(document.getElementById("emppie-chart"), {
-            type: 'pie',
-            data: {
-            labels: ["Active", "Inactive"],
-            datasets: [{
-                label: "Population (millions)",
-                backgroundColor: [ "#9a55ff","#fe7096"],
-                data: [<?php echo $activeuser; ?>, <?php echo $inactiveuser; ?>]
-            }]
-            },
-            options: {
-            title: {
-                display: true,
-                text: ''
-            }
-            }
-        });
-
-        /*Client Wise Sales chart*/
-        new Chart(document.getElementById("salesbar-chart"), {
-            type: 'bar',
-            data: {
-            labels: <?php echo $labelsJSON; ?>,
-            datasets: [
-                {
-                label: "Projects",
-                backgroundColor: ["#fe7096", "#9a55ff","#fe7096","#e8c3b9","#9a55ff"],
-                data: <?php echo $dataJSON; ?>
-                }
-            ]
-            },
-            options: {
-            legend: { display: false },
-            title: {
-                display: true,
-                text: 'Client Wise Active Projects'
-            }
-            }
-       });
         
     </script>
 @endsection

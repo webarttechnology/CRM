@@ -118,6 +118,10 @@ class WorkhistoryController extends Controller
 
                 Developertask::where('id', $request->id)->update(['status'=> 3]);
 
+            }else if($request->type == 'finish'){
+
+                Developertask::where('id', $request->id)->update(['status'=> 4]);
+
             }
 
             return response()->json( ['status' => 1] );

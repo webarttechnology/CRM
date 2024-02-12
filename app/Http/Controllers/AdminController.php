@@ -200,8 +200,43 @@ class AdminController extends Controller
             // Encode PHP arrays to JSON
             $labelsJSON = json_encode($projectlabels);
             $dataJSON = json_encode($projectdata);
+
+
+            //For Developer
+            //Task chart developer id wise
             
-            
+            $developer = User::where('id',Auth::user()->id)->first();
+            $tasks = Developertask::whereJsonContains('assign_to', [(string) $developer->id])->get();
+
+            // Initialize an empty array to hold the count of tasks for each month
+            $monthlyTasksCount = [];
+
+            // Loop through the tasks and count them monthly
+            foreach ($tasks as $task) {
+                $createdMonth = $task->created_at->format('Y-m'); // Extract the month in format 'YYYY-MM'
+                $formattedMonth = date("F", strtotime($createdMonth)); // Convert 'YYYY-MM' to 'Month'
+                if (!isset($monthlyTasksCount[$formattedMonth ])) {
+                    $monthlyTasksCount[$formattedMonth ] = 0; // Initialize count for the month if not set
+                }
+                $monthlyTasksCount[$formattedMonth ]++;
+            }
+
+            $taskdata = [];
+
+            // Define the months in the desired format
+            $months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+            // Loop through the months array to populate data
+            foreach ($months as $month) {
+                // Check if the month exists in your $monthlyTasksCount array
+                if (isset($monthlyTasksCount[$month])) {
+                    $taskdata[] = $monthlyTasksCount[$month]; // Add the corresponding count to data array
+                } else {
+                    // If the month doesn't exist in $monthlyTasksCount, set count as 0
+                    $taskdata[] = 0; // Add 0 count to data array
+                }
+            }
+            $taskdataJSON = json_encode($taskdata);
             // dd($work);
 
             return view("home", ['sales' => $salesdata, 
@@ -228,6 +263,7 @@ class AdminController extends Controller
                                  'inactiveuser' => $inactiveuser,
                                  'labelsJSON' => $labelsJSON,
                                  'dataJSON' => $dataJSON,
+                                 'taskdataJSON' => $taskdataJSON,
                                 ]);
         }
     }

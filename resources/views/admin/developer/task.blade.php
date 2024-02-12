@@ -78,26 +78,34 @@
                                         </thead>
                                         <tbody class="table-border-bottom-0">
                                             @foreach ($data as $val)
-                                                <tr class="open-module-form"
+                                                <tr>
+                                                <td  class="open-module-form"
                                                 data-id="{{ $val->id }}" data-type="add_task"
-                                                data-sale="show">
-                                                <td>{{ $loop->index + 1 }}</td>
-                                                    <td>
+                                                data-sale="show">{{ $loop->index + 1 }}</td>
+                                                    <td class="open-module-form"
+                                                    data-id="{{ $val->id }}" data-type="add_task"
+                                                    data-sale="show">
                                                         {{-- <a href="#" class="mr-5 open-module-form"
                                                             data-id="{{ $val->id }}" data-type="add_task"
                                                             data-sale="show"><i class="feather-eye"></i> </a> --}}
                                                         <span>{{ $sales[$val->sale_id] }}</span>
                                                     </td>
                                                     {{-- <td>{{ $assignBy[$val->assign_by] }}</td> --}}
-                                                    <td>{{ Str::limit($val->title, 20, '...') }}</td>
+                                                    <td class="open-module-form"
+                                                    data-id="{{ $val->id }}" data-type="add_task"
+                                                    data-sale="show">{{ Str::limit($val->title, 20, '...') }}</td>
                                                     {{-- <td>
                                                         Start: {{ date('d/m/Y h:i:s A', strtotime($val->start_date)) }}
                                                         <br>
                                                         End: {{ date('d/m/Y h:i:s A', strtotime($val->start_date)) }}
                                                     </td> --}}
                                                     {{-- <td>{{ date('d/m/Y h:i:s A', strtotime($val->end_date)) }}</td> --}}
-                                                    <td>{{ getProjectStatus($val->status) }}</td>
-                                                    <td>{{ $val->created_at->format('d-M-Y') }}</td>
+                                                    <td class="open-module-form"
+                                                    data-id="{{ $val->id }}" data-type="add_task"
+                                                    data-sale="show">{{ getProjectStatus($val->status) }}</td>
+                                                    <td class="open-module-form"
+                                                    data-id="{{ $val->id }}" data-type="add_task"
+                                                    data-sale="show">{{ $val->created_at->format('d-M-Y') }}</td>
 
                                                     <td class="text-center">
                                                         <div class="dropdown dropdown-action">

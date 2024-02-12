@@ -1,4 +1,3 @@
-
 <div class="modal-header">
     <h4 class="modal-title text-center">Task details</h4>
     <button type="button" class="btn-close xs-close" data-bs-dismiss="modal"></button>
@@ -57,12 +56,18 @@
                         @if ($jobStatus?->final_status == '')
                             <button class="btn btn-warning text-white timer-btn" data-id="{{ $data->id }}"
                                 data-type="start">Start Task</button>
+                            <button class="btn btn-warning text-white timer-btn finishs d-none" data-id="{{ $data->id }}"
+                                data-type="finish">Finish</button>
                         @elseif($jobStatus?->final_status == 'start')
                             <button class="btn btn-danger text-white timer-btn" data-id="{{ $data->id }}"
                                 data-type="stop">Stop Task</button>
+                            <button class="btn btn-warning text-white timer-btn finish" data-id="{{ $data->id }}"
+                                data-type="finish">Finish</button>
                         @elseif($jobStatus?->final_status == 'stop')
                             <button class="btn btn-warning text-white timer-btn" data-id="{{ $data->id }}"
                                 data-type="start">Start Task</button>
+                            <button class="btn btn-warning text-white timer-btn finish" data-id="{{ $data->id }}"
+                                data-type="finish">Finish</button>
                         @endif
                     </div>
                 </div>
@@ -176,7 +181,6 @@
                                                 $startDateEntry = null;
                                                 $endDateEntry = null;
                                             @endphp
-
                                         @endif
                                     @endforeach
                                 </tbody>
